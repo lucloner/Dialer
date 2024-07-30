@@ -1,0 +1,17 @@
+server:
+  port: 18081
+spring:
+  application:
+    name: Dialer
+  config:
+    import: "optional:configserver:"
+  cloud:
+    config:
+      zookeeper:
+        connect-string: 192.168.4.251:32770
+      server:
+        native:
+          search-locations: classpath:/config
+#        git:
+#          uri: https://github.com/spring-cloud-samples/config-repo
+#      profile: dev
