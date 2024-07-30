@@ -35,7 +35,7 @@ public class RunShell {
             return Connected;
         }
 
-        return checkStatus(returns,Connected,Connecting,Reconnecting,Unable_Connect,base,Unknown_Error);
+        return checkStatus(returns,Halt, Connected,Connecting,Reconnecting,Unable_Connect,base,Unknown_Error);
     }
 
     public static ExpressvpnStatus checkStatus(String returns,ExpressvpnStatus... statuses){
