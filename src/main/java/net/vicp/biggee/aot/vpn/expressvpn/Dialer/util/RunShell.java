@@ -75,7 +75,7 @@ public class RunShell {
                 continue;
             }
 
-            newList.add(n.split(" ")[0]);
+            newList.add(n);
         }
 
         return newList.toArray(new String[]{});

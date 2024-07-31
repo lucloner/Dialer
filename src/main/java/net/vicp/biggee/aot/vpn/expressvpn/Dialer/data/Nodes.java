@@ -12,4 +12,17 @@ public class Nodes {
     public String location;
     @Column
     public boolean recommended=false;
+
+    public Nodes(){}
+    public Nodes(String alias, String location, String recommended) {
+        this.alias = alias;
+        this.location = location;
+        this.recommended= recommended.contains("Y");
+    }
+
+    public Nodes(String alias, String location, boolean recommended) {
+        this.alias = alias;
+        this.location = location;
+        this.recommended= recommended;
+    }
 }
