@@ -32,7 +32,7 @@ public class Status {
 
     @RequestMapping("/refresh")
     public String refresh() {
-        String[] list = RunShell.getList();
+        String[] list = RunShell.flush();
         for (String s : list) {
             s = s.trim();
             String[] c = s.split(" ", 2);

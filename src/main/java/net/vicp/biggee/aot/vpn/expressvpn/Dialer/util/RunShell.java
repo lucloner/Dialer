@@ -12,7 +12,6 @@ import static net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus.*
 
 public class RunShell {
     static String CMD="expressvpn";
-    static String[] nodes;
     static boolean upgradeable=false;
     boolean connected=false;
     String location="";
@@ -22,20 +21,14 @@ public class RunShell {
         return builder.start();
     }
 
+    public static String[] flush() {
+        run(new String[]{CMD,"refresh"});
+        return getList();
+    }
+
     public ExpressvpnStatus status(){
         var returns=run(new String[]{CMD,"status"});
-        upgradeable=returns.contains(Upgradeable.key)||returns.contains(Upgradeable_Arch.key);
-        ExpressvpnStatus base=Not_Connected;
-        if(upgradeable){
-            base=Upgradeable;
-        }
-        connected=returns.contains(Connected.key);
-        if(connected){
-            location= returns.split(Connected.key)[1].trim().split("\\n")[0].trim();
-            return Connected;
-        }
-
-        return checkStatus(returns,Halt, Connected,Connecting,Reconnecting,Unable_Connect,base,Unknown_Error);
+        return status(returns);
     }
 
     public static ExpressvpnStatus checkStatus(String returns,ExpressvpnStatus... statuses){
@@ -53,9 +46,19 @@ public class RunShell {
         return base;
     }
 
-    public static void flush(){
-        run(new String[]{CMD,"refresh"});
-        nodes= getList();
+    public ExpressvpnStatus status(String returns) {
+        upgradeable = returns.contains(Upgradeable.key) || returns.contains(Upgradeable_Arch.key);
+        ExpressvpnStatus base = Not_Connected;
+        if (upgradeable) {
+            base = Upgradeable;
+        }
+        connected = returns.contains(Connected.key);
+        if (connected) {
+            location = returns.split(Connected.key)[1].trim().split("\\n")[0].trim();
+            return Connected;
+        }
+
+        return checkStatus(returns, Halt, Connected, Connecting, Reconnecting, Unable_Connect, base, Unknown_Error);
     }
 
     public static String[] getList(){

@@ -9,22 +9,23 @@ import net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus;
 import java.time.LocalDateTime;
 
 @Entity
-public class History {
+public class Plan {
     @Id
     @GeneratedValue
     public long id;
     @Column
-    public String location;
+    public String alias;
     @Column
-    public LocalDateTime time=LocalDateTime.now();
+    public LocalDateTime planTime = LocalDateTime.now();
     @Column
-    public ExpressvpnStatus status=ExpressvpnStatus.Not_Connected;
+    public LocalDateTime connectTime = LocalDateTime.now();
+    @Column
+    public ExpressvpnStatus status = ExpressvpnStatus.Not_Connected;
 
-    public History() {
+    public Plan() {
     }
 
-    public History(String location, ExpressvpnStatus status) {
-        this.location = location;
-        this.status = status;
+    public Plan(String alias) {
+        this.alias = alias;
     }
 }
