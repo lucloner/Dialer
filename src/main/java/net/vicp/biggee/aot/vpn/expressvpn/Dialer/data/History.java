@@ -27,4 +27,11 @@ public class History {
         this.location = location;
         this.status = status;
     }
+
+    public History(History history) {
+        this.id = history.id;
+        this.location = history.location;
+        this.time = history.time;
+        this.status = history.status;
+    }
 }

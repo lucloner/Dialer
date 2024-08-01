@@ -14,7 +14,7 @@ public class RunShell {
     static String CMD="expressvpn";
     static boolean upgradeable=false;
     boolean connected=false;
-    String location="";
+    public String location = "";
 
     public Process connect(String location) throws IOException {
         var builder=initCommand(new String[]{CMD,"connect",location});
@@ -24,6 +24,10 @@ public class RunShell {
     public static String[] flush() {
         run(new String[]{CMD,"refresh"});
         return getList();
+    }
+
+    public static String disconnect() {
+        return run(new String[]{CMD, "disconnect"});
     }
 
     public ExpressvpnStatus status(){

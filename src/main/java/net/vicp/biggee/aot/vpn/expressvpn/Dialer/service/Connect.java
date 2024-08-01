@@ -36,8 +36,6 @@ public class Connect {
     NodesDao nodesDao;
     @Autowired
     PlanDao planDao;
-    @Autowired
-    Schedule schedule;
 
     @RequestMapping("/plan")
     public boolean plan() {
@@ -100,7 +98,7 @@ public class Connect {
         if (!allByStatusOrderByTimeDesc.isEmpty()) {
             allByStatusOrderByTimeDesc.subList(1, allByStatusOrderByTimeDesc.size()).forEach(c -> {
                 c.status = Unable_Connect;
-                historyDao.save(c);
+                historyDao.save(new History(c));
             });
             History first = allByStatusOrderByTimeDesc.getFirst();
             first.status = runShell.status();
@@ -110,9 +108,9 @@ public class Connect {
     }
 
     @RequestMapping("/init")
-    public void init() {
-        schedule.scheduleConnect();
+    public ExpressvpnStatus init() {
+        plan();
+        autoconnect();
+        return new RunShell().status();
     }
-
-
 }

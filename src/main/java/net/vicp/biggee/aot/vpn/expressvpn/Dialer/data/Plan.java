@@ -28,4 +28,12 @@ public class Plan {
     public Plan(String alias) {
         this.alias = alias;
     }
+
+    public Plan(Plan plan) {
+        this.id = plan.id;
+        this.alias = plan.alias;
+        this.planTime = plan.planTime;
+        this.connectTime = plan.connectTime;
+        this.status = plan.status;
+    }
 }
