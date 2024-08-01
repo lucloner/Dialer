@@ -4,10 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.History;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.HistoryDao;
-import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.NodesDao;
-import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.PlanDao;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.util.RunShell;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -26,14 +23,15 @@ import static net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus.*
 @Slf4j
 @Component
 public class Schedule {
-    @Autowired
+    final
     Connect connect;
-    @Autowired
+    final
     HistoryDao historyDao;
-    @Autowired
-    NodesDao nodesDao;
-    @Autowired
-    PlanDao planDao;
+
+    public Schedule(Connect connect, HistoryDao historyDao) {
+        this.connect = connect;
+        this.historyDao = historyDao;
+    }
 
     @Async
     public CompletableFuture<ExpressvpnStatus> scheduleConnect() {

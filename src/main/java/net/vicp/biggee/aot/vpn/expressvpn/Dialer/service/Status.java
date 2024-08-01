@@ -5,7 +5,6 @@ import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Nodes;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.HistoryDao;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.NodesDao;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.util.RunShell;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,10 +14,15 @@ import java.util.List;
 @RestController
 @RequestMapping("/status")
 public class Status {
-    @Autowired
+    final
     HistoryDao historyDao;
-    @Autowired
+    final
     NodesDao nodesDao;
+
+    public Status(HistoryDao historyDao, NodesDao nodesDao) {
+        this.historyDao = historyDao;
+        this.nodesDao = nodesDao;
+    }
 
     @RequestMapping("/history")
     public List<History> getHistory() {

@@ -9,7 +9,6 @@ import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.HistoryDao;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.NodesDao;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.PlanDao;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.util.RunShell;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,14 +27,21 @@ import static net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus.*
 public class Connect {
 
     public static ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
-    @Autowired
+    final
     Status status;
-    @Autowired
+    final
     HistoryDao historyDao;
-    @Autowired
+    final
     NodesDao nodesDao;
-    @Autowired
+    final
     PlanDao planDao;
+
+    public Connect(Status status, HistoryDao historyDao, NodesDao nodesDao, PlanDao planDao) {
+        this.status = status;
+        this.historyDao = historyDao;
+        this.nodesDao = nodesDao;
+        this.planDao = planDao;
+    }
 
     @RequestMapping("/plan")
     public boolean plan() {
