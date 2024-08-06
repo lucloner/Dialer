@@ -9,7 +9,8 @@ public enum ExpressvpnStatus {
     Unknown_Error(null,99),
     Upgradeable("update ExpressVPN",6),
     Upgradeable_Arch("new version",7),
-    Halt("expressvpnd",8);
+    Halt("expressvpnd", 8),
+    Busy("Please disconnect", 9);
 
     public String key;
     public int code;

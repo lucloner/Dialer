@@ -62,7 +62,7 @@ public class RunShell {
             return Connected;
         }
 
-        return checkStatus(returns, Halt, Connected, Connecting, Reconnecting, Unable_Connect, base, Unknown_Error);
+        return checkStatus(returns, Halt, Connected, Connecting, Reconnecting, Unable_Connect, base, Unknown_Error, Busy);
     }
 
     public static String[] getList(){

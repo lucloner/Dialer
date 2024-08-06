@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -33,6 +34,7 @@ public class Schedule {
         this.historyDao = historyDao;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     @Async
     public CompletableFuture<ExpressvpnStatus> scheduleConnect() {
         log.info("scheduleConnect launched");
@@ -54,13 +56,17 @@ public class Schedule {
 
         History last = historyDao.findFirstByIdAfterOrderByIdDesc(-1);
         last.status = expressvpnStatus;
-        historyDao.save(last);
+        historyDao.save(new History(last));
 
-        if (expressvpnStatus.equals(Connected)) {
-            return CompletableFuture.completedFuture(expressvpnStatus);
+        if (Connected.equals(expressvpnStatus)) {
+            log.info("schedule Connect done: " + expressvpnStatus + " message: " + returns);
+            return CompletableFuture.completedFuture(Connected);
+        } else if (Busy.equals(expressvpnStatus)) {
+            log.warn("schedule Connect is busy: " + expressvpnStatus + " message: " + returns);
+            return CompletableFuture.completedFuture(Busy);
         }
 
-        log.info("scheduleConnect run again: " + expressvpnStatus + " message: " + returns);
+        log.info("schedule Connect run again: " + expressvpnStatus + " message: " + returns);
 
         Connect.executor.execute(connect::init);
 
@@ -73,11 +79,16 @@ public class Schedule {
         RunShell runShell = new RunShell();
         ExpressvpnStatus expressvpnStatus = runShell.status();
         History last = historyDao.findFirstByIdAfterOrderByIdDesc(-1);
+        if (last == null) {
+            //new init
+            connect.plan();
+            last = new History();
+        }
         String alias = last.location;
-        if (expressvpnStatus.equals(Connected) && alias != runShell.location) {
+        if (Connected.equals(expressvpnStatus) && !Objects.equals(alias, runShell.location)) {
             log.warn("checkStatus location sync: " + alias + " <++ " + runShell.location);
             last.location = runShell.location;
-        } else if (!last.status.equals(Reconnecting)) {
+        } else if (Reconnecting.equals(last.status)) {
             last.time = LocalDateTime.now();
         }
         last.status = expressvpnStatus;
