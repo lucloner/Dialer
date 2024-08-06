@@ -26,7 +26,7 @@ import static net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus.*
 @RequestMapping("/connect")
 public class Connect {
 
-    public static ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
+    public static ExecutorService executor = Executors.newCachedThreadPool();
     final
     Status status;
     final
@@ -52,12 +52,12 @@ public class Connect {
         }
         Collections.shuffle(all);
 
-        List<Nodes> recommended = nodesDao.findAll((r, _, b) -> b.equal(r.get("recommended"), true));
+        List<Nodes> recommended = nodesDao.findAll((r, q, b) -> b.equal(r.get("recommended"), true));
         Collections.shuffle(recommended);
 
         Arrays.asList(recommended, all).forEach(l -> l.forEach(n -> {
             var alias = n.alias;
-            if (planDao.exists((r, _, b) -> b.equal(r.get("alias"), alias))) {
+            if (planDao.exists((r, q, b) -> b.equal(r.get("alias"), alias))) {
                 return;
             }
             planDao.save(new Plan(alias));
@@ -82,7 +82,7 @@ public class Connect {
         ExpressvpnStatus expressvpnStatus = runShell.status();
         if (Arrays.asList(Not_Connected, Unable_Connect, Unknown_Error).contains(expressvpnStatus)) {
             Future<Process> submit = executor.submit(() -> runShell.connect(alias));
-            planDao.deleteAll(planDao.findAll((r, _, b) -> b.equal(r.get("alias"), alias)));
+            planDao.deleteAll(planDao.findAll((r, q, b) -> b.equal(r.get("alias"), alias)));
             historyDao.save(new History(alias, Connecting));
             return submit;
         }
@@ -106,7 +106,7 @@ public class Connect {
                 c.status = Unable_Connect;
                 historyDao.save(new History(c));
             });
-            History first = allByStatusOrderByTimeDesc.getFirst();
+            History first = allByStatusOrderByTimeDesc.get(0);
             first.status = runShell.status();
         }
 
