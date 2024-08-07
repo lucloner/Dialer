@@ -53,7 +53,7 @@ public class Recycle {
             }
         }
 
-        log.info("Recycle Finished, Count" + historyDao.count());
+        log.info("Recycle Finished, Count " + historyDao.count());
     }
 
     @RequestMapping("/rePlan")
