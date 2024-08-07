@@ -116,7 +116,7 @@ public class Schedule {
             String location = runShell.location;
             if (location != null) {
                 historyDao.save(new History(location, Connected));
-                if (planDao.count((r, q, b) -> b.equal(r.get("alias"), location)) == 0) {
+                if (planDao.exists((r, q, b) -> b.equal(r.get("alias"), location))) {
                     planDao.save(new Plan(location));
                 }
             } else {
