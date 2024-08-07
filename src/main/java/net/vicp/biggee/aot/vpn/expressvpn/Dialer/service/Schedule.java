@@ -35,12 +35,15 @@ public class Schedule {
     PlanDao planDao;
     final
     NodesDao nodesDao;
+    final
+    Recycle recycle;
 
-    public Schedule(Connect connect, HistoryDao historyDao, PlanDao planDao, NodesDao nodesDao) {
+    public Schedule(Connect connect, HistoryDao historyDao, PlanDao planDao, NodesDao nodesDao, Recycle recycle) {
         this.connect = connect;
         this.historyDao = historyDao;
         this.planDao = planDao;
         this.nodesDao = nodesDao;
+        this.recycle = recycle;
     }
 
     @SuppressWarnings("UnusedReturnValue")
@@ -127,6 +130,7 @@ public class Schedule {
                 historyDao.save(new History(last.location, Connected));
             }
 
+            recycle.clearAndRePlan();
             return;
         }
         historyDao.save(new History(last));
