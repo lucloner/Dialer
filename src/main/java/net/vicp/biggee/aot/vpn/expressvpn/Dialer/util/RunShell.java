@@ -2,10 +2,13 @@ package net.vicp.biggee.aot.vpn.expressvpn.Dialer.util;
 
 import com.pty4j.PtyProcess;
 import com.pty4j.PtyProcessBuilder;
+import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Nodes;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus;
+import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.NodesDao;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import static net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus.*;
@@ -14,7 +17,12 @@ public class RunShell {
     static String CMD="expressvpn";
     static boolean upgradeable=false;
     boolean connected=false;
-    public String location = "";
+    private String location = "";
+
+    public String getLocation(NodesDao nodesDao) {
+        Optional<Nodes> node = nodesDao.findOne((r, q, b) -> b.or(b.equal(r.get("location"), location), b.equal(r.get("alias"), location)));
+        return node.orElse(new Nodes(location, location, false)).alias;
+    }
 
     public Process connect(String location) throws IOException {
         var builder=initCommand(new String[]{CMD,"connect",location});

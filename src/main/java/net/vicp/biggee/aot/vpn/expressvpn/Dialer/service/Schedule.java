@@ -5,6 +5,7 @@ import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.History;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Plan;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.HistoryDao;
+import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.NodesDao;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.PlanDao;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.util.RunShell;
 import org.springframework.scheduling.annotation.Async;
@@ -32,11 +33,14 @@ public class Schedule {
     HistoryDao historyDao;
     final
     PlanDao planDao;
+    final
+    NodesDao nodesDao;
 
-    public Schedule(Connect connect, HistoryDao historyDao, PlanDao planDao) {
+    public Schedule(Connect connect, HistoryDao historyDao, PlanDao planDao, NodesDao nodesDao) {
         this.connect = connect;
         this.historyDao = historyDao;
         this.planDao = planDao;
+        this.nodesDao = nodesDao;
     }
 
     @SuppressWarnings("UnusedReturnValue")
@@ -90,9 +94,10 @@ public class Schedule {
             last = new History();
         }
         String alias = last.location;
-        if (Connected.equals(expressvpnStatus) && !Objects.equals(alias, runShell.location)) {
-            log.warn("checkStatus location sync: " + alias + " <++ " + runShell.location);
-            last.location = runShell.location;
+        String runShellLocation = runShell.getLocation(nodesDao);
+        if (Connected.equals(expressvpnStatus) && !Objects.equals(alias, runShellLocation)) {
+            log.warn("checkStatus location sync: " + alias + " <++ " + runShellLocation);
+            last.location = runShellLocation;
         } else if (!Reconnecting.equals(last.status)) {
             last.time = LocalDateTime.now();
         }
@@ -112,12 +117,11 @@ public class Schedule {
                 return;
             }
         } else if (Connected.equals(expressvpnStatus)) {
-            log.info("checkStatus connected: " + last.location + " <==> " + runShell.location);
-            String location = runShell.location;
-            if (location != null) {
-                historyDao.save(new History(location, Connected));
-                if (planDao.exists((r, q, b) -> b.equal(r.get("alias"), location))) {
-                    planDao.save(new Plan(location));
+            log.info("checkStatus connected: " + last.location + " <==> " + runShellLocation);
+            if (runShellLocation != null) {
+                historyDao.save(new History(runShellLocation, Connected));
+                if (planDao.exists((r, q, b) -> b.equal(r.get("alias"), runShellLocation))) {
+                    planDao.save(new Plan(runShellLocation));
                 }
             } else {
                 historyDao.save(new History(last.location, Connected));
