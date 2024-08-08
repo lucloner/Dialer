@@ -16,11 +16,9 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 import static net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus.*;
 
@@ -138,4 +136,29 @@ public class Schedule {
         scheduleConnect();
     }
 
+    @Scheduled(initialDelay = 10, fixedRate = 15, timeUnit = TimeUnit.MINUTES)
+    public void watchCat() {
+        RunShell runShell = new RunShell();
+        ExpressvpnStatus expressvpnStatus = runShell.status();
+        log.info("watchCat run: " + expressvpnStatus);
+        List<History> all = historyDao.findAll();
+        History history = all.get(all.size() - 1);
+        if (Duration.between(history.time, LocalDateTime.now()).toMinutes() > 20) {
+            RunShell.disconnect();
+            history.status = Not_Connected;
+            historyDao.save(new History(history));
+            ExecutorService executor = Connect.executor;
+            Connect.executor = Executors.newCachedThreadPool();
+            executor.shutdown();
+            Executors.newCachedThreadPool().submit(this::scheduleConnect);
+
+            log.warn("watchCat restart connection! ");
+            return;
+        }
+
+        history.status = expressvpnStatus;
+        historyDao.save(new History(history));
+        Executors.newCachedThreadPool().submit(this::checkStatus);
+        log.warn("watchCat done! ");
+    }
 }
