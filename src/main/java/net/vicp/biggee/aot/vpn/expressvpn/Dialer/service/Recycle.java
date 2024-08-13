@@ -6,6 +6,7 @@ import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Plan;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.HistoryDao;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.PlanDao;
+import net.vicp.biggee.aot.vpn.expressvpn.Dialer.util.RunShell;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,10 +23,13 @@ public class Recycle {
     HistoryDao historyDao;
     final
     PlanDao planDao;
+    final
+    RunShell runShell;
 
-    public Recycle(HistoryDao historyDao, PlanDao planDao) {
+    public Recycle(HistoryDao historyDao, PlanDao planDao, RunShell runShell) {
         this.historyDao = historyDao;
         this.planDao = planDao;
+        this.runShell = runShell;
     }
 
     @RequestMapping("/clear")

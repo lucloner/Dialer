@@ -22,10 +22,13 @@ public class Status {
     HistoryDao historyDao;
     final
     NodesDao nodesDao;
+    final
+    RunShell runShell;
 
-    public Status(HistoryDao historyDao, NodesDao nodesDao) {
+    public Status(HistoryDao historyDao, NodesDao nodesDao, RunShell runShell) {
         this.historyDao = historyDao;
         this.nodesDao = nodesDao;
+        this.runShell = runShell;
     }
 
     @RequestMapping("/history")
@@ -63,7 +66,6 @@ public class Status {
 
     @RequestMapping("/status")
     public ExpressvpnStatus status() {
-        RunShell runShell = new RunShell();
         ExpressvpnStatus expressvpnStatus = runShell.status();
         if (Connected.equals(expressvpnStatus)) {
             return runShell.checkWebs() ? Connected : Unknown_Error;

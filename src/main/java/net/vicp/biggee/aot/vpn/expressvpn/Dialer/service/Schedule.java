@@ -35,13 +35,16 @@ public class Schedule {
     NodesDao nodesDao;
     final
     Recycle recycle;
+    final
+    RunShell runShell;
 
-    public Schedule(Connect connect, HistoryDao historyDao, PlanDao planDao, NodesDao nodesDao, Recycle recycle) {
+    public Schedule(Connect connect, HistoryDao historyDao, PlanDao planDao, NodesDao nodesDao, Recycle recycle, RunShell runShell) {
         this.connect = connect;
         this.historyDao = historyDao;
         this.planDao = planDao;
         this.nodesDao = nodesDao;
         this.recycle = recycle;
+        this.runShell = runShell;
     }
 
     @SuppressWarnings("UnusedReturnValue")
@@ -49,7 +52,6 @@ public class Schedule {
     public CompletableFuture<ExpressvpnStatus> scheduleConnect() {
         log.info("scheduleConnect launched");
         Future<Process> autoconnect = connect.autoconnect();
-        RunShell runShell = new RunShell();
         String returns = null;
         int returnCode = -1;
         try {
@@ -86,7 +88,6 @@ public class Schedule {
     @Scheduled(initialDelay = 1, fixedRate = 1, timeUnit = TimeUnit.MINUTES)
     public void checkStatus() {
         log.info("checkStatus run: " + LocalDateTime.now());
-        RunShell runShell = new RunShell();
         ExpressvpnStatus expressvpnStatus = connect.status.status();
         History last = historyDao.findFirstByIdAfterOrderByIdDesc(-1);
         if (last == null) {
@@ -138,7 +139,6 @@ public class Schedule {
 
     @Scheduled(initialDelay = 10, fixedRate = 15, timeUnit = TimeUnit.MINUTES)
     public void watchCat() {
-        RunShell runShell = new RunShell();
         ExpressvpnStatus expressvpnStatus = connect.status.status();
         log.info("watchCat run: " + expressvpnStatus);
         List<History> all = historyDao.findAll();

@@ -35,12 +35,15 @@ public class Connect {
     NodesDao nodesDao;
     final
     PlanDao planDao;
+    final
+    RunShell runShell;
 
-    public Connect(Status status, HistoryDao historyDao, NodesDao nodesDao, PlanDao planDao) {
+    public Connect(Status status, HistoryDao historyDao, NodesDao nodesDao, PlanDao planDao, RunShell runShell) {
         this.status = status;
         this.historyDao = historyDao;
         this.nodesDao = nodesDao;
         this.planDao = planDao;
+        this.runShell = runShell;
     }
 
     @RequestMapping("/plan")
@@ -78,7 +81,6 @@ public class Connect {
 
     @RequestMapping("/connect")
     public Future<Process> connect(String alias) {
-        RunShell runShell = new RunShell();
         ExpressvpnStatus expressvpnStatus = status.status();
         if (Arrays.asList(Not_Connected, Unable_Connect, Unknown_Error).contains(expressvpnStatus)) {
             Future<Process> submit = executor.submit(() -> runShell.connect(alias));
