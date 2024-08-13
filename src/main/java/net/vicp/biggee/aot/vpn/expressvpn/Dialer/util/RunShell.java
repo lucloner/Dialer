@@ -5,6 +5,7 @@ import com.pty4j.PtyProcessBuilder;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Nodes;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.NodesDao;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -23,16 +24,22 @@ import static net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus.*
 @Configuration
 @ConfigurationProperties(prefix = "info")
 public class RunShell {
+    @Value("command")
     String command;
+    @Value("urls")
     List<String> urls;
+    @Value("tolerance")
     int tolerance;
+
     static String CMD="expressvpn";
     static boolean upgradeable=false;
     static boolean connected = false;
     private static String location = "";
 
     public RunShell() {
-        CMD = command;
+        if (!command.isEmpty()) {
+            CMD = command;
+        }
     }
 
     public boolean checkWebs() {
