@@ -2,6 +2,7 @@ package net.vicp.biggee.aot.vpn.expressvpn.Dialer.service;
 
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.History;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Nodes;
+import net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.HistoryDao;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.NodesDao;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.util.RunShell;
@@ -10,6 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus.Connected;
+import static net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus.Unknown_Error;
 
 @RestController
 @RequestMapping("/status")
@@ -57,5 +61,13 @@ public class Status {
         return Arrays.toString(list);
     }
 
-
+    @RequestMapping("/status")
+    public ExpressvpnStatus status() {
+        RunShell runShell = new RunShell();
+        ExpressvpnStatus expressvpnStatus = runShell.status();
+        if (Connected.equals(expressvpnStatus)) {
+            return runShell.checkWebs() ? Connected : Unknown_Error;
+        }
+        return expressvpnStatus;
+    }
 }

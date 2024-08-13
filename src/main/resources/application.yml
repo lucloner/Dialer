@@ -28,3 +28,12 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     defer-datasource-initialization: true
+info:
+  command: expressvpn
+  urls:
+    - https://youtube.com
+    - https://twitter.com
+    - https://x.com
+    - https://google.com
+    - https://t66y.com
+  tolerance: 1

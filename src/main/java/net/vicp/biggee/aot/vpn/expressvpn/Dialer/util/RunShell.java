@@ -5,19 +5,56 @@ import com.pty4j.PtyProcessBuilder;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Nodes;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.NodesDao;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import static net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus.*;
 
+@Configuration
+@ConfigurationProperties(prefix = "info")
 public class RunShell {
+    String command;
+    List<String> urls;
+    int tolerance;
     static String CMD="expressvpn";
     static boolean upgradeable=false;
     boolean connected=false;
     private String location = "";
+
+    public RunShell() {
+        CMD = command;
+    }
+
+    public boolean checkWebs() {
+        return urls.stream().parallel().map(u -> {
+            try {
+                return checkUrl(u);
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
+            return 500;
+        }).filter(i -> i >= 200).filter(i -> i < 300).count() >= urls.size() - tolerance;
+    }
+
+    public int checkUrl(String url) throws IOException, InterruptedException {
+        return HttpClient.newBuilder()
+                .followRedirects(HttpClient.Redirect.ALWAYS)
+                .build()
+                .send(HttpRequest.newBuilder(URI.create(url))
+                        .GET()
+                        .build(), HttpResponse.BodyHandlers.ofString())
+                .statusCode();
+    }
 
     public String getLocation(NodesDao nodesDao) {
         Optional<Nodes> node = nodesDao.findOne((r, q, b) -> b.or(b.equal(r.get("location"), location), b.equal(r.get("alias"), location)));

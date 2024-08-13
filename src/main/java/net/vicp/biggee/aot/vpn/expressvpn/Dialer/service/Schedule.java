@@ -87,7 +87,7 @@ public class Schedule {
     public void checkStatus() {
         log.info("checkStatus run: " + LocalDateTime.now());
         RunShell runShell = new RunShell();
-        ExpressvpnStatus expressvpnStatus = runShell.status();
+        ExpressvpnStatus expressvpnStatus = connect.status.status();
         History last = historyDao.findFirstByIdAfterOrderByIdDesc(-1);
         if (last == null) {
             //new init
@@ -139,7 +139,7 @@ public class Schedule {
     @Scheduled(initialDelay = 10, fixedRate = 15, timeUnit = TimeUnit.MINUTES)
     public void watchCat() {
         RunShell runShell = new RunShell();
-        ExpressvpnStatus expressvpnStatus = runShell.status();
+        ExpressvpnStatus expressvpnStatus = connect.status.status();
         log.info("watchCat run: " + expressvpnStatus);
         List<History> all = historyDao.findAll();
         History history = all.get(all.size() - 1);

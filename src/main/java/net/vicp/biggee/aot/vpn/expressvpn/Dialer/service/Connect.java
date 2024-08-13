@@ -79,7 +79,7 @@ public class Connect {
     @RequestMapping("/connect")
     public Future<Process> connect(String alias) {
         RunShell runShell = new RunShell();
-        ExpressvpnStatus expressvpnStatus = runShell.status();
+        ExpressvpnStatus expressvpnStatus = status.status();
         if (Arrays.asList(Not_Connected, Unable_Connect, Unknown_Error).contains(expressvpnStatus)) {
             Future<Process> submit = executor.submit(() -> runShell.connect(alias));
             planDao.deleteAll(planDao.findAll((r, q, b) -> b.equal(r.get("alias"), alias)));
@@ -107,7 +107,7 @@ public class Connect {
                 historyDao.save(new History(c));
             });
             History first = allByStatusOrderByTimeDesc.get(0);
-            first.status = runShell.status();
+            first.status = status.status();
         }
 
         return connect(pick.alias);
@@ -117,6 +117,6 @@ public class Connect {
     public ExpressvpnStatus init() {
         plan();
         autoconnect();
-        return new RunShell().status();
+        return status.status();
     }
 }
