@@ -28,8 +28,8 @@ public class RunShell {
     int tolerance;
     static String CMD="expressvpn";
     static boolean upgradeable=false;
-    boolean connected=false;
-    private String location = "";
+    static boolean connected = false;
+    private static String location = "";
 
     public RunShell() {
         CMD = command;

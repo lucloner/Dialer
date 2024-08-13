@@ -98,7 +98,6 @@ public class Connect {
             pick = pick();
         }
 
-        RunShell runShell = new RunShell();
         List<History> allByStatusOrderByTimeDesc = historyDao.findAllByStatusOrderByTimeDesc(Connecting);
 
         if (!allByStatusOrderByTimeDesc.isEmpty()) {
