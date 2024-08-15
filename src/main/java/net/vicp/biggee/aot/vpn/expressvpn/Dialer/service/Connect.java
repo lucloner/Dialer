@@ -35,7 +35,6 @@ public class Connect {
     NodesDao nodesDao;
     final
     PlanDao planDao;
-    final
     RunShell runShell;
 
     public Connect(Status status, HistoryDao historyDao, NodesDao nodesDao, PlanDao planDao, RunShell runShell) {
@@ -85,7 +84,7 @@ public class Connect {
         if (Arrays.asList(Not_Connected, Unable_Connect, Unknown_Error).contains(expressvpnStatus)) {
             Future<Process> submit = executor.submit(() -> runShell.connect(alias));
             planDao.deleteAll(planDao.findAll((r, q, b) -> b.equal(r.get("alias"), alias)));
-            historyDao.save(new History(alias, Connecting));
+            historyDao.save(new History(alias, Connecting, runShell.index));
             return submit;
         }
 
@@ -98,17 +97,6 @@ public class Connect {
         if (pick == null) {
             plan();
             pick = pick();
-        }
-
-        List<History> allByStatusOrderByTimeDesc = historyDao.findAllByStatusOrderByTimeDesc(Connecting);
-
-        if (!allByStatusOrderByTimeDesc.isEmpty()) {
-            allByStatusOrderByTimeDesc.subList(1, allByStatusOrderByTimeDesc.size()).forEach(c -> {
-                c.status = Unable_Connect;
-                historyDao.save(new History(c));
-            });
-            History first = allByStatusOrderByTimeDesc.get(0);
-            first.status = status.status();
         }
 
         return connect(pick.alias);

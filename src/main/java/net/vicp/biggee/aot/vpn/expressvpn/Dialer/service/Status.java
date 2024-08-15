@@ -23,12 +23,12 @@ public class Status {
     final
     NodesDao nodesDao;
     final
-    RunShell runShell;
+    Connect connect;
 
-    public Status(HistoryDao historyDao, NodesDao nodesDao, RunShell runShell) {
+    public Status(HistoryDao historyDao, NodesDao nodesDao, Connect connect) {
         this.historyDao = historyDao;
         this.nodesDao = nodesDao;
-        this.runShell = runShell;
+        this.connect = connect;
     }
 
     @RequestMapping("/history")
@@ -43,7 +43,7 @@ public class Status {
 
     @RequestMapping("/refresh")
     public String refresh() {
-        String[] list = RunShell.flush();
+        String[] list = connect.runShell.flush();
         for (String s : list) {
             s = s.trim();
             String[] c = s.split(" ", 2);
@@ -66,9 +66,9 @@ public class Status {
 
     @RequestMapping("/status")
     public ExpressvpnStatus status() {
-        ExpressvpnStatus expressvpnStatus = runShell.status();
+        ExpressvpnStatus expressvpnStatus = connect.runShell.status();
         if (Connected.equals(expressvpnStatus)) {
-            return runShell.checkWebs() ? Connected : Unknown_Error;
+            return connect.runShell.checkWebs() ? Connected : Unknown_Error;
         }
         return expressvpnStatus;
     }

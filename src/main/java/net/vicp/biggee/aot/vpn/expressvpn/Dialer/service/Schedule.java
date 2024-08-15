@@ -35,22 +35,21 @@ public class Schedule {
     NodesDao nodesDao;
     final
     Recycle recycle;
-    final
-    RunShell runShell;
 
-    public Schedule(Connect connect, HistoryDao historyDao, PlanDao planDao, NodesDao nodesDao, Recycle recycle, RunShell runShell) {
+    public Schedule(Connect connect, HistoryDao historyDao, PlanDao planDao, NodesDao nodesDao, Recycle recycle) {
         this.connect = connect;
         this.historyDao = historyDao;
         this.planDao = planDao;
         this.nodesDao = nodesDao;
         this.recycle = recycle;
-        this.runShell = runShell;
     }
 
     @SuppressWarnings("UnusedReturnValue")
     @Async
     public CompletableFuture<ExpressvpnStatus> scheduleConnect() {
-        log.info("scheduleConnect launched");
+        int meshIndex = connect.runShell.index;
+        log.info("scheduleConnect launched: "+meshIndex);
+
         Future<Process> autoconnect = connect.autoconnect();
         String returns = null;
         int returnCode = -1;
@@ -64,10 +63,11 @@ public class Schedule {
             log.warn("scheduleConnect launched error", e);
             throw new RuntimeException(e);
         }
-        ExpressvpnStatus expressvpnStatus = runShell.status(returns);
+        ExpressvpnStatus expressvpnStatus = connect.runShell.status(returns);
 
-        History last = historyDao.findFirstByIdAfterOrderByIdDesc(-1);
+        History last = historyDao.findTopByMeshIndexOrderByTimeDesc(meshIndex);
         last.status = expressvpnStatus;
+        last.meshIndex=meshIndex;
         historyDao.save(new History(last));
 
         if (Connected.equals(expressvpnStatus)) {
@@ -87,16 +87,17 @@ public class Schedule {
 
     @Scheduled(initialDelay = 1, fixedRate = 1, timeUnit = TimeUnit.MINUTES)
     public void checkStatus() {
-        log.info("checkStatus run: " + LocalDateTime.now());
+        int meshIndex = connect.runShell.index;
+        log.info("checkStatus run [{}]: {}",meshIndex, LocalDateTime.now());
         ExpressvpnStatus expressvpnStatus = connect.status.status();
-        History last = historyDao.findFirstByIdAfterOrderByIdDesc(-1);
+        History last = historyDao.findTopByMeshIndexOrderByTimeDesc(meshIndex);
         if (last == null) {
             //new init
             connect.plan();
             last = new History();
         }
         String alias = last.location;
-        String runShellLocation = runShell.getLocation(nodesDao);
+        String runShellLocation = connect.runShell.getLocation(nodesDao);
         if (Connected.equals(expressvpnStatus) && !Objects.equals(alias, runShellLocation)) {
             log.warn("checkStatus location sync: " + alias + " <++ " + runShellLocation);
             last.location = runShellLocation;
@@ -105,60 +106,58 @@ public class Schedule {
         }
         last.status = expressvpnStatus;
         if (Arrays.asList(Not_Connected, Unable_Connect, Unknown_Error).contains(expressvpnStatus)) {
-            String disconnect = RunShell.disconnect();
+            String disconnect = connect.runShell.disconnect();
             log.info("checkStatus disconnect: " + disconnect);
             last.status = Not_Connected;
         } else if (Arrays.asList(Connecting, Reconnecting).contains(expressvpnStatus)) {
             long minutes = Duration.between(last.time, LocalDateTime.now()).toMinutes();
             if (minutes > 10) {
-                String disconnect = RunShell.disconnect();
+                String disconnect = connect.runShell.disconnect();
                 log.info("checkStatus timeout: " + minutes + " message: " + disconnect);
                 last.status = Not_Connected;
             } else {
+                last.meshIndex=meshIndex;
                 historyDao.save(new History(last));
                 return;
             }
         } else if (Connected.equals(expressvpnStatus)) {
-            log.info("checkStatus connected: " + last.location + " <==> " + runShellLocation);
-            if (runShellLocation != null) {
-                historyDao.save(new History(runShellLocation, Connected));
-                if (planDao.exists((r, q, b) -> b.equal(r.get("alias"), runShellLocation))) {
-                    planDao.save(new Plan(runShellLocation));
-                }
-            } else {
-                historyDao.save(new History(last.location, Connected));
-            }
-
+            log.info("checkStatus connected: [{}] {} <==> {}",meshIndex, last.location, runShellLocation);
+            historyDao.save(new History(runShellLocation, Connected,meshIndex));
             recycle.clearAndRePlan();
             return;
         }
+        last.id=0;
+        last.meshIndex=meshIndex;
         historyDao.save(new History(last));
-
         scheduleConnect();
     }
 
     @Scheduled(initialDelay = 10, fixedRate = 15, timeUnit = TimeUnit.MINUTES)
     public void watchCat() {
+        int meshIndex = connect.runShell.index;
         ExpressvpnStatus expressvpnStatus = connect.status.status();
-        log.info("watchCat run: " + expressvpnStatus);
-        List<History> all = historyDao.findAll();
-        History history = all.get(all.size() - 1);
+        log.info("watchCat run [{}]: {}",meshIndex, expressvpnStatus);
+        History history = historyDao.findTopByMeshIndexOrderByTimeDesc(meshIndex);
         if (Duration.between(history.time, LocalDateTime.now()).toMinutes() > 20) {
-            RunShell.disconnect();
+            connect.runShell.disconnect();
             history.status = Not_Connected;
+            history.meshIndex=meshIndex;
             historyDao.save(new History(history));
             ExecutorService executor = Connect.executor;
             Connect.executor = Executors.newCachedThreadPool();
             executor.shutdown();
             Executors.newCachedThreadPool().submit(this::scheduleConnect);
 
-            log.warn("watchCat restart connection! ");
-            return;
+            log.warn("watchCat restart connection! "+connect.runShell.index);
+
+        }else {
+            history.status = expressvpnStatus;
+            history.meshIndex=meshIndex;
+            historyDao.save(new History(history));
+            Executors.newCachedThreadPool().submit(this::checkStatus);
+            log.warn("watchCat done! ");
         }
 
-        history.status = expressvpnStatus;
-        historyDao.save(new History(history));
-        Executors.newCachedThreadPool().submit(this::checkStatus);
-        log.warn("watchCat done! ");
+        connect.runShell=connect.runShell.getNext();
     }
 }

@@ -2,12 +2,17 @@ package net.vicp.biggee.aot.vpn.expressvpn.Dialer.util;
 
 import com.pty4j.PtyProcess;
 import com.pty4j.PtyProcessBuilder;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Nodes;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.NodesDao;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URI;
@@ -15,31 +20,55 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus.*;
 
-@Configuration
+@Slf4j
+@Component
+@Data
 @ConfigurationProperties(prefix = "info")
 public class RunShell {
-    @Value("command")
-    String command;
-    @Value("urls")
-    List<String> urls;
-    @Value("tolerance")
-    int tolerance;
+    public List<String> urls;
+    public int tolerance;
+    public String[] CMD;
+    public boolean upgradeable=false;
+    public boolean connected = false;
+    public String location = "";
+    public int index=0;
+    public static RunShell[] mesh;
 
-    static String CMD="expressvpn";
-    static boolean upgradeable=false;
-    static boolean connected = false;
-    private static String location = "";
+    @EventListener(ApplicationReadyEvent.class)
+    public void createRunners() {
+        log.info("Spring Boot 应用启动完成，装填操作组。");
+        ArrayList<RunShell> meshList = new ArrayList<>();
+        meshList.add(this);
+        IntStream.range(1,CMD.length).forEach(i->{
+            RunShell r = new RunShell();
+            r.index=i;
+            meshList.add(r);
+        });
+        mesh=meshList.toArray(new RunShell[CMD.length]);
+    }
 
-    public RunShell() {
-        if (!command.isEmpty()) {
-            CMD = command;
-        }
+    public RunShell getNext(){
+        return mesh[(index+1)%CMD.length];
+    }
+
+    public String[] getCommand(){
+        return CMD[0].split(" ");
+    }
+
+    public String[] getCommand(String...params){
+        String[] cmd=getCommand();
+        String[] fullCommand=Arrays.copyOf(cmd, cmd.length + cmd.length);
+        System.arraycopy(params, 0, fullCommand, cmd.length, params.length);
+        return fullCommand;
     }
 
     public boolean checkWebs() {
@@ -47,7 +76,7 @@ public class RunShell {
             try {
                 return checkUrl(u);
             } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
+                log.error("url: "+u,e);
             }
             return 500;
         }).filter(i -> i >= 200).filter(i -> i < 300).count() >= urls.size() - tolerance;
@@ -69,25 +98,25 @@ public class RunShell {
     }
 
     public Process connect(String location) throws IOException {
-        var builder=initCommand(new String[]{CMD,"connect",location});
+        var builder=initCommand(getCommand("connect",location));
         return builder.start();
     }
 
-    public static String[] flush() {
-        run(new String[]{CMD,"refresh"});
+    public String[] flush() {
+        run(getCommand("refresh"));
         return getList();
     }
 
-    public static String disconnect() {
-        return run(new String[]{CMD, "disconnect"});
+    public String disconnect() {
+        return run(getCommand("disconnect"));
     }
 
     public ExpressvpnStatus status(){
-        var returns=run(new String[]{CMD,"status"});
+        var returns=run(getCommand("status"));
         return status(returns);
     }
 
-    public static ExpressvpnStatus checkStatus(String returns,ExpressvpnStatus... statuses){
+    public ExpressvpnStatus checkStatus(String returns,ExpressvpnStatus... statuses){
         ExpressvpnStatus base=null;
         for (ExpressvpnStatus status : statuses) {
             var k=status.key;
@@ -117,8 +146,8 @@ public class RunShell {
         return checkStatus(returns, Halt, Connected, Connecting, Reconnecting, Unable_Connect, base, Unknown_Error, Busy);
     }
 
-    public static String[] getList(){
-        var run = run(new String[]{CMD, "list","all"}).split("\\n");
+    public String[] getList(){
+        var run = run(getCommand("list","all")).split("\\n");
         var start=false;
         var newList=new ArrayList<String>();
 
@@ -140,7 +169,7 @@ public class RunShell {
         return newList.toArray(new String[]{});
     }
 
-    public static String run(String[] commands){
+    public String run(String[] commands){
         var builder = initCommand(commands);
         PtyProcess start=null;
         try{
@@ -157,7 +186,7 @@ public class RunShell {
         }
     }
 
-    public static PtyProcessBuilder initCommand(String[] commands){
+    public PtyProcessBuilder initCommand(String[] commands){
         var builder = new PtyProcessBuilder();
         builder.setCommand(commands);
         return builder;

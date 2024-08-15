@@ -29,7 +29,9 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     defer-datasource-initialization: true
 info:
-  command: expressvpn
+  CMD:
+    - docker exec ev0 expressvpn
+    - docker exec ev expressvpn
   urls:
     - https://youtube.com
     - https://twitter.com

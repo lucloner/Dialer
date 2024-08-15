@@ -24,16 +24,17 @@ public class Recycle {
     final
     PlanDao planDao;
     final
-    RunShell runShell;
+    Connect connect;
 
-    public Recycle(HistoryDao historyDao, PlanDao planDao, RunShell runShell) {
+    public Recycle(HistoryDao historyDao, PlanDao planDao, Connect connect) {
         this.historyDao = historyDao;
         this.planDao = planDao;
-        this.runShell = runShell;
+        this.connect = connect;
     }
 
     @RequestMapping("/clear")
     public void clear() {
+        int meshIndex = connect.runShell.index;
         List<History> all = historyDao.findAll();
         Set<String> removed = new HashSet<>();
         for (int i = all.size() - 1; i >= 0; i--) {
@@ -41,7 +42,7 @@ public class Recycle {
             String location = history.location;
             if (removed.contains(location)) {
                 historyDao.deleteById(history.id);
-                log.info("Recycle: " + location + " is Duplicated, deleted id: " + history.id);
+                log.info("Recycle [{}]: {} is Duplicated, deleted id: {}",meshIndex, location, history.id);
                 continue;
             }
             removed.add(location);
@@ -49,11 +50,18 @@ public class Recycle {
             if (Connected.equals(expressvpnStatus)) {
                 long deleted = historyDao.delete((r, q, b) -> b.and(b.equal(r.get("location"), location),
                         b.notEqual(r.get("status"), Connected)));
-                log.info("Recycle: " + location + " is Good, deleted: " + deleted);
+                if(deleted>0){
+                    log.info("Recycle [{}]: {} is Good, deleted: {}",meshIndex, location, deleted);
+                }
             } else {
+                History last = historyDao.findTopByMeshIndexOrderByTimeDesc(meshIndex);
                 long deleted = historyDao.delete((r, q, b) -> b.and(b.equal(r.get("location"), location),
-                        b.equal(r.get("status"), Connected)));
-                log.info("Recycle: " + location + " is Bad, deleted: " + deleted);
+                        b.notEqual(r.get("status"), Connected),
+                        b.equal(r.get("meshIndex"), meshIndex),
+                        b.notEqual(r.get("id"),last.id)));
+                if(deleted>0){
+                    log.info("Recycle [{}]: {} is Bad, deleted: {}",meshIndex, location, deleted);
+                }
             }
         }
 
@@ -62,28 +70,19 @@ public class Recycle {
 
     @RequestMapping("/rePlan")
     public void rePlan() {
-        List<History> all = historyDao.findAll((r, q, b) -> b.equal(r.get("status"), Connected));
-        List<Plan> goodPlan = all.stream().map(h -> new Plan(h.location)).distinct().sorted(Comparator.comparing(p -> p.connectTime)).toList();
-        for (int i = 1; i <= goodPlan.size(); i++) {
-            Plan plan = goodPlan.get(goodPlan.size() - i);
-            plan.id = i;
-            Optional<Plan> orig = planDao.findById((long) i);
-            orig.ifPresent(p -> planDao.save(new Plan(p.alias)));
-            planDao.save(plan);
-            log.info("rePlan insert: " + plan.alias + " to: " + i);
+        historyDao.findAll((r, q, b) -> b.equal(r.get("status"), Connected))
+                .stream()
+                .map(History::getLocation)
+                .forEach(l->planDao.save(new Plan(l)));
+
+        List<Plan> all = planDao.findAll();
+        for (int i = 0; i < all.size(); i++) {
+            Plan p = all.get(i);
+            long deleted = planDao.delete((r, q, b) -> b.and(b.gt(r.get("id"), p.id), b.equal(r.get(""), p.alias)));
+            if(deleted>0){
+                log.info("Recycle Plan: " + p.alias + " is Duplicated, deleted: " + deleted);
+            }
         }
-
-        all = historyDao.findAll((r, q, b) -> b.notEqual(r.get("status"), Connected));
-        for (History history : all) {
-            long deleted = planDao.delete((r, q, b) -> b.equal(r.get("alias"), history.location));
-            log.info("rePlan delete: " + history.location + " count: " + deleted);
-        }
-
-        planDao.findAll().forEach(p ->
-                planDao.delete((r, q, b) ->
-                        b.and(b.equal(r.get("alias"), p.alias),
-                                b.greaterThan(r.get("id"), p.id))));
-
     }
 
     @RequestMapping("/clearAndRePlan")

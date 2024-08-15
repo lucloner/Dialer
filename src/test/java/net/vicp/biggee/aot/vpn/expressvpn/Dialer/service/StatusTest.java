@@ -8,7 +8,7 @@ import java.util.Arrays;
 public class StatusTest {
     @Test
     public void test1(){
-        var l=RunShell.getList();
+        var l=new RunShell().getList();
         System.out.println(Arrays.toString(l));
     }
 }

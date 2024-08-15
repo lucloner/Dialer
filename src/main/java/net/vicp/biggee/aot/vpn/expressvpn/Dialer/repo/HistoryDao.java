@@ -13,4 +13,5 @@ public interface HistoryDao extends JpaRepository<History,Long>, JpaSpecificatio
     List<History> findAllByStatusOrderByTimeDesc(ExpressvpnStatus status);
 
     History findFirstByIdAfterOrderByIdDesc(long id);
+    History findTopByMeshIndexOrderByTimeDesc(int meshIndex);
 }
