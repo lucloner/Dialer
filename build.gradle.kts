@@ -111,9 +111,14 @@ tasks.register<JavaExec>("runNative") {
     mainClass.set("net.vicp.biggee.aot.vpn.expressvpn.Dialer.DialerApplication")
 }
 
+val isArm = System.getProperty("os.arch").toLowerCase().contains("arm")
+
 tasks.named<BootBuildImage>("bootBuildImage") {
     imageName.set("lucloner/dialer")
-    builder = "dashaun/builder-arm:20240403"
+    builder = "gcr.io/paketo-buildpacks/java-native-image"
+    if(isArm){
+        builder = "dashaun/builder-arm:20240403"
+    }
     environment.put("BP_NATIVE_IMAGE","ture")
 //    environment.put("BP_JVM_VERSION","22")
 //    environment.put("BP_JVM_DL_URL","http://192.168.8.164/Downloads/graalvm-jdk-22_linux-aarch64_bin.tar.gz")

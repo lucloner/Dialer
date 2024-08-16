@@ -94,6 +94,7 @@ public class RunShell extends ProxySelector{
                 .build()
                 .send(HttpRequest.newBuilder(URI.create(url))
                         .GET()
+                        .timeout(Duration.ofMinutes(1))
                         .build(), HttpResponse.BodyHandlers.ofString())
                 .statusCode();
     }
@@ -202,7 +203,8 @@ public class RunShell extends ProxySelector{
     public List<Proxy> select(URI uri) {
         InetSocketAddress proxy = new InetSocketAddress(getHost().proxyHost, getHost().proxyPort);
         log.info("checking url from proxy: "+proxy);
-        return List.of(new Proxy(Proxy.Type.HTTP, proxy));
+        Proxy proxyConfig = new Proxy(Proxy.Type.HTTP, proxy);
+        return List.of(proxyConfig);
     }
 
     @Override

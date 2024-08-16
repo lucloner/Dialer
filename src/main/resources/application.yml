@@ -3,9 +3,6 @@ server:
   ssl:
     enabled-protocols: TLSv1.2,TLSv1.3
     enabled: false
-  tomcat:
-    ssl:
-      use-openssl: false
 spring:
   application:
     name: Dialer
@@ -13,8 +10,8 @@ spring:
     import: "optional:configserver:"
   cloud:
     config:
-      zookeeper:
-        connect-string: 192.168.4.251:32770
+#      zookeeper:
+#        connect-string: 192.168.4.251:32770
       server:
         native:
           search-locations: classpath:/config
