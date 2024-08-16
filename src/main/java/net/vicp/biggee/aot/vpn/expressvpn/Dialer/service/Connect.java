@@ -2,7 +2,7 @@ package net.vicp.biggee.aot.vpn.expressvpn.Dialer.service;
 
 import lombok.extern.slf4j.Slf4j;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.History;
-import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Nodes;
+import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Node;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Plan;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.HistoryDao;
@@ -43,18 +43,19 @@ public class Connect {
         this.nodesDao = nodesDao;
         this.planDao = planDao;
         this.runShell = runShell;
+        status.getConnect=()->this;
     }
 
     @RequestMapping("/plan")
     public boolean plan() {
-        List<Nodes> all = nodesDao.findAll();
+        List<Node> all = nodesDao.findAll();
         if (all.isEmpty()) {
             status.refresh();
             all = nodesDao.findAll();
         }
         Collections.shuffle(all);
 
-        List<Nodes> recommended = nodesDao.findAll((r, q, b) -> b.equal(r.get("recommended"), true));
+        List<Node> recommended = nodesDao.findAll((r, q, b) -> b.equal(r.get("recommended"), true));
         Collections.shuffle(recommended);
 
         Arrays.asList(recommended, all).forEach(l -> l.forEach(n -> {
@@ -107,5 +108,14 @@ public class Connect {
         plan();
         autoconnect();
         return status.status();
+    }
+
+    @RequestMapping("/switch")
+    public int switchMesh(int meshIndex) {
+        if(meshIndex<0||meshIndex>=RunShell.mesh.length){
+            return runShell.index;
+        }
+        runShell=RunShell.mesh[meshIndex];
+        return meshIndex;
     }
 }

@@ -78,7 +78,7 @@ public class Recycle {
         List<Plan> all = planDao.findAll();
         for (int i = 0; i < all.size(); i++) {
             Plan p = all.get(i);
-            long deleted = planDao.delete((r, q, b) -> b.and(b.gt(r.get("id"), p.id), b.equal(r.get(""), p.alias)));
+            long deleted = planDao.delete((r, q, b) -> b.and(b.gt(r.get("id"), p.id), b.equal(r.get("alias"), p.alias)));
             if(deleted>0){
                 log.info("Recycle Plan: " + p.alias + " is Duplicated, deleted: " + deleted);
             }

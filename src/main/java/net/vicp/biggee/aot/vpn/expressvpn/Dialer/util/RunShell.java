@@ -4,28 +4,23 @@ import com.pty4j.PtyProcess;
 import com.pty4j.PtyProcessBuilder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Nodes;
+import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Host;
+import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Node;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.NodesDao;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.net.URI;
+import java.net.*;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus.*;
 
@@ -33,35 +28,39 @@ import static net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus.*
 @Component
 @Data
 @ConfigurationProperties(prefix = "info")
-public class RunShell {
+public class RunShell extends ProxySelector{
     public List<String> urls;
     public int tolerance;
-    public String[] CMD;
+    public Host[] hosts;
     public boolean upgradeable=false;
     public boolean connected = false;
     public String location = "";
     public int index=0;
-    public static RunShell[] mesh;
+    public static RunShell[] mesh=null;
 
     @EventListener(ApplicationReadyEvent.class)
     public void createRunners() {
         log.info("Spring Boot 应用启动完成，装填操作组。");
         ArrayList<RunShell> meshList = new ArrayList<>();
         meshList.add(this);
-        IntStream.range(1,CMD.length).forEach(i->{
+        IntStream.range(1,hosts.length).forEach(i->{
             RunShell r = new RunShell();
             r.index=i;
             meshList.add(r);
         });
-        mesh=meshList.toArray(new RunShell[CMD.length]);
+        mesh=meshList.toArray(new RunShell[hosts.length]);
     }
 
     public RunShell getNext(){
-        return mesh[(index+1)%CMD.length];
+        return mesh[(index+1)%hosts.length];
+    }
+
+    public Host getHost(){
+        return hosts[index];
     }
 
     public String[] getCommand(){
-        return CMD[0].split(" ");
+        return getHost().command.split(" ");
     }
 
     public String[] getCommand(String...params){
@@ -75,7 +74,7 @@ public class RunShell {
         return urls.stream().parallel().map(u -> {
             try {
                 return checkUrl(u);
-            } catch (IOException | InterruptedException e) {
+            } catch (IOException | InterruptedException | RuntimeException e) {
                 log.error("url: "+u,e);
             }
             return 500;
@@ -83,8 +82,11 @@ public class RunShell {
     }
 
     public int checkUrl(String url) throws IOException, InterruptedException {
-        return HttpClient.newBuilder()
-                .followRedirects(HttpClient.Redirect.ALWAYS)
+        HttpClient.Builder builder = HttpClient.newBuilder();
+        if(!getHost().isLocalHost){
+            builder.proxy(this);
+        }
+        return builder.followRedirects(HttpClient.Redirect.ALWAYS)
                 .build()
                 .send(HttpRequest.newBuilder(URI.create(url))
                         .GET()
@@ -93,8 +95,8 @@ public class RunShell {
     }
 
     public String getLocation(NodesDao nodesDao) {
-        Optional<Nodes> node = nodesDao.findOne((r, q, b) -> b.or(b.equal(r.get("location"), location), b.equal(r.get("alias"), location)));
-        return node.orElse(new Nodes(location, location, false)).alias;
+        Optional<Node> node = nodesDao.findOne((r, q, b) -> b.or(b.equal(r.get("location"), location), b.equal(r.get("alias"), location)));
+        return node.orElse(new Node(location, location, false)).alias;
     }
 
     public Process connect(String location) throws IOException {
@@ -190,5 +192,16 @@ public class RunShell {
         var builder = new PtyProcessBuilder();
         builder.setCommand(commands);
         return builder;
+    }
+
+    @Override
+    public List<Proxy> select(URI uri) {
+        return List.of(new Proxy(Proxy.Type.HTTP,
+                new InetSocketAddress(getHost().proxyHost,getHost().proxyPort)));
+    }
+
+    @Override
+    public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
+        throw new RuntimeException("proxy error: "+sa,ioe);
     }
 }

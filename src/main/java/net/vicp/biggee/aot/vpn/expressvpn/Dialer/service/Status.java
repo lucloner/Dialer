@@ -1,16 +1,16 @@
 package net.vicp.biggee.aot.vpn.expressvpn.Dialer.service;
 
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.History;
-import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Nodes;
+import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Node;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.HistoryDao;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.NodesDao;
-import net.vicp.biggee.aot.vpn.expressvpn.Dialer.util.RunShell;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 
 import static net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus.Connected;
 import static net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus.Unknown_Error;
@@ -22,13 +22,11 @@ public class Status {
     HistoryDao historyDao;
     final
     NodesDao nodesDao;
-    final
-    Connect connect;
+    Supplier<Connect> getConnect;
 
-    public Status(HistoryDao historyDao, NodesDao nodesDao, Connect connect) {
+    public Status(HistoryDao historyDao, NodesDao nodesDao) {
         this.historyDao = historyDao;
         this.nodesDao = nodesDao;
-        this.connect = connect;
     }
 
     @RequestMapping("/history")
@@ -37,13 +35,13 @@ public class Status {
     }
 
     @RequestMapping("/nodes")
-    public List<Nodes> getNodes() {
+    public List<Node> getNodes() {
         return nodesDao.findAll();
     }
 
     @RequestMapping("/refresh")
     public String refresh() {
-        String[] list = connect.runShell.flush();
+        String[] list = getConnect.get().runShell.flush();
         for (String s : list) {
             s = s.trim();
             String[] c = s.split(" ", 2);
@@ -59,16 +57,16 @@ public class Status {
             } else if (location.startsWith("Smart Location")) {
                 location = "Smart Location " + location.split("Smart Location", 2)[1].trim();
             }
-            nodesDao.save(new Nodes(alias, location, recommended));
+            nodesDao.save(new Node(alias, location, recommended));
         }
         return Arrays.toString(list);
     }
 
     @RequestMapping("/status")
     public ExpressvpnStatus status() {
-        ExpressvpnStatus expressvpnStatus = connect.runShell.status();
+        ExpressvpnStatus expressvpnStatus = getConnect.get().runShell.status();
         if (Connected.equals(expressvpnStatus)) {
-            return connect.runShell.checkWebs() ? Connected : Unknown_Error;
+            return getConnect.get().runShell.checkWebs() ? Connected : Unknown_Error;
         }
         return expressvpnStatus;
     }

@@ -124,6 +124,7 @@ public class Schedule {
             log.info("checkStatus connected: [{}] {} <==> {}",meshIndex, last.location, runShellLocation);
             historyDao.save(new History(runShellLocation, Connected,meshIndex));
             recycle.clearAndRePlan();
+
             return;
         }
         last.id=0;

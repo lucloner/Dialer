@@ -5,7 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
 @Entity
-public class Nodes {
+public class Node {
     @Id
     public String alias;
     @Column
@@ -13,14 +13,14 @@ public class Nodes {
     @Column
     public boolean recommended=false;
 
-    public Nodes(){}
-    public Nodes(String alias, String location, String recommended) {
+    public Node(){}
+    public Node(String alias, String location, String recommended) {
         this.alias = alias;
         this.location = location;
         this.recommended= recommended.contains("Y");
     }
 
-    public Nodes(String alias, String location, boolean recommended) {
+    public Node(String alias, String location, boolean recommended) {
         this.alias = alias;
         this.location = location;
         this.recommended= recommended;

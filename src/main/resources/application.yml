@@ -29,13 +29,22 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     defer-datasource-initialization: true
 info:
-  CMD:
-    - docker exec ev0 expressvpn
-    - docker exec ev expressvpn
+  hosts:
+    - command: docker exec ev0 expressvpn
+      name: ev0
+      local-host: false
+      proxy-host: 192.168.8.164
+      proxy-port: 1087
+    - command: docker exec ev expressvpn
+      name: ev
+      local-host: false
+      proxy-host: 192.168.8.164
+      proxy-port: 1088
   urls:
     - https://youtube.com
     - https://twitter.com
     - https://x.com
     - https://google.com
     - https://t66y.com
+    - https://baidu.com
   tolerance: 1
