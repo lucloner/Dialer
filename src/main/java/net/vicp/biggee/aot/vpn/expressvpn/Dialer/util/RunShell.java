@@ -18,6 +18,7 @@ import java.net.*;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
@@ -37,6 +38,7 @@ public class RunShell extends ProxySelector{
     public String location = "";
     public int index=0;
     public static RunShell[] mesh=null;
+    public ExpressvpnStatus status=Not_Connected;
 
     @EventListener(ApplicationReadyEvent.class)
     public void createRunners() {
@@ -56,7 +58,7 @@ public class RunShell extends ProxySelector{
     }
 
     public Host getHost(){
-        return hosts[index];
+        return RunShell.mesh[0].hosts[index];
     }
 
     public String[] getCommand(){
@@ -71,7 +73,7 @@ public class RunShell extends ProxySelector{
     }
 
     public boolean checkWebs() {
-        return urls.stream().parallel().map(u -> {
+        return RunShell.mesh[0].urls.stream().parallel().map(u -> {
             try {
                 return checkUrl(u);
             } catch (IOException | InterruptedException | RuntimeException e) {
@@ -86,7 +88,9 @@ public class RunShell extends ProxySelector{
         if(!getHost().isLocalHost){
             builder.proxy(this);
         }
+        log.info("checking url: "+url);
         return builder.followRedirects(HttpClient.Redirect.ALWAYS)
+                .connectTimeout(Duration.ofMinutes(1))
                 .build()
                 .send(HttpRequest.newBuilder(URI.create(url))
                         .GET()
@@ -176,7 +180,7 @@ public class RunShell extends ProxySelector{
         PtyProcess start=null;
         try{
             start = builder.start();
-            start.waitFor(1, TimeUnit.MINUTES);
+            start.waitFor(status.timeout, TimeUnit.SECONDS);
             return new String(start.getInputStream().readAllBytes());
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
@@ -196,12 +200,48 @@ public class RunShell extends ProxySelector{
 
     @Override
     public List<Proxy> select(URI uri) {
-        return List.of(new Proxy(Proxy.Type.HTTP,
-                new InetSocketAddress(getHost().proxyHost,getHost().proxyPort)));
+        InetSocketAddress proxy = new InetSocketAddress(getHost().proxyHost, getHost().proxyPort);
+        log.info("checking url from proxy: "+proxy);
+        return List.of(new Proxy(Proxy.Type.HTTP, proxy));
     }
 
     @Override
     public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
         throw new RuntimeException("proxy error: "+sa,ioe);
+    }
+
+    @Override
+    public String toString() {
+        RunShell main=RunShell.mesh[0];
+        return "RunShell{" +
+                "urls=" + main.urls +
+                ", tolerance=" + main.tolerance +
+                ", hosts=" + Arrays.toString(main.hosts) +
+                ", upgradeable=" + upgradeable +
+                ", connected=" + connected +
+                ", location='" + location + '\'' +
+                ", index=" + index +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        return toString().equals(o.toString());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + getUrls().hashCode();
+        result = 31 * result + getTolerance();
+        result = 31 * result + Arrays.hashCode(getHosts());
+        result = 31 * result + Boolean.hashCode(isUpgradeable());
+        result = 31 * result + Boolean.hashCode(isConnected());
+        result = 31 * result + getLocation().hashCode();
+        result = 31 * result + getIndex();
+        return result;
     }
 }

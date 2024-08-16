@@ -63,7 +63,7 @@ public class Schedule {
             log.warn("scheduleConnect launched error", e);
             throw new RuntimeException(e);
         }
-        ExpressvpnStatus expressvpnStatus = connect.runShell.status(returns);
+        ExpressvpnStatus expressvpnStatus = connect.status.status();
 
         History last = historyDao.findTopByMeshIndexOrderByTimeDesc(meshIndex);
         last.status = expressvpnStatus;
@@ -124,7 +124,7 @@ public class Schedule {
             log.info("checkStatus connected: [{}] {} <==> {}",meshIndex, last.location, runShellLocation);
             historyDao.save(new History(runShellLocation, Connected,meshIndex));
             recycle.clearAndRePlan();
-
+            connect.runShell=connect.runShell.getNext();
             return;
         }
         last.id=0;
