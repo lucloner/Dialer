@@ -1,4 +1,5 @@
 import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
+import java.util.*
 
 plugins {
     java
@@ -83,12 +84,19 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
+tasks.withType<JavaCompile> {
+    options.compilerArgs.add("-Xlint:unchecked")
+    options.compilerArgs.add("-Xlint:deprecation")
+    options.encoding = "UTF-8"
+    // 添加其他 JVM 编译参数
+}
+
 graalvmNative {
     toolchainDetection.set(true)
     binaries {
         named("main") {
             imageName.set("lucloner/dialer") // 生成的 native image 名称
-            buildArgs.add("-H:+UnlockExperimentalVMOptions");
+//            buildArgs.add("-H:+UnlockExperimentalVMOptions")
             buildArgs.add("-Djava.util.logging.ConsoleHandler.level=FINE")
             buildArgs.add("--trace-class-initialization=org.apache.tomcat.util.net.openssl.OpenSSLEngine")
             buildArgs.add("--initialize-at-build-time=org.springframework.core,org.springframework.context,org.springframework.beans,org.springframework.boot,org.springframework.util,org.springframework.web,org.springframework.http,org.springframework.aop,org.springframework.jdbc,org.springframework.orm,org.springframework.transaction,org.springframework.data,org.springframework.cache,org.springframework.security,com.fasterxml.jackson,com.zaxxer.hikari,org.hibernate,javax.servlet,org.apache.tomcat,org.apache.catalina,org.apache.coyote,org.apache.jasper,org.apache.commons.logging,org.slf4j,org.aspectj,org.jasypt,org.thymeleaf,org.h2,"
@@ -111,15 +119,22 @@ tasks.register<JavaExec>("runNative") {
     mainClass.set("net.vicp.biggee.aot.vpn.expressvpn.Dialer.DialerApplication")
 }
 
-val isArm = System.getProperty("os.arch").toLowerCase().contains("arm")
-
+val isArm = System.getProperty("os.arch").lowercase(Locale.getDefault()).contains("arm")
 tasks.named<BootBuildImage>("bootBuildImage") {
     imageName.set("lucloner/dialer")
-    builder = "gcr.io/paketo-buildpacks/java-native-image"
+    builder = "paketobuildpacks/builder:tiny"
+    environment.put("BP_CYCLONE_DX_SYFT_URI", "http://10.8.0.6/Downloads/syft_0.84.0_linux_amd64.tar.gz")
+    environment.put("BP_JVM_DL_URL","http://10.8.0.6/Downloads/bellsoft-liberica-vm-core-openjdk17.0.7+7-23.0.0+1-linux-amd64.tar.gz")
+    environment.put("BP_NATIVE_IMAGE","true")
+
     if(isArm){
         builder = "dashaun/builder-arm:20240403"
     }
-    environment.put("BP_NATIVE_IMAGE","ture")
+
+    environment.keySet().get().forEach {
+        println(it+" "+environment.getting(it).get())
+    }
+
 //    environment.put("BP_JVM_VERSION","22")
 //    environment.put("BP_JVM_DL_URL","http://192.168.8.164/Downloads/graalvm-jdk-22_linux-aarch64_bin.tar.gz")
 //    environment.put("BP_CYCLONEDX_SYFT_DL_URL","http://192.168.8.164/Downloads/syft_0.105.0_linux_arm64.tar.gz")

@@ -39,16 +39,11 @@ spring:
       hibernate.use_sql_comments: true
 info:
   hosts:
-    - command: docker exec ev0 expressvpn
-      name: ev0
+    - command: ssh lucloner@192.168.4.90 expressvpn
+      name: air
       local-host: false
-      proxy-host: 192.168.8.164
-      proxy-port: 1087
-    - command: docker exec ev expressvpn
-      name: ev
-      local-host: false
-      proxy-host: 192.168.8.164
-      proxy-port: 1088
+      proxy-host: 192.168.4.90
+      proxy-port: 60987
   urls:
     - https://youtube.com
     - https://twitter.com
