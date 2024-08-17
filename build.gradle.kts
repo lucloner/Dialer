@@ -14,7 +14,11 @@ version = "0.0.1-SNAPSHOT"
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(21)
+        // vendor.set(JvmVendorSpec.GRAAL_VM)
+        // implementation.set(JvmImplementation.J9)
+        // vendor.set(JvmVendorSpec.matching("GraalVM"))
+        // implementation.set(JvmImplementation.VENDOR_SPECIFIC)
     }
 }
 
@@ -34,21 +38,21 @@ extra["springCloudVersion"] = "2023.0.3"
 extra["springShellVersion"] = "3.3.1"
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    // implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 //	implementation("org.springframework.boot:spring-boot-starter-data-redis")
 //	implementation("org.springframework.boot:spring-boot-starter-jdbc")
-    implementation("org.springframework.boot:spring-boot-starter-mail")
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("de.codecentric:spring-boot-admin-starter-server")
-    implementation("org.springframework.cloud:spring-cloud-config-server")
+    // implementation("org.springframework.boot:spring-boot-starter-mail")
+    // implementation("org.springframework.boot:spring-boot-starter-web")
+    // implementation("de.codecentric:spring-boot-admin-starter-server")
+    // implementation("org.springframework.cloud:spring-cloud-config-server")
 //	implementation("org.springframework.cloud:spring-cloud-starter-zookeeper-config")
 //	implementation("org.springframework.cloud:spring-cloud-starter-zookeeper-discovery")
-    implementation("org.springframework.cloud:spring-cloud-starter-bootstrap")
-    implementation("org.springframework.data:spring-data-rest-hal-explorer")
+    // implementation("org.springframework.cloud:spring-cloud-starter-bootstrap")
+    // implementation("org.springframework.data:spring-data-rest-hal-explorer")
 //	implementation("org.springframework.session:spring-session-data-redis")
 //	implementation("org.springframework.session:spring-session-jdbc")
-    implementation("org.springframework.shell:spring-shell-starter")
+    // implementation("org.springframework.shell:spring-shell-starter")
     compileOnly("org.projectlombok:lombok")
 //	developmentOnly("org.springframework.boot:spring-boot-devtools")
 //	developmentOnly("org.springframework.boot:spring-boot-docker-compose")
@@ -64,6 +68,7 @@ dependencies {
 //    implementation("org.springframework.experimental:spring-native")
 //    implementation("org.springframework.experimental:spring-aot")
 //    implementation("org.graalvm.nativeimage:svm")
+    implementation("org.springframework.boot:spring-boot-starter-webflux") 
 }
 
 dependencyManagement {
@@ -87,8 +92,9 @@ tasks.withType<Test> {
 tasks.withType<JavaCompile> {
     options.compilerArgs.add("-Xlint:unchecked")
     options.compilerArgs.add("-Xlint:deprecation")
+    options.forkOptions.jvmArgs?.add("-XX:ParallelGCThreads=4")
     options.encoding = "UTF-8"
-    // 添加其他 JVM 编译参数
+    options.release.set(17)
 }
 
 graalvmNative {
@@ -96,18 +102,36 @@ graalvmNative {
     binaries {
         named("main") {
             imageName.set("lucloner/dialer") // 生成的 native image 名称
-//            buildArgs.add("-H:+UnlockExperimentalVMOptions")
+            buildArgs.add("-H:+UnlockExperimentalVMOptions")
+            buildArgs.add("-H:UseFatJar")
+            buildArgs.add("-H:+UseClassDataSharing")
+            // buildArgs.add("--no-fallback")
+            // buildArgs.add("-H:-DebugInfo")
             buildArgs.add("-Djava.util.logging.ConsoleHandler.level=FINE")
-            buildArgs.add("--trace-class-initialization=org.apache.tomcat.util.net.openssl.OpenSSLEngine")
-            buildArgs.add("--initialize-at-build-time=org.springframework.core,org.springframework.context,org.springframework.beans,org.springframework.boot,org.springframework.util,org.springframework.web,org.springframework.http,org.springframework.aop,org.springframework.jdbc,org.springframework.orm,org.springframework.transaction,org.springframework.data,org.springframework.cache,org.springframework.security,com.fasterxml.jackson,com.zaxxer.hikari,org.hibernate,javax.servlet,org.apache.tomcat,org.apache.catalina,org.apache.coyote,org.apache.jasper,org.apache.commons.logging,org.slf4j,org.aspectj,org.jasypt,org.thymeleaf,org.h2,"
-            +"org.hibernate.Hibernate,org.hibernate.Session,"
-            +"org.apache.tomcat.util.net.openssl.OpenSSLEngine,"
-            +"org.apache.tomcat.util.net.openssl.OpenSSLContext"
-            )
-            buildArgs.add("--initialize-at-run-time=jakarta.persistence.Entity,"
-            +"org.apache.tomcat.util.net.openssl.OpenSSLEngine,"
-            +"org.apache.tomcat.util.net.openssl.OpenSSLContext")    
-    
+            // buildArgs.add("--trace-class-initialization=org.apache.tomcat.util.net.openssl.OpenSSLEngine")
+            // buildArgs.add("--initialize-at-build-time="
+            // +"org.springframework.core,org.springframework.context,org.springframework.beans,org.springframework.boot,org.springframework.util,org.springframework.web,org.springframework.http,org.springframework.aop,org.springframework.jdbc,org.springframework.orm,org.springframework.transaction,org.springframework.data,org.springframework.cache,org.springframework.security,com.fasterxml.jackson,com.zaxxer.hikari,org.hibernate,javax.servlet,org.apache.tomcat,org.apache.catalina,org.apache.coyote,org.apache.jasper,org.apache.commons.logging,org.slf4j,org.aspectj,org.jasypt,org.thymeleaf,org.h2,"
+            // +"org.hibernate.Hibernate,org.hibernate.Session,"
+            // +"org.apache.tomcat.util.net.openssl.OpenSSLEngine,"
+            // +"org.apache.tomcat.util.net.openssl.OpenSSLContext,"
+            // +"ch.qos.logback.core.status.InfoStatus")
+            // buildArgs.add("--initialize-at-run-time="
+            // +"jakarta.persistence.Entity,"
+            // +"org.apache.tomcat.util.net.openssl.OpenSSLEngine,"
+            // +"org.apache.tomcat.util.net.openssl.OpenSSLContext,"
+            // +"org.springframework.core.io.VfsUtils")
+            // buildArgs.add("--initialize-at-run-time=org.apache.catalina.*")   
+            buildArgs.add("--report-unsupported-elements-at-runtime")
+            buildArgs.add("-H:ReflectionConfigurationFiles=${project.rootDir}/META-INF/native-image/reflect-config.json")
+            buildArgs.add("-H:ResourceConfigurationFiles=${project.rootDir}/META-INF/native-image/resource-config.json")
+            buildArgs.add("-H:JNIConfigurationFiles=${project.rootDir}/META-INF/native-image/jni-config.json")
+            buildArgs.add("-H:DynamicProxyConfigurationFiles=${project.rootDir}/META-INF/native-image/proxy-config.json")
+            buildArgs.add("--verbose")
+            buildArgs.add("-H:TraceClassInitialization=ALL")
+            // buildArgs.add("-H:+PrintAnalysisCallTree")
+            // buildArgs.add("-H:+ReportExceptionStackTraces")
+            buildArgs.add("-H:+DeadlockWatchdogExitOnTimeout")
+            buildArgs.add("-H:DeadlockWatchdogInterval=30000")
         }
     }
 }
@@ -119,7 +143,7 @@ tasks.register<JavaExec>("runNative") {
     mainClass.set("net.vicp.biggee.aot.vpn.expressvpn.Dialer.DialerApplication")
 }
 
-val isArm = System.getProperty("os.arch").lowercase(Locale.getDefault()).contains("arm")
+val isArm = System.getProperty("os.arch").lowercase(Locale.getDefault()).contains("aarch64")
 tasks.named<BootBuildImage>("bootBuildImage") {
     imageName.set("lucloner/dialer")
     builder = "paketobuildpacks/builder:tiny"
@@ -128,15 +152,21 @@ tasks.named<BootBuildImage>("bootBuildImage") {
     environment.put("BP_NATIVE_IMAGE","true")
 
     if(isArm){
+        println("arm build")
         builder = "dashaun/builder-arm:20240403"
+        environment.put("BP_CYCLONE_DX_SYFT_URI", "http://10.8.0.6/Downloads/syft_0.105.0_linux_arm64.tar.gz")
+        environment.put("BP_JVM_DL_URL","http://10.8.0.6/Downloads/bellsoft-jre17.0.10+13-linux-aarch64.tar.gz")
     }
 
     environment.keySet().get().forEach {
         println(it+" "+environment.getting(it).get())
     }
-
-//    environment.put("BP_JVM_VERSION","22")
-//    environment.put("BP_JVM_DL_URL","http://192.168.8.164/Downloads/graalvm-jdk-22_linux-aarch64_bin.tar.gz")
-//    environment.put("BP_CYCLONEDX_SYFT_DL_URL","http://192.168.8.164/Downloads/syft_0.105.0_linux_arm64.tar.gz")
 }
+
+tasks.named<JavaExec>("bootRun") {
+    jvmArgs("-agentlib:native-image-agent=config-output-dir=META-INF/native-image")
+}
+
+
+
 
