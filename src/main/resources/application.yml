@@ -42,6 +42,9 @@ spring:
       hibernate.show_sql: false
       hibernate.format_sql: true
       hibernate.use_sql_comments: true
+hibernate:
+  bytecode:
+    provider: javassist
 info:
   hosts:
     - command: expressvpn
@@ -53,19 +56,19 @@ info:
       local-host: false
       proxy-host: 192.168.4.90
       proxy-port: 60987
-      enabled: false
+      enabled: true
     - command: docker exec ev0 expressvpn
       name: ev0
       local-host: false
       proxy-host: 192.168.8.164
       proxy-port: 1087
-      enabled: true
+      enabled: false
     - command: docker exec ev expressvpn
       name: ev
       local-host: false
       proxy-host: 192.168.8.164
       proxy-port: 1088
-      enabled: true
+      enabled: false
     - command: ssh root@101.132.187.60
       name: ali
       local-host: false

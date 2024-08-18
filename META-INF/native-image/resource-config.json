@@ -7,9 +7,7 @@
   }, {
     "pattern":"\\QMETA-INF/jpa-named-queries.properties\\E"
   }, {
-    "pattern":"\\QMETA-INF/native/libnetty_transport_native_epoll.so\\E"
-  }, {
-    "pattern":"\\QMETA-INF/native/libnetty_transport_native_epoll_aarch_64.so\\E"
+    "pattern":"\\QMETA-INF/native/libnetty_transport_native_epoll_x86_64.so\\E"
   }, {
     "pattern":"\\QMETA-INF/orm.xml\\E"
   }, {
@@ -17,13 +15,15 @@
   }, {
     "pattern":"\\QMETA-INF/resources/index.html\\E"
   }, {
+    "pattern":"\\QMETA-INF/resources/status/getHost\\E"
+  }, {
+    "pattern":"\\QMETA-INF/resources/status/getHosts\\E"
+  }, {
     "pattern":"\\QMETA-INF/services/ch.qos.logback.classic.spi.Configurator\\E"
   }, {
     "pattern":"\\QMETA-INF/services/com.fasterxml.jackson.databind.Module\\E"
   }, {
     "pattern":"\\QMETA-INF/services/java.lang.System$LoggerFinder\\E"
-  }, {
-    "pattern":"\\QMETA-INF/services/java.net.spi.URLStreamHandlerProvider\\E"
   }, {
     "pattern":"\\QMETA-INF/services/java.nio.channels.spi.SelectorProvider\\E"
   }, {
@@ -111,7 +111,7 @@
   }, {
     "pattern":"\\Qbanner.txt\\E"
   }, {
-    "pattern":"\\Qcom/sun/jna/linux-aarch64/libjnidispatch.so\\E"
+    "pattern":"\\Qcom/sun/jna/linux-x86-64/libjnidispatch.so\\E"
   }, {
     "pattern":"\\Qconfig/application-default.properties\\E"
   }, {
@@ -212,16 +212,6 @@
     "pattern":"\\Qorg/hibernate/bytecode/enhance/internal/bytebuddy/CodeTemplates$SuspendDirtyTracking.class\\E"
   }, {
     "pattern":"\\Qorg/hibernate/bytecode/enhance/internal/bytebuddy/CodeTemplates$TrackChange.class\\E"
-  }, {
-    "pattern":"\\Qorg/hibernate/engine/spi/Managed.class\\E"
-  }, {
-    "pattern":"\\Qorg/hibernate/engine/spi/ManagedEntity.class\\E"
-  }, {
-    "pattern":"\\Qorg/hibernate/engine/spi/PersistentAttributeInterceptable.class\\E"
-  }, {
-    "pattern":"\\Qorg/hibernate/engine/spi/PrimeAmongSecondarySupertypes.class\\E"
-  }, {
-    "pattern":"\\Qorg/hibernate/engine/spi/SelfDirtinessTracker.class\\E"
   }, {
     "pattern":"\\Qorg/hibernate/hibernate-configuration-3.0.dtd\\E"
   }, {
@@ -631,9 +621,17 @@
   }, {
     "pattern":"\\Qpublic/index.html\\E"
   }, {
-    "pattern":"\\Qresources/com/pty4j/native/linux/aarch64/libpty.so\\E"
+    "pattern":"\\Qpublic/status/getHost\\E"
+  }, {
+    "pattern":"\\Qpublic/status/getHosts\\E"
+  }, {
+    "pattern":"\\Qresources/com/pty4j/native/linux/x86-64/libpty.so\\E"
   }, {
     "pattern":"\\Qresources/index.html\\E"
+  }, {
+    "pattern":"\\Qresources/status/getHost\\E"
+  }, {
+    "pattern":"\\Qresources/status/getHosts\\E"
   }, {
     "pattern":"\\Qschema-all.sql\\E"
   }, {
@@ -643,19 +641,9 @@
   }, {
     "pattern":"\\Qstatic/index.html\\E"
   }, {
-    "pattern":"java.base:\\Qjdk/internal/icu/impl/data/icudt74b/nfkc.nrm\\E"
+    "pattern":"\\Qstatic/status/getHost\\E"
   }, {
-    "pattern":"java.base:\\Qjdk/internal/icu/impl/data/icudt74b/uprops.icu\\E"
-  }, {
-    "pattern":"java.base:\\Qsun/net/idn/uidna.spp\\E"
-  }, {
-    "pattern":"java.xml:\\Qjdk/xml/internal/jdkcatalog/JDKCatalog.xml\\E"
+    "pattern":"\\Qstatic/status/getHosts\\E"
   }]},
-  "bundles":[{
-    "name":"sun.text.resources.cldr.FormatData",
-    "locales":["en", "en-US", "und"]
-  }, {
-    "name":"sun.util.resources.cldr.CalendarData",
-    "locales":["und"]
-  }]
+  "bundles":[]
 }

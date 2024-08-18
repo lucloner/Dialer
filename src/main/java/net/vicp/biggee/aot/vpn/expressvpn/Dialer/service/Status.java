@@ -9,6 +9,7 @@ import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.HistoryDao;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.NodesDao;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.util.RunShell;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
@@ -75,7 +76,7 @@ public class Status {
     }
 
     @RequestMapping("/status")
-    public ExpressvpnStatus status(int meshIndex) {
+    public ExpressvpnStatus status(@RequestParam(defaultValue = "0") int meshIndex) {
         RunShell runShell = RunShell.mesh[meshIndex];
         ExpressvpnStatus expressvpnStatus = runShell.status();
         if (Connected.equals(expressvpnStatus)) {

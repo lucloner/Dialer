@@ -98,18 +98,12 @@ public class RunShell extends ProxySelector {
         HttpClient build = builder.followRedirects(HttpClient.Redirect.ALWAYS)
                 .connectTimeout(Duration.ofMinutes(1))
                 .build();
-        //noinspection RedundantCast,unused
-        try (AutoCloseable autoCloseable = (AutoCloseable)build){
-            return build
-                    .send(HttpRequest.newBuilder(URI.create(url))
-                            .GET()
-                            .timeout(Duration.ofMinutes(1))
-                            .build(), HttpResponse.BodyHandlers.ofString())
-                    .statusCode();
-        }
-        catch (Exception e){
-            throw new RuntimeException("checkUrl AutoCloseable",e);
-        }
+        return build
+                .send(HttpRequest.newBuilder(URI.create(url))
+                        .GET()
+                        .timeout(Duration.ofMinutes(1))
+                        .build(), HttpResponse.BodyHandlers.ofString())
+                .statusCode();
     }
 
     public String getLocation(NodesDao nodesDao) {
@@ -219,7 +213,7 @@ public class RunShell extends ProxySelector {
     @Override
     public List<Proxy> select(URI uri) {
         InetSocketAddress proxy = new InetSocketAddress(getHost().proxyHost, getHost().proxyPort);
-        log.info("checking url from proxy: " + proxy);
+        log.info("checking url from proxy: {}", proxy);
         Proxy proxyConfig = new Proxy(Proxy.Type.HTTP, proxy);
         return List.of(proxyConfig);
     }

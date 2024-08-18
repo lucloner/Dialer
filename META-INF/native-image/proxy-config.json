@@ -45,6 +45,9 @@
     "interfaces":["net.bytebuddy.description.type.TypeDescription$Generic"]
   },
   {
+    "interfaces":["net.bytebuddy.description.type.TypeDescription$Generic$AnnotationReader$Delegator$ForLoadedExecutableExceptionType$Dispatcher"]
+  },
+  {
     "interfaces":["net.bytebuddy.description.type.TypeDescription$Generic$AnnotationReader$Delegator$ForLoadedExecutableParameterType$Dispatcher"]
   },
   {

@@ -4,23 +4,20 @@ import java.util.*
 plugins {
     java
     id("org.springframework.boot") version "3.3.2"
-    id("io.spring.dependency-management") version "1.1.6"
-    id("org.hibernate.orm") version "6.5.2.Final"
-    id("org.graalvm.buildtools.native") version "0.10.2"
+    id("io.spring.dependency-management") version "+"
+    id("org.graalvm.buildtools.native") version "+"
 }
 
 group = "net.vicp.biggee.aot.vpn.expressvpn"
-version = "0.0.1-SNAPSHOT"
+version = "1.0.0-rc"
 
 java {
     toolchain {
 //        languageVersion = JavaLanguageVersion.of(21)
-        // vendor.set(JvmVendorSpec.GRAAL_VM)
-        // implementation.set(JvmImplementation.J9)
-        // vendor.set(JvmVendorSpec.matching("GraalVM"))
-        // implementation.set(JvmImplementation.VENDOR_SPECIFIC)
     }
 }
+
+val isArm = System.getProperty("os.arch").lowercase(Locale.getDefault()).contains("aarch64")
 
 configurations {
     compileOnly {
@@ -31,58 +28,22 @@ configurations {
 repositories {
     maven { url = uri("https://maven.aliyun.com/repository/public") }
     mavenCentral()
+    maven { url = uri("https://repo.spring.io/milestone") }
+    maven { url = uri("https://repo.spring.io/snapshot") }
 }
 
-extra["springBootAdminVersion"] = "3.3.2"
-extra["springCloudVersion"] = "2023.0.3"
-extra["springShellVersion"] = "3.3.1"
-
 dependencies {
-    // implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-//	implementation("org.springframework.boot:spring-boot-starter-data-redis")
-//	implementation("org.springframework.boot:spring-boot-starter-jdbc")
-    // implementation("org.springframework.boot:spring-boot-starter-mail")
-    // implementation("org.springframework.boot:spring-boot-starter-web")
-    // implementation("de.codecentric:spring-boot-admin-starter-server")
-    // implementation("org.springframework.cloud:spring-cloud-config-server")
-//	implementation("org.springframework.cloud:spring-cloud-starter-zookeeper-config")
-//	implementation("org.springframework.cloud:spring-cloud-starter-zookeeper-discovery")
-    // implementation("org.springframework.cloud:spring-cloud-starter-bootstrap")
-    // implementation("org.springframework.data:spring-data-rest-hal-explorer")
-//	implementation("org.springframework.session:spring-session-data-redis")
-//	implementation("org.springframework.session:spring-session-jdbc")
-    // implementation("org.springframework.shell:spring-shell-starter")
     compileOnly("org.projectlombok:lombok")
-//	developmentOnly("org.springframework.boot:spring-boot-devtools")
-//	developmentOnly("org.springframework.boot:spring-boot-docker-compose")
     runtimeOnly("com.h2database:h2")
-//	runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.shell:spring-shell-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    // https://mvnrepository.com/artifact/org.jetbrains.pty4j/pty4j
+
     implementation("org.jetbrains.pty4j:pty4j:0.12.34")
-//    implementation("org.springframework.experimental:spring-native")
-//    implementation("org.springframework.experimental:spring-aot")
-//    implementation("org.graalvm.nativeimage:svm")
     implementation("org.springframework.boot:spring-boot-starter-webflux") 
-}
-
-dependencyManagement {
-    imports {
-        mavenBom("org.springframework.shell:spring-shell-dependencies:${property("springShellVersion")}")
-        mavenBom("de.codecentric:spring-boot-admin-dependencies:${property("springBootAdminVersion")}")
-        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
-    }
-}
-
-hibernate {
-    enhancement {
-        enableAssociationManagement = true
-    }
 }
 
 tasks.withType<Test> {
@@ -103,8 +64,14 @@ graalvmNative {
         named("main") {
             imageName.set("lucloner/dialer") // 生成的 native image 名称
             buildArgs.add("-H:+UnlockExperimentalVMOptions")
-            buildArgs.add("-H:UseFatJar")
-            buildArgs.add("-H:+UseClassDataSharing")
+            if(isArm){
+                 buildArgs.add("-H:UseFatJar")
+                 buildArgs.add("-H:+UseClassDataSharing")
+                 buildArgs.add("-march=x86-64-v2")
+            }
+            else{
+                buildArgs.add("-march=aarch64")
+            }
             // buildArgs.add("--no-fallback")
             // buildArgs.add("-H:-DebugInfo")
             buildArgs.add("-Djava.util.logging.ConsoleHandler.level=FINE")
@@ -115,7 +82,8 @@ graalvmNative {
             // +"org.apache.tomcat.util.net.openssl.OpenSSLEngine,"
             // +"org.apache.tomcat.util.net.openssl.OpenSSLContext,"
             // +"ch.qos.logback.core.status.InfoStatus")
-            // buildArgs.add("--initialize-at-run-time="
+//            buildArgs.add("--initialize-at-run-time="
+//	        +"org.hibernate.bytecode.internal.bytebuddy.BytecodeProviderImpl")
             // +"jakarta.persistence.Entity,"
             // +"org.apache.tomcat.util.net.openssl.OpenSSLEngine,"
             // +"org.apache.tomcat.util.net.openssl.OpenSSLContext,"
@@ -143,19 +111,18 @@ tasks.register<JavaExec>("runNative") {
     mainClass.set("net.vicp.biggee.aot.vpn.expressvpn.Dialer.DialerApplication")
 }
 
-val isArm = System.getProperty("os.arch").lowercase(Locale.getDefault()).contains("aarch64")
 tasks.named<BootBuildImage>("bootBuildImage") {
     imageName.set("lucloner/dialer")
     builder = "paketobuildpacks/builder:tiny"
-    environment.put("BP_CYCLONE_DX_SYFT_URI", "http://10.8.0.6/Downloads/syft_0.84.0_linux_amd64.tar.gz")
-    environment.put("BP_JVM_DL_URL","http://10.8.0.6/Downloads/bellsoft-liberica-vm-core-openjdk17.0.7+7-23.0.0+1-linux-amd64.tar.gz")
-    environment.put("BP_NATIVE_IMAGE","true")
 
     if(isArm){
         println("arm build")
         builder = "dashaun/builder-arm:20240403"
-        environment.put("BP_CYCLONE_DX_SYFT_URI", "http://10.8.0.6/Downloads/syft_0.105.0_linux_arm64.tar.gz")
-        environment.put("BP_JVM_DL_URL","http://10.8.0.6/Downloads/bellsoft-jre17.0.10+13-linux-aarch64.tar.gz")
+    }
+    else{
+        environment.put("BP_CYCLONE_DX_SYFT_URI", "http://10.8.0.6/Downloads/syft_0.84.0_linux_amd64.tar.gz")
+        environment.put("BP_JVM_DL_URL","http://10.8.0.6/Downloads/bellsoft-liberica-vm-core-openjdk17.0.7+7-23.0.0+1-linux-amd64.tar.gz")
+        environment.put("BP_NATIVE_IMAGE","true")
     }
 
     environment.keySet().get().forEach {
@@ -166,7 +133,5 @@ tasks.named<BootBuildImage>("bootBuildImage") {
 tasks.named<JavaExec>("bootRun") {
     jvmArgs("-agentlib:native-image-agent=config-output-dir=META-INF/native-image")
 }
-
-
 
 
