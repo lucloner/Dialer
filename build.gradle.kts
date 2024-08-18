@@ -43,7 +43,8 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     implementation("org.jetbrains.pty4j:pty4j:0.12.34")
-    implementation("org.springframework.boot:spring-boot-starter-webflux") 
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    compileOnly("io.micronaut.sql:micronaut-jdbc-hikari:+")
 }
 
 tasks.withType<Test> {
@@ -62,33 +63,22 @@ graalvmNative {
     toolchainDetection.set(true)
     binaries {
         named("main") {
-            imageName.set("lucloner/dialer") // 生成的 native image 名称
+            imageName.set("dialer")
             buildArgs.add("-H:+UnlockExperimentalVMOptions")
             if(isArm){
-                 buildArgs.add("-H:UseFatJar")
-                 buildArgs.add("-H:+UseClassDataSharing")
-                 buildArgs.add("-march=aarch64")
+                 buildArgs.add("-march=native")
             }
             else{
                 buildArgs.add("-march=x86-64-v2")
             }
-            // buildArgs.add("--no-fallback")
-            // buildArgs.add("-H:-DebugInfo")
+//             buildArgs.add("--no-fallback")
+//             buildArgs.add("-H:-DebugInfo")
             buildArgs.add("-Djava.util.logging.ConsoleHandler.level=FINE")
-            // buildArgs.add("--trace-class-initialization=org.apache.tomcat.util.net.openssl.OpenSSLEngine")
-            // buildArgs.add("--initialize-at-build-time="
-            // +"org.springframework.core,org.springframework.context,org.springframework.beans,org.springframework.boot,org.springframework.util,org.springframework.web,org.springframework.http,org.springframework.aop,org.springframework.jdbc,org.springframework.orm,org.springframework.transaction,org.springframework.data,org.springframework.cache,org.springframework.security,com.fasterxml.jackson,com.zaxxer.hikari,org.hibernate,javax.servlet,org.apache.tomcat,org.apache.catalina,org.apache.coyote,org.apache.jasper,org.apache.commons.logging,org.slf4j,org.aspectj,org.jasypt,org.thymeleaf,org.h2,"
-            // +"org.hibernate.Hibernate,org.hibernate.Session,"
-            // +"org.apache.tomcat.util.net.openssl.OpenSSLEngine,"
-            // +"org.apache.tomcat.util.net.openssl.OpenSSLContext,"
-            // +"ch.qos.logback.core.status.InfoStatus")
+//             buildArgs.add("--trace-class-initialization=org.apache.tomcat.util.net.openssl.OpenSSLEngine")
+//             buildArgs.add("--initialize-at-build-time="
+//             +"ch.qos.logback.core.status.InfoStatus")
 //            buildArgs.add("--initialize-at-run-time="
 //	        +"org.hibernate.bytecode.internal.bytebuddy.BytecodeProviderImpl")
-            // +"jakarta.persistence.Entity,"
-            // +"org.apache.tomcat.util.net.openssl.OpenSSLEngine,"
-            // +"org.apache.tomcat.util.net.openssl.OpenSSLContext,"
-            // +"org.springframework.core.io.VfsUtils")
-            // buildArgs.add("--initialize-at-run-time=org.apache.catalina.*")   
             buildArgs.add("--report-unsupported-elements-at-runtime")
             buildArgs.add("-H:ReflectionConfigurationFiles=${project.rootDir}/META-INF/native-image/reflect-config.json")
             buildArgs.add("-H:ResourceConfigurationFiles=${project.rootDir}/META-INF/native-image/resource-config.json")
