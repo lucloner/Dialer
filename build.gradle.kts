@@ -70,7 +70,7 @@ graalvmNative {
                  buildArgs.add("-march=aarch64")
             }
             else{
-                buildArgs.add("-march=ax86-64-v2")
+                buildArgs.add("-march=x86-64-v2")
             }
             // buildArgs.add("--no-fallback")
             // buildArgs.add("-H:-DebugInfo")
