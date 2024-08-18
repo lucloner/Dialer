@@ -195,6 +195,9 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"ch.qos.logback.classic.spi.LogbackServiceProvider"
+},
+{
   "name":"ch.qos.logback.classic.util.DefaultJoranConfigurator",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
@@ -431,12 +434,18 @@
   "methods":[{"name":"getSchema","parameterTypes":[] }]
 },
 {
+  "name":"com.zaxxer.hikari.pool.HikariProxyPreparedStatement"
+},
+{
   "name":"com.zaxxer.hikari.pool.PoolBase",
   "fields":[{"name":"catalog"}]
 },
 {
   "name":"com.zaxxer.hikari.pool.PoolEntry",
   "fields":[{"name":"state"}]
+},
+{
+  "name":"com.zaxxer.hikari.pool.ProxyPreparedStatement"
 },
 {
   "name":"freemarker.template.Configuration"
@@ -752,6 +761,7 @@
 {
   "name":"java.lang.ClassLoader",
   "queryAllDeclaredMethods":true,
+  "fields":[{"name":"classLoaderValueMap"}],
   "methods":[{"name":"defineClass","parameterTypes":["java.lang.String","byte[]","int","int","java.security.ProtectionDomain"] }, {"name":"getUnnamedModule","parameterTypes":[] }]
 },
 {
@@ -971,9 +981,6 @@
   "queryAllDeclaredMethods":true
 },
 {
-  "name":"java.security.SecureRandomParameters"
-},
-{
   "name":"java.security.SecurityPermission"
 },
 {
@@ -1034,9 +1041,6 @@
 },
 {
   "name":"java.util.concurrent.CompletableFuture"
-},
-{
-  "name":"java.util.concurrent.CompletableFuture$AsyncSupply"
 },
 {
   "name":"java.util.concurrent.CompletableFuture$UniExceptionally"
@@ -1224,6 +1228,12 @@
   "name":"jdk.internal.net.http.Exchange$ConnectionAborter"
 },
 {
+  "name":"jdk.internal.net.http.Http1Exchange"
+},
+{
+  "name":"jdk.internal.net.http.Http2Connection$Http2TubeSubscriber"
+},
+{
   "name":"jdk.internal.net.http.HttpClientFacade"
 },
 {
@@ -1269,6 +1279,9 @@
   "name":"jdk.internal.net.http.common.SSLTube"
 },
 {
+  "name":"jdk.internal.net.http.common.SSLTube$DelegateWrapper"
+},
+{
   "name":"jdk.internal.net.http.common.SSLTube$SSLSubscriberWrapper"
 },
 {
@@ -1288,9 +1301,6 @@
 },
 {
   "name":"jdk.internal.net.http.common.SubscriberWrapper$DownstreamPusher"
-},
-{
-  "name":"jdk.internal.net.http.common.Utils"
 },
 {
   "name":"jdk.internal.reflect.DirectMethodHandleAccessor"
@@ -1586,12 +1596,12 @@
   "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"setId","parameterTypes":["long"] }, {"name":"setLocation","parameterTypes":["java.lang.String"] }, {"name":"setMeshIndex","parameterTypes":["int"] }, {"name":"setStatus","parameterTypes":["net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus"] }, {"name":"setTime","parameterTypes":["java.time.LocalDateTime"] }]
 },
 {
-  "name":"net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.History$HibernateAccessOptimizer$0y7gT9Kz",
-  "fields":[{"name":"invocationTarget$k52a4p0"}],
+  "name":"net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.History$HibernateAccessOptimizer$YE9Nm1zr",
+  "fields":[{"name":"invocationTarget$qfrone1"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
-  "name":"net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.History$HibernateInstantiator$WIRJhbz3",
+  "name":"net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.History$HibernateInstantiator$xza93JQi",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -1602,7 +1612,7 @@
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"setCommand","parameterTypes":["java.lang.String"] }, {"name":"setLocalHost","parameterTypes":["boolean"] }, {"name":"setName","parameterTypes":["java.lang.String"] }, {"name":"setProxyHost","parameterTypes":["java.lang.String"] }, {"name":"setProxyPort","parameterTypes":["int"] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"setCommand","parameterTypes":["java.lang.String"] }, {"name":"setEnabled","parameterTypes":["boolean"] }, {"name":"setLocalHost","parameterTypes":["boolean"] }, {"name":"setName","parameterTypes":["java.lang.String"] }, {"name":"setProxyHost","parameterTypes":["java.lang.String"] }, {"name":"setProxyPort","parameterTypes":["int"] }]
 },
 {
   "name":"net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Node",
@@ -1613,12 +1623,12 @@
   "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"setAlias","parameterTypes":["java.lang.String"] }, {"name":"setLocation","parameterTypes":["java.lang.String"] }, {"name":"setRecommended","parameterTypes":["boolean"] }]
 },
 {
-  "name":"net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Node$HibernateAccessOptimizer$cRD2fAbJ",
-  "fields":[{"name":"invocationTarget$7v8sod0"}],
+  "name":"net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Node$HibernateAccessOptimizer$FZ6MnlgF",
+  "fields":[{"name":"invocationTarget$qibe3a1"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
-  "name":"net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Node$HibernateInstantiator$zXKFZnEX",
+  "name":"net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Node$HibernateInstantiator$77iEGHNZ",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -1633,12 +1643,12 @@
   "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"setAlias","parameterTypes":["java.lang.String"] }, {"name":"setConnectTime","parameterTypes":["java.time.LocalDateTime"] }, {"name":"setId","parameterTypes":["long"] }, {"name":"setPlanTime","parameterTypes":["java.time.LocalDateTime"] }, {"name":"setStatus","parameterTypes":["net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus"] }]
 },
 {
-  "name":"net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Plan$HibernateAccessOptimizer$HM4numN7",
-  "fields":[{"name":"invocationTarget$q6cs0c0"}],
+  "name":"net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Plan$HibernateAccessOptimizer$VVSsSqY7",
+  "fields":[{"name":"invocationTarget$loanf61"}],
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
-  "name":"net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Plan$HibernateInstantiator$qm3gIL5L",
+  "name":"net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Plan$HibernateInstantiator$A2sJPb2n",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
@@ -1684,7 +1694,7 @@
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":["net.vicp.biggee.aot.vpn.expressvpn.Dialer.service.Connect","net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.HistoryDao","net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.PlanDao","net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.NodesDao","net.vicp.biggee.aot.vpn.expressvpn.Dialer.service.Recycle"] }, {"name":"checkStatus","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":["net.vicp.biggee.aot.vpn.expressvpn.Dialer.service.Connect","net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.HistoryDao","net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.PlanDao","net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.NodesDao","net.vicp.biggee.aot.vpn.expressvpn.Dialer.service.Recycle"] }, {"name":"checkStatus","parameterTypes":[] }, {"name":"watchCat","parameterTypes":[] }]
 },
 {
   "name":"net.vicp.biggee.aot.vpn.expressvpn.Dialer.service.Status",
@@ -1819,12 +1829,39 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"org.h2.command.Command"
+},
+{
+  "name":"org.h2.command.CommandContainer"
+},
+{
+  "name":"org.h2.command.dml.DataChangeStatement"
+},
+{
+  "name":"org.h2.command.dml.Insert"
+},
+{
+  "name":"org.h2.index.Index"
+},
+{
+  "name":"org.h2.jdbc.JdbcPreparedStatement"
+},
+{
+  "name":"org.h2.message.DbException"
+},
+{
   "name":"org.h2.mvstore.MVStore$TxCounter",
   "fields":[{"name":"counter"}]
 },
 {
   "name":"org.h2.mvstore.Page",
   "fields":[{"name":"pos"}]
+},
+{
+  "name":"org.h2.mvstore.db.MVSecondaryIndex"
+},
+{
+  "name":"org.h2.mvstore.db.MVTable"
 },
 {
   "name":"org.h2.server.web.JakartaWebServlet"
@@ -1850,6 +1887,9 @@
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
   "methods":[{"name":"beginTransaction","parameterTypes":[] }, {"name":"close","parameterTypes":[] }, {"name":"createEntityGraph","parameterTypes":["java.lang.Class","java.lang.String"] }, {"name":"createNamedStoredProcedureQuery","parameterTypes":["java.lang.String"] }, {"name":"createStoredProcedureCall","parameterTypes":["java.lang.String"] }, {"name":"createStoredProcedureCall","parameterTypes":["java.lang.String","java.lang.Class[]"] }, {"name":"createStoredProcedureCall","parameterTypes":["java.lang.String","java.lang.String[]"] }, {"name":"createStoredProcedureQuery","parameterTypes":["java.lang.String"] }, {"name":"createStoredProcedureQuery","parameterTypes":["java.lang.String","java.lang.Class[]"] }, {"name":"createStoredProcedureQuery","parameterTypes":["java.lang.String","java.lang.String[]"] }, {"name":"doReturningWork","parameterTypes":["org.hibernate.jdbc.ReturningWork"] }, {"name":"doWork","parameterTypes":["org.hibernate.jdbc.Work"] }, {"name":"getCriteriaBuilder","parameterTypes":[] }, {"name":"getFactory","parameterTypes":[] }, {"name":"getJdbcBatchSize","parameterTypes":[] }, {"name":"getNamedProcedureCall","parameterTypes":["java.lang.String"] }, {"name":"getTenantIdentifier","parameterTypes":[] }, {"name":"getTenantIdentifierValue","parameterTypes":[] }, {"name":"getTransaction","parameterTypes":[] }, {"name":"isConnected","parameterTypes":[] }, {"name":"isJoinedToTransaction","parameterTypes":[] }, {"name":"isOpen","parameterTypes":[] }, {"name":"joinTransaction","parameterTypes":[] }, {"name":"setJdbcBatchSize","parameterTypes":["java.lang.Integer"] }]
+},
+{
+  "name":"org.hibernate.action.internal.EntityInsertAction"
 },
 {
   "name":"org.hibernate.boot.archive.scan.internal.DisabledScanner",
@@ -2011,12 +2051,27 @@
   "queryAllPublicMethods":true
 },
 {
+  "name":"org.hibernate.engine.jdbc.internal.JdbcCoordinatorImpl"
+},
+{
   "name":"org.hibernate.engine.jdbc.internal.JdbcServicesImpl",
   "queryAllPublicMethods":true
 },
 {
+  "name":"org.hibernate.engine.jdbc.internal.ResultSetReturnImpl"
+},
+{
+  "name":"org.hibernate.engine.jdbc.mutation.internal.AbstractMutationExecutor"
+},
+{
+  "name":"org.hibernate.engine.jdbc.mutation.internal.MutationExecutorSingleNonBatched"
+},
+{
   "name":"org.hibernate.engine.jdbc.mutation.internal.StandardMutationExecutorService",
   "queryAllPublicMethods":true
+},
+{
+  "name":"org.hibernate.engine.jdbc.spi.SqlExceptionHelper"
 },
 {
   "name":"org.hibernate.engine.jdbc.spi.SqlStatementLogger",
@@ -2029,6 +2084,9 @@
 {
   "name":"org.hibernate.engine.query.internal.NativeQueryInterpreterStandardImpl",
   "queryAllPublicMethods":true
+},
+{
+  "name":"org.hibernate.engine.spi.ActionQueue"
 },
 {
   "name":"org.hibernate.engine.spi.Managed",
@@ -2064,13 +2122,28 @@
   "name":"org.hibernate.engine.spi.SessionImplementor"
 },
 {
+  "name":"org.hibernate.engine.transaction.internal.TransactionImpl"
+},
+{
   "name":"org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform",
   "queryAllPublicMethods":true,
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"org.hibernate.event.internal.AbstractFlushingEventListener"
+},
+{
+  "name":"org.hibernate.event.internal.DefaultFlushEventListener"
+},
+{
+  "name":"org.hibernate.event.service.internal.EventListenerGroupImpl"
+},
+{
   "name":"org.hibernate.event.spi.EventType",
   "allDeclaredFields":true
+},
+{
+  "name":"org.hibernate.exception.internal.StandardSQLExceptionConverter"
 },
 {
   "name":"org.hibernate.id.Assigned",
@@ -2113,6 +2186,9 @@
   "name":"org.hibernate.internal.EntityManagerMessageLogger_$logger_en_US"
 },
 {
+  "name":"org.hibernate.internal.SessionImpl"
+},
+{
   "name":"org.hibernate.internal.log.DeprecationLogger_$logger",
   "methods":[{"name":"<init>","parameterTypes":["org.jboss.logging.Logger"] }]
 },
@@ -2138,6 +2214,9 @@
 {
   "name":"org.hibernate.persister.entity.SingleTableEntityPersister",
   "methods":[{"name":"<init>","parameterTypes":["org.hibernate.mapping.PersistentClass","org.hibernate.cache.spi.access.EntityDataAccess","org.hibernate.cache.spi.access.NaturalIdDataAccess","org.hibernate.metamodel.spi.RuntimeModelCreationContext"] }]
+},
+{
+  "name":"org.hibernate.persister.entity.mutation.InsertCoordinatorStandard"
 },
 {
   "name":"org.hibernate.persister.internal.PersisterFactoryImpl",
@@ -2215,6 +2294,12 @@
   "name":"org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorBuilderImpl",
   "queryAllPublicMethods":true,
   "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl"
+},
+{
+  "name":"org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl$TransactionDriverControlImpl"
 },
 {
   "name":"org.hibernate.service.internal.SessionFactoryServiceRegistryFactoryImpl",
@@ -2369,6 +2454,9 @@
   "queryAllPublicMethods":true
 },
 {
+  "name":"org.springframework.aop.framework.JdkDynamicAopProxy"
+},
+{
   "name":"org.springframework.aop.framework.ProxyConfig",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
@@ -2379,6 +2467,9 @@
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "methods":[{"name":"setOrder","parameterTypes":["int"] }]
+},
+{
+  "name":"org.springframework.aop.framework.ReflectiveMethodInvocation"
 },
 {
   "name":"org.springframework.aop.framework.autoproxy.AbstractAdvisorAutoProxyCreator",
@@ -2394,6 +2485,9 @@
   "name":"org.springframework.aop.framework.autoproxy.AbstractBeanFactoryAwareAdvisingPostProcessor",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true
+},
+{
+  "name":"org.springframework.aop.interceptor.ExposeInvocationInterceptor"
 },
 {
   "name":"org.springframework.aop.scope.ScopedObject"
@@ -3989,6 +4083,9 @@
   "name":"org.springframework.boot.logging.logback.LogbackLoggingSystem.Factory"
 },
 {
+  "name":"org.springframework.boot.logging.logback.RootLogLevelConfigurator"
+},
+{
   "name":"org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
@@ -4481,6 +4578,9 @@
   "methods":[{"name":"close","parameterTypes":[] }, {"name":"shutdown","parameterTypes":[] }]
 },
 {
+  "name":"org.springframework.dao.support.PersistenceExceptionTranslationInterceptor"
+},
+{
   "name":"org.springframework.dao.support.PersistenceExceptionTranslator",
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true
@@ -4557,7 +4657,10 @@
 {
   "name":"org.springframework.data.jpa.repository.support.CrudMethodMetadata",
   "queryAllDeclaredMethods":true,
-  "methods":[{"name":"getComment","parameterTypes":[] }, {"name":"getEntityGraph","parameterTypes":[] }, {"name":"getLockModeType","parameterTypes":[] }, {"name":"getQueryHints","parameterTypes":[] }, {"name":"getQueryHintsForCount","parameterTypes":[] }]
+  "methods":[{"name":"getComment","parameterTypes":[] }, {"name":"getEntityGraph","parameterTypes":[] }, {"name":"getLockModeType","parameterTypes":[] }, {"name":"getQueryHints","parameterTypes":[] }]
+},
+{
+  "name":"org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor"
 },
 {
   "name":"org.springframework.data.jpa.repository.support.DefaultJpaContext",
@@ -4597,7 +4700,7 @@
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":["org.springframework.data.jpa.repository.support.JpaEntityInformation","jakarta.persistence.EntityManager"] }, {"name":"count","parameterTypes":[] }, {"name":"count","parameterTypes":["org.springframework.data.domain.Example"] }, {"name":"count","parameterTypes":["org.springframework.data.jpa.domain.Specification"] }, {"name":"delete","parameterTypes":["java.lang.Object"] }, {"name":"delete","parameterTypes":["org.springframework.data.jpa.domain.Specification"] }, {"name":"deleteAll","parameterTypes":[] }, {"name":"deleteAll","parameterTypes":["java.lang.Iterable"] }, {"name":"deleteAllById","parameterTypes":["java.lang.Iterable"] }, {"name":"deleteAllByIdInBatch","parameterTypes":["java.lang.Iterable"] }, {"name":"deleteAllInBatch","parameterTypes":[] }, {"name":"deleteAllInBatch","parameterTypes":["java.lang.Iterable"] }, {"name":"deleteById","parameterTypes":["java.lang.Object"] }, {"name":"exists","parameterTypes":["org.springframework.data.domain.Example"] }, {"name":"exists","parameterTypes":["org.springframework.data.jpa.domain.Specification"] }, {"name":"existsById","parameterTypes":["java.lang.Object"] }, {"name":"findAll","parameterTypes":[] }, {"name":"findAll","parameterTypes":["org.springframework.data.domain.Example"] }, {"name":"findAll","parameterTypes":["org.springframework.data.domain.Example","org.springframework.data.domain.Pageable"] }, {"name":"findAll","parameterTypes":["org.springframework.data.domain.Example","org.springframework.data.domain.Sort"] }, {"name":"findAll","parameterTypes":["org.springframework.data.domain.Pageable"] }, {"name":"findAll","parameterTypes":["org.springframework.data.domain.Sort"] }, {"name":"findAll","parameterTypes":["org.springframework.data.jpa.domain.Specification"] }, {"name":"findAll","parameterTypes":["org.springframework.data.jpa.domain.Specification","org.springframework.data.domain.Pageable"] }, {"name":"findAll","parameterTypes":["org.springframework.data.jpa.domain.Specification","org.springframework.data.domain.Sort"] }, {"name":"findAllById","parameterTypes":["java.lang.Iterable"] }, {"name":"findBy","parameterTypes":["org.springframework.data.domain.Example","java.util.function.Function"] }, {"name":"findBy","parameterTypes":["org.springframework.data.jpa.domain.Specification","java.util.function.Function"] }, {"name":"findById","parameterTypes":["java.lang.Object"] }, {"name":"findOne","parameterTypes":["org.springframework.data.domain.Example"] }, {"name":"findOne","parameterTypes":["org.springframework.data.jpa.domain.Specification"] }, {"name":"findTopByMeshIndexOrderByTimeDesc","parameterTypes":["int"] }, {"name":"flush","parameterTypes":[] }, {"name":"getById","parameterTypes":["java.lang.Object"] }, {"name":"getOne","parameterTypes":["java.lang.Object"] }, {"name":"getReferenceById","parameterTypes":["java.lang.Object"] }, {"name":"save","parameterTypes":["java.lang.Object"] }, {"name":"saveAll","parameterTypes":["java.lang.Iterable"] }, {"name":"saveAllAndFlush","parameterTypes":["java.lang.Iterable"] }, {"name":"saveAndFlush","parameterTypes":["java.lang.Object"] }, {"name":"setEscapeCharacter","parameterTypes":["org.springframework.data.jpa.repository.query.EscapeCharacter"] }, {"name":"setProjectionFactory","parameterTypes":["org.springframework.data.projection.ProjectionFactory"] }, {"name":"setRepositoryMethodMetadata","parameterTypes":["org.springframework.data.jpa.repository.support.CrudMethodMetadata"] }]
+  "methods":[{"name":"<init>","parameterTypes":["org.springframework.data.jpa.repository.support.JpaEntityInformation","jakarta.persistence.EntityManager"] }, {"name":"count","parameterTypes":[] }, {"name":"count","parameterTypes":["org.springframework.data.domain.Example"] }, {"name":"count","parameterTypes":["org.springframework.data.jpa.domain.Specification"] }, {"name":"delete","parameterTypes":["java.lang.Object"] }, {"name":"delete","parameterTypes":["org.springframework.data.jpa.domain.Specification"] }, {"name":"deleteAll","parameterTypes":[] }, {"name":"deleteAll","parameterTypes":["java.lang.Iterable"] }, {"name":"deleteAllById","parameterTypes":["java.lang.Iterable"] }, {"name":"deleteAllByIdInBatch","parameterTypes":["java.lang.Iterable"] }, {"name":"deleteAllInBatch","parameterTypes":[] }, {"name":"deleteAllInBatch","parameterTypes":["java.lang.Iterable"] }, {"name":"deleteById","parameterTypes":["java.lang.Object"] }, {"name":"exists","parameterTypes":["org.springframework.data.domain.Example"] }, {"name":"exists","parameterTypes":["org.springframework.data.jpa.domain.Specification"] }, {"name":"existsById","parameterTypes":["java.lang.Object"] }, {"name":"findAll","parameterTypes":[] }, {"name":"findAll","parameterTypes":["org.springframework.data.domain.Example"] }, {"name":"findAll","parameterTypes":["org.springframework.data.domain.Example","org.springframework.data.domain.Pageable"] }, {"name":"findAll","parameterTypes":["org.springframework.data.domain.Example","org.springframework.data.domain.Sort"] }, {"name":"findAll","parameterTypes":["org.springframework.data.domain.Pageable"] }, {"name":"findAll","parameterTypes":["org.springframework.data.domain.Sort"] }, {"name":"findAll","parameterTypes":["org.springframework.data.jpa.domain.Specification"] }, {"name":"findAll","parameterTypes":["org.springframework.data.jpa.domain.Specification","org.springframework.data.domain.Pageable"] }, {"name":"findAll","parameterTypes":["org.springframework.data.jpa.domain.Specification","org.springframework.data.domain.Sort"] }, {"name":"findAllById","parameterTypes":["java.lang.Iterable"] }, {"name":"findBy","parameterTypes":["org.springframework.data.domain.Example","java.util.function.Function"] }, {"name":"findBy","parameterTypes":["org.springframework.data.jpa.domain.Specification","java.util.function.Function"] }, {"name":"findById","parameterTypes":["java.lang.Object"] }, {"name":"findFirstBy","parameterTypes":[] }, {"name":"findOne","parameterTypes":["org.springframework.data.domain.Example"] }, {"name":"findOne","parameterTypes":["org.springframework.data.jpa.domain.Specification"] }, {"name":"findTopByMeshIndexOrderByTimeDesc","parameterTypes":["int"] }, {"name":"flush","parameterTypes":[] }, {"name":"getById","parameterTypes":["java.lang.Object"] }, {"name":"getOne","parameterTypes":["java.lang.Object"] }, {"name":"getReferenceById","parameterTypes":["java.lang.Object"] }, {"name":"save","parameterTypes":["java.lang.Object"] }, {"name":"saveAll","parameterTypes":["java.lang.Iterable"] }, {"name":"saveAllAndFlush","parameterTypes":["java.lang.Iterable"] }, {"name":"saveAndFlush","parameterTypes":["java.lang.Object"] }, {"name":"setEscapeCharacter","parameterTypes":["org.springframework.data.jpa.repository.query.EscapeCharacter"] }, {"name":"setProjectionFactory","parameterTypes":["org.springframework.data.projection.ProjectionFactory"] }, {"name":"setRepositoryMethodMetadata","parameterTypes":["org.springframework.data.jpa.repository.support.CrudMethodMetadata"] }]
 },
 {
   "name":"org.springframework.data.jpa.util.HibernateProxyDetector",
@@ -4627,7 +4730,7 @@
   "name":"org.springframework.data.mapping.context.MappingContext",
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
-  "methods":[{"name":"<init>","parameterTypes":["org.springframework.data.jpa.mapping.JpaMetamodelMappingContext"] }, {"name":"from","parameterTypes":["org.springframework.data.jpa.mapping.JpaMetamodelMappingContext"] }, {"name":"getPersistentEntity","parameterTypes":["java.lang.Class"] }, {"name":"getPersistentEntity","parameterTypes":["org.springframework.data.mapping.PersistentProperty"] }, {"name":"getRequiredPersistentEntity","parameterTypes":["java.lang.Class"] }, {"name":"getRequiredPersistentEntity","parameterTypes":["org.springframework.data.mapping.PersistentProperty"] }, {"name":"getRequiredPersistentEntity","parameterTypes":["org.springframework.data.util.TypeInformation"] }, {"name":"of","parameterTypes":["org.springframework.data.jpa.mapping.JpaMetamodelMappingContext"] }, {"name":"valueOf","parameterTypes":["org.springframework.data.jpa.mapping.JpaMetamodelMappingContext"] }]
+  "methods":[{"name":"<init>","parameterTypes":["org.springframework.data.jpa.mapping.JpaMetamodelMappingContext"] }, {"name":"from","parameterTypes":["org.springframework.data.jpa.mapping.JpaMetamodelMappingContext"] }, {"name":"getPersistentEntity","parameterTypes":["org.springframework.data.mapping.PersistentProperty"] }, {"name":"getPersistentEntity","parameterTypes":["org.springframework.data.util.TypeInformation"] }, {"name":"getRequiredPersistentEntity","parameterTypes":["java.lang.Class"] }, {"name":"getRequiredPersistentEntity","parameterTypes":["org.springframework.data.mapping.PersistentProperty"] }, {"name":"getRequiredPersistentEntity","parameterTypes":["org.springframework.data.util.TypeInformation"] }, {"name":"of","parameterTypes":["org.springframework.data.jpa.mapping.JpaMetamodelMappingContext"] }, {"name":"valueOf","parameterTypes":["org.springframework.data.jpa.mapping.JpaMetamodelMappingContext"] }]
 },
 {
   "name":"org.springframework.data.querydsl.QuerydslPredicateExecutor"
@@ -5016,6 +5119,9 @@
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "methods":[{"name":"postProcessEntityManager","parameterTypes":["jakarta.persistence.EntityManager"] }, {"name":"postProcessEntityManagerFactory","parameterTypes":["jakarta.persistence.EntityManagerFactory"] }, {"name":"setDatabase","parameterTypes":["org.springframework.orm.jpa.vendor.Database"] }, {"name":"setDatabasePlatform","parameterTypes":["java.lang.String"] }, {"name":"setGenerateDdl","parameterTypes":["boolean"] }, {"name":"setShowSql","parameterTypes":["boolean"] }]
+},
+{
+  "name":"org.springframework.orm.jpa.vendor.HibernateJpaDialect"
 },
 {
   "name":"org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter",
@@ -5701,9 +5807,6 @@
   "fields":[{"name":"publicSelectedKeys"}, {"name":"selectedKeys"}]
 },
 {
-  "name":"sun.nio.ch.SocketChannelImpl"
-},
-{
   "name":"sun.security.pkcs12.PKCS12KeyStore",
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
@@ -5729,7 +5832,7 @@
 },
 {
   "name":"sun.security.provider.NativePRNG",
-  "methods":[{"name":"<init>","parameterTypes":[] }, {"name":"<init>","parameterTypes":["java.security.SecureRandomParameters"] }]
+  "methods":[{"name":"<init>","parameterTypes":["java.security.SecureRandomParameters"] }]
 },
 {
   "name":"sun.security.provider.SHA",

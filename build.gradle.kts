@@ -14,7 +14,7 @@ version = "0.0.1-SNAPSHOT"
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+//        languageVersion = JavaLanguageVersion.of(21)
         // vendor.set(JvmVendorSpec.GRAAL_VM)
         // implementation.set(JvmImplementation.J9)
         // vendor.set(JvmVendorSpec.matching("GraalVM"))

@@ -6,7 +6,6 @@ import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Plan;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.HistoryDao;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.PlanDao;
-import net.vicp.biggee.aot.vpn.expressvpn.Dialer.util.RunShell;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,7 +33,7 @@ public class Recycle {
 
     @RequestMapping("/clear")
     public void clear() {
-        int meshIndex = connect.runShell.index;
+        int meshIndex = connect.getRunShell().index;
         List<History> all = historyDao.findAll();
         Set<String> removed = new HashSet<>();
         for (int i = all.size() - 1; i >= 0; i--) {
@@ -76,17 +75,17 @@ public class Recycle {
                 .forEach(l->planDao.save(new Plan(l)));
 
         List<Plan> all = planDao.findAll();
-        for (int i = 0; i < all.size(); i++) {
-            Plan p = all.get(i);
+        for (Plan p : all) {
             long deleted = planDao.delete((r, q, b) -> b.and(b.gt(r.get("id"), p.id), b.equal(r.get("alias"), p.alias)));
-            if(deleted>0){
-                log.info("Recycle Plan: " + p.alias + " is Duplicated, deleted: " + deleted);
+            if (deleted > 0) {
+                log.info("Recycle Plan: {} is Duplicated, deleted: {}", p.alias, deleted);
             }
         }
     }
 
     @RequestMapping("/clearAndRePlan")
     public void clearAndRePlan() {
+        //noinspection resource
         Executors.newSingleThreadExecutor().execute(() -> {
             clear();
             rePlan();

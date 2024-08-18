@@ -643,11 +643,19 @@
   }, {
     "pattern":"\\Qstatic/index.html\\E"
   }, {
-    "pattern":"java.base:\\Qjdk/internal/icu/impl/data/icudt72b/nfkc.nrm\\E"
+    "pattern":"java.base:\\Qjdk/internal/icu/impl/data/icudt74b/nfkc.nrm\\E"
   }, {
-    "pattern":"java.base:\\Qjdk/internal/icu/impl/data/icudt72b/uprops.icu\\E"
+    "pattern":"java.base:\\Qjdk/internal/icu/impl/data/icudt74b/uprops.icu\\E"
   }, {
     "pattern":"java.base:\\Qsun/net/idn/uidna.spp\\E"
+  }, {
+    "pattern":"java.xml:\\Qjdk/xml/internal/jdkcatalog/JDKCatalog.xml\\E"
   }]},
-  "bundles":[]
+  "bundles":[{
+    "name":"sun.text.resources.cldr.FormatData",
+    "locales":["en", "en-US", "und"]
+  }, {
+    "name":"sun.util.resources.cldr.CalendarData",
+    "locales":["und"]
+  }]
 }

@@ -1,10 +1,13 @@
 package net.vicp.biggee.aot.vpn.expressvpn.Dialer.service;
 
+import lombok.extern.slf4j.Slf4j;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.History;
+import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Host;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Node;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.HistoryDao;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.NodesDao;
+import net.vicp.biggee.aot.vpn.expressvpn.Dialer.util.RunShell;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,6 +18,7 @@ import java.util.function.Supplier;
 import static net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus.Connected;
 import static net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus.Unknown_Error;
 
+@Slf4j
 @RestController
 @RequestMapping("/status")
 public class Status {
@@ -41,7 +45,7 @@ public class Status {
 
     @RequestMapping("/refresh")
     public String refresh() {
-        String[] list = getConnect.get().runShell.flush();
+        String[] list = getConnect.get().getRunShell().flush();
         for (String s : list) {
             s = s.trim();
             String[] c = s.split(" ", 2);
@@ -57,17 +61,45 @@ public class Status {
             } else if (location.startsWith("Smart Location")) {
                 location = "Smart Location " + location.split("Smart Location", 2)[1].trim();
             }
-            nodesDao.save(new Node(alias, location, recommended));
+            try {
+                nodesDao.save(new Node(alias, location, recommended));
+            } catch (Exception e) {
+                log.error("nodesDao save error",e);
+            }
         }
         return Arrays.toString(list);
     }
 
-    @RequestMapping("/status")
     public ExpressvpnStatus status() {
-        ExpressvpnStatus expressvpnStatus = getConnect.get().runShell.status();
+        return status(getConnect.get().getRunShell().index);
+    }
+
+    @RequestMapping("/status")
+    public ExpressvpnStatus status(int meshIndex) {
+        RunShell runShell = RunShell.mesh[meshIndex];
+        ExpressvpnStatus expressvpnStatus = runShell.status();
         if (Connected.equals(expressvpnStatus)) {
-            return getConnect.get().runShell.checkWebs() ? Connected : Unknown_Error;
+            return runShell.checkWebs() ? Connected : Unknown_Error;
         }
         return expressvpnStatus;
+    }
+
+    @RequestMapping("/listHost")
+    public Host[] listHost() {
+        return RunShell.mesh[0].hosts;
+    }
+
+    @RequestMapping("/setHost")
+    public Host setHost(int meshIndex,Host host) {
+        host.enabled=true;
+        RunShell.mesh[0].hosts[meshIndex]=host;
+        return RunShell.mesh[0].hosts[meshIndex];
+    }
+
+    @RequestMapping("/switchHost")
+    public boolean switchHost(int meshIndex) {
+        Host host = RunShell.mesh[0].hosts[meshIndex];
+        host.enabled=!host.enabled;
+        return host.enabled;
     }
 }

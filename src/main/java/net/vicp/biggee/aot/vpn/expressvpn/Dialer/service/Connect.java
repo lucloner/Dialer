@@ -35,7 +35,17 @@ public class Connect {
     NodesDao nodesDao;
     final
     PlanDao planDao;
-    RunShell runShell;
+
+    public synchronized RunShell getRunShell() {
+        return runShell;
+    }
+
+    public synchronized RunShell setRunShell(RunShell runShell) {
+        this.runShell = runShell;
+        return runShell;
+    }
+
+    private RunShell runShell;
 
     public Connect(Status status, HistoryDao historyDao, NodesDao nodesDao, PlanDao planDao, RunShell runShell) {
         this.status = status;
