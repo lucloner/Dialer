@@ -7,33 +7,19 @@
   }, {
     "pattern":"\\QMETA-INF/jpa-named-queries.properties\\E"
   }, {
-    "pattern":"\\QMETA-INF/native/libnetty_transport_native_epoll_x86_64.so\\E"
-  }, {
     "pattern":"\\QMETA-INF/orm.xml\\E"
   }, {
     "pattern":"\\QMETA-INF/persistence.xml\\E"
   }, {
-    "pattern":"\\QMETA-INF/resources/index.html\\E"
-  }, {
-    "pattern":"\\QMETA-INF/resources/status/getHost\\E"
-  }, {
-    "pattern":"\\QMETA-INF/resources/status/getHosts\\E"
-  }, {
     "pattern":"\\QMETA-INF/services/ch.qos.logback.classic.spi.Configurator\\E"
   }, {
-    "pattern":"\\QMETA-INF/services/com.fasterxml.jackson.databind.Module\\E"
-  }, {
     "pattern":"\\QMETA-INF/services/java.lang.System$LoggerFinder\\E"
-  }, {
-    "pattern":"\\QMETA-INF/services/java.nio.channels.spi.SelectorProvider\\E"
   }, {
     "pattern":"\\QMETA-INF/services/java.sql.Driver\\E"
   }, {
     "pattern":"\\QMETA-INF/services/java.time.zone.ZoneRulesProvider\\E"
   }, {
     "pattern":"\\QMETA-INF/services/javax.xml.stream.XMLEventFactory\\E"
-  }, {
-    "pattern":"\\QMETA-INF/services/javax.xml.stream.XMLInputFactory\\E"
   }, {
     "pattern":"\\QMETA-INF/services/javax.xml.transform.TransformerFactory\\E"
   }, {
@@ -47,10 +33,6 @@
   }, {
     "pattern":"\\QMETA-INF/services/org.hibernate.boot.spi.AdditionalJaxbMappingProducer\\E"
   }, {
-    "pattern":"\\QMETA-INF/services/org.hibernate.boot.spi.AdditionalMappingContributor\\E"
-  }, {
-    "pattern":"\\QMETA-INF/services/org.hibernate.boot.spi.MetadataBuilderContributor\\E"
-  }, {
     "pattern":"\\QMETA-INF/services/org.hibernate.boot.spi.MetadataBuilderFactory\\E"
   }, {
     "pattern":"\\QMETA-INF/services/org.hibernate.boot.spi.MetadataBuilderInitializer\\E"
@@ -61,19 +43,13 @@
   }, {
     "pattern":"\\QMETA-INF/services/org.hibernate.boot.spi.SessionFactoryBuilderFactory\\E"
   }, {
-    "pattern":"\\QMETA-INF/services/org.hibernate.bytecode.spi.BytecodeProvider\\E"
-  }, {
     "pattern":"\\QMETA-INF/services/org.hibernate.engine.jdbc.dialect.spi.DialectResolver\\E"
   }, {
     "pattern":"\\QMETA-INF/services/org.hibernate.event.spi.EventEngineContributor\\E"
   }, {
-    "pattern":"\\QMETA-INF/services/org.hibernate.event.spi.EventManager\\E"
-  }, {
     "pattern":"\\QMETA-INF/services/org.hibernate.id.factory.spi.GenerationTypeStrategyRegistration\\E"
   }, {
     "pattern":"\\QMETA-INF/services/org.hibernate.integrator.spi.Integrator\\E"
-  }, {
-    "pattern":"\\QMETA-INF/services/org.hibernate.query.criteria.spi.CriteriaBuilderExtension\\E"
   }, {
     "pattern":"\\QMETA-INF/services/org.hibernate.service.spi.ServiceContributor\\E"
   }, {
@@ -111,8 +87,6 @@
   }, {
     "pattern":"\\Qbanner.txt\\E"
   }, {
-    "pattern":"\\Qcom/sun/jna/linux-x86-64/libjnidispatch.so\\E"
-  }, {
     "pattern":"\\Qconfig/application-default.properties\\E"
   }, {
     "pattern":"\\Qconfig/application-default.xml\\E"
@@ -128,10 +102,6 @@
     "pattern":"\\Qconfig/application.yaml\\E"
   }, {
     "pattern":"\\Qconfig/application.yml\\E"
-  }, {
-    "pattern":"\\Qdata-all.sql\\E"
-  }, {
-    "pattern":"\\Qdata.sql\\E"
   }, {
     "pattern":"\\Qgit.properties\\E"
   }, {
@@ -188,30 +158,6 @@
     "pattern":"\\Qnet/vicp/biggee/aot/vpn/expressvpn/Dialer/util/RunShell.class\\E"
   }, {
     "pattern":"\\Qorg/h2/util/data.zip\\E"
-  }, {
-    "pattern":"\\Qorg/hibernate/bytecode/enhance/internal/bytebuddy/CodeTemplates$AreFieldsDirty.class\\E"
-  }, {
-    "pattern":"\\Qorg/hibernate/bytecode/enhance/internal/bytebuddy/CodeTemplates$AreFieldsDirtyWithoutCollections.class\\E"
-  }, {
-    "pattern":"\\Qorg/hibernate/bytecode/enhance/internal/bytebuddy/CodeTemplates$ClearDirtyAttributes.class\\E"
-  }, {
-    "pattern":"\\Qorg/hibernate/bytecode/enhance/internal/bytebuddy/CodeTemplates$ClearDirtyAttributesWithoutCollections.class\\E"
-  }, {
-    "pattern":"\\Qorg/hibernate/bytecode/enhance/internal/bytebuddy/CodeTemplates$ClearOwner.class\\E"
-  }, {
-    "pattern":"\\Qorg/hibernate/bytecode/enhance/internal/bytebuddy/CodeTemplates$GetCollectionTrackerWithoutCollections.class\\E"
-  }, {
-    "pattern":"\\Qorg/hibernate/bytecode/enhance/internal/bytebuddy/CodeTemplates$GetDirtyAttributes.class\\E"
-  }, {
-    "pattern":"\\Qorg/hibernate/bytecode/enhance/internal/bytebuddy/CodeTemplates$GetDirtyAttributesWithoutCollections.class\\E"
-  }, {
-    "pattern":"\\Qorg/hibernate/bytecode/enhance/internal/bytebuddy/CodeTemplates$InitializeLazyAttributeLoadingInterceptor.class\\E"
-  }, {
-    "pattern":"\\Qorg/hibernate/bytecode/enhance/internal/bytebuddy/CodeTemplates$SetOwner.class\\E"
-  }, {
-    "pattern":"\\Qorg/hibernate/bytecode/enhance/internal/bytebuddy/CodeTemplates$SuspendDirtyTracking.class\\E"
-  }, {
-    "pattern":"\\Qorg/hibernate/bytecode/enhance/internal/bytebuddy/CodeTemplates$TrackChange.class\\E"
   }, {
     "pattern":"\\Qorg/hibernate/hibernate-configuration-3.0.dtd\\E"
   }, {
@@ -351,8 +297,6 @@
   }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/jdbc/DataSourceAutoConfiguration.class\\E"
   }, {
-    "pattern":"\\Qorg/springframework/boot/autoconfigure/jdbc/DataSourceCheckpointRestoreConfiguration.class\\E"
-  }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/jdbc/DataSourceConfiguration$Dbcp2.class\\E"
   }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/jdbc/DataSourceConfiguration$Generic.class\\E"
@@ -372,8 +316,6 @@
     "pattern":"\\Qorg/springframework/boot/autoconfigure/jdbc/DataSourceTransactionManagerAutoConfiguration$JdbcTransactionManagerConfiguration.class\\E"
   }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/jdbc/DataSourceTransactionManagerAutoConfiguration.class\\E"
-  }, {
-    "pattern":"\\Qorg/springframework/boot/autoconfigure/jdbc/JdbcClientAutoConfiguration.class\\E"
   }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/jdbc/JdbcTemplateAutoConfiguration.class\\E"
   }, {
@@ -415,8 +357,6 @@
   }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/orm/jpa/JpaBaseConfiguration.class\\E"
   }, {
-    "pattern":"\\Qorg/springframework/boot/autoconfigure/reactor/ReactorAutoConfiguration.class\\E"
-  }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/reactor/netty/ReactorNettyConfigurations$ReactorResourceFactoryConfiguration.class\\E"
   }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/sql/init/DataSourceInitializationConfiguration.class\\E"
@@ -429,27 +369,9 @@
   }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/sql/init/SqlInitializationAutoConfiguration.class\\E"
   }, {
-    "pattern":"\\Qorg/springframework/boot/autoconfigure/ssl/SslAutoConfiguration.class\\E"
-  }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/task/TaskExecutionAutoConfiguration.class\\E"
   }, {
-    "pattern":"\\Qorg/springframework/boot/autoconfigure/task/TaskExecutorConfigurations$SimpleAsyncTaskExecutorBuilderConfiguration.class\\E"
-  }, {
-    "pattern":"\\Qorg/springframework/boot/autoconfigure/task/TaskExecutorConfigurations$TaskExecutorBuilderConfiguration.class\\E"
-  }, {
-    "pattern":"\\Qorg/springframework/boot/autoconfigure/task/TaskExecutorConfigurations$TaskExecutorConfiguration.class\\E"
-  }, {
-    "pattern":"\\Qorg/springframework/boot/autoconfigure/task/TaskExecutorConfigurations$ThreadPoolTaskExecutorBuilderConfiguration.class\\E"
-  }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/task/TaskSchedulingAutoConfiguration.class\\E"
-  }, {
-    "pattern":"\\Qorg/springframework/boot/autoconfigure/task/TaskSchedulingConfigurations$SimpleAsyncTaskSchedulerBuilderConfiguration.class\\E"
-  }, {
-    "pattern":"\\Qorg/springframework/boot/autoconfigure/task/TaskSchedulingConfigurations$TaskSchedulerBuilderConfiguration.class\\E"
-  }, {
-    "pattern":"\\Qorg/springframework/boot/autoconfigure/task/TaskSchedulingConfigurations$TaskSchedulerConfiguration.class\\E"
-  }, {
-    "pattern":"\\Qorg/springframework/boot/autoconfigure/task/TaskSchedulingConfigurations$ThreadPoolTaskSchedulerBuilderConfiguration.class\\E"
   }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/transaction/TransactionAutoConfiguration$AspectJTransactionManagementConfiguration.class\\E"
   }, {
@@ -463,17 +385,13 @@
   }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/transaction/TransactionAutoConfiguration.class\\E"
   }, {
-    "pattern":"\\Qorg/springframework/boot/autoconfigure/transaction/TransactionManagerCustomizationAutoConfiguration.class\\E"
-  }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/transaction/jta/JndiJtaConfiguration.class\\E"
   }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/transaction/jta/JtaAutoConfiguration.class\\E"
   }, {
-    "pattern":"\\Qorg/springframework/boot/autoconfigure/web/client/NotReactiveWebApplicationCondition$ReactiveWebApplication.class\\E"
+    "pattern":"\\Qorg/springframework/boot/autoconfigure/web/client/RestTemplateAutoConfiguration$NotReactiveWebApplicationCondition$ReactiveWebApplication.class\\E"
   }, {
-    "pattern":"\\Qorg/springframework/boot/autoconfigure/web/client/NotReactiveWebApplicationCondition.class\\E"
-  }, {
-    "pattern":"\\Qorg/springframework/boot/autoconfigure/web/client/RestClientAutoConfiguration.class\\E"
+    "pattern":"\\Qorg/springframework/boot/autoconfigure/web/client/RestTemplateAutoConfiguration$NotReactiveWebApplicationCondition.class\\E"
   }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/web/client/RestTemplateAutoConfiguration.class\\E"
   }, {
@@ -525,11 +443,13 @@
   }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/web/reactive/function/client/ClientHttpConnectorAutoConfiguration.class\\E"
   }, {
-    "pattern":"\\Qorg/springframework/boot/autoconfigure/web/reactive/function/client/ClientHttpConnectorFactoryConfiguration$HttpClient5.class\\E"
+    "pattern":"\\Qorg/springframework/boot/autoconfigure/web/reactive/function/client/ClientHttpConnectorConfiguration$HttpClient5.class\\E"
   }, {
-    "pattern":"\\Qorg/springframework/boot/autoconfigure/web/reactive/function/client/ClientHttpConnectorFactoryConfiguration$JdkClient.class\\E"
+    "pattern":"\\Qorg/springframework/boot/autoconfigure/web/reactive/function/client/ClientHttpConnectorConfiguration$JdkClient.class\\E"
   }, {
-    "pattern":"\\Qorg/springframework/boot/autoconfigure/web/reactive/function/client/ClientHttpConnectorFactoryConfiguration$ReactorNetty.class\\E"
+    "pattern":"\\Qorg/springframework/boot/autoconfigure/web/reactive/function/client/ClientHttpConnectorConfiguration$JettyClient.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/boot/autoconfigure/web/reactive/function/client/ClientHttpConnectorConfiguration$ReactorNetty.class\\E"
   }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/web/reactive/function/client/WebClientAutoConfiguration$WebClientCodecsConfiguration.class\\E"
   }, {
@@ -589,8 +509,6 @@
   }, {
     "pattern":"\\Qorg/springframework/data/repository/ListCrudRepository.class\\E"
   }, {
-    "pattern":"\\Qorg/springframework/http/codec/CodecConfigurer.properties\\E"
-  }, {
     "pattern":"\\Qorg/springframework/transaction/annotation/AbstractTransactionManagementConfiguration.class\\E"
   }, {
     "pattern":"\\Qorg/springframework/transaction/annotation/EnableTransactionManagement.class\\E"
@@ -619,31 +537,15 @@
   }, {
     "pattern":"\\Qorg/springframework/web/reactive/config/WebFluxConfigurer.class\\E"
   }, {
-    "pattern":"\\Qpublic/index.html\\E"
-  }, {
-    "pattern":"\\Qpublic/status/getHost\\E"
-  }, {
-    "pattern":"\\Qpublic/status/getHosts\\E"
-  }, {
-    "pattern":"\\Qresources/com/pty4j/native/linux/x86-64/libpty.so\\E"
-  }, {
-    "pattern":"\\Qresources/index.html\\E"
-  }, {
-    "pattern":"\\Qresources/status/getHost\\E"
-  }, {
-    "pattern":"\\Qresources/status/getHosts\\E"
-  }, {
-    "pattern":"\\Qschema-all.sql\\E"
-  }, {
-    "pattern":"\\Qschema.sql\\E"
-  }, {
     "pattern":"\\Qspring.properties\\E"
   }, {
-    "pattern":"\\Qstatic/index.html\\E"
-  }, {
-    "pattern":"\\Qstatic/status/getHost\\E"
-  }, {
-    "pattern":"\\Qstatic/status/getHosts\\E"
+    "pattern":"java.xml:\\Qjdk/xml/internal/jdkcatalog/JDKCatalog.xml\\E"
   }]},
-  "bundles":[]
+  "bundles":[{
+    "name":"sun.text.resources.cldr.FormatData",
+    "locales":["en", "en-US", "und"]
+  }, {
+    "name":"sun.util.resources.cldr.CalendarData",
+    "locales":["und"]
+  }]
 }

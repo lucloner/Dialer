@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus.*;
 
@@ -35,6 +36,7 @@ public class Connect {
     NodesDao nodesDao;
     final
     PlanDao planDao;
+    private RunShell runShell;
 
     public synchronized RunShell getRunShell() {
         return runShell;
@@ -44,8 +46,6 @@ public class Connect {
         this.runShell = runShell;
         return runShell;
     }
-
-    private RunShell runShell;
 
     public Connect(Status status, HistoryDao historyDao, NodesDao nodesDao, PlanDao planDao, RunShell runShell) {
         this.status = status;
@@ -68,6 +68,7 @@ public class Connect {
         List<Node> recommended = nodesDao.findAll((r, q, b) -> b.equal(r.get("recommended"), true));
         Collections.shuffle(recommended);
 
+        long count = planDao.count();
         Arrays.asList(recommended, all).forEach(l -> l.forEach(n -> {
             var alias = n.alias;
             if (planDao.exists((r, q, b) -> b.equal(r.get("alias"), alias))) {
@@ -76,7 +77,8 @@ public class Connect {
             planDao.save(new Plan(alias));
         }));
 
-        return true;
+        count=planDao.count()-count;
+        return count>0 || planDao.count()>0;
     }
 
     @RequestMapping("/listPlan")
@@ -106,8 +108,11 @@ public class Connect {
     public Future<Process> autoconnect() {
         Plan pick = pick();
         if (pick == null) {
-            plan();
-            pick = pick();
+            if(plan()){
+                pick = pick();
+            } else {
+              throw new RuntimeException("no plan list to pick!");
+            }
         }
 
         return connect(pick.alias);

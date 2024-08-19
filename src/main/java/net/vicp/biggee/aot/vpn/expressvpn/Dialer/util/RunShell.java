@@ -1,8 +1,9 @@
 package net.vicp.biggee.aot.vpn.expressvpn.Dialer.util;
 
-import com.pty4j.PtyProcess;
-import com.pty4j.PtyProcessBuilder;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Transient;
 import lombok.Data;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Host;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Node;
@@ -13,7 +14,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.*;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -21,6 +24,7 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus.*;
@@ -30,62 +34,111 @@ import static net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus.*
 @Data
 @ConfigurationProperties(prefix = "info")
 public class RunShell extends ProxySelector {
-    public List<String> urls;
-    public int tolerance;
-    public Host[] hosts;
-    public boolean upgradeable = false;
-    public boolean connected = false;
-    public String location = "";
+    private String[] urls;
+    private int tolerance;
+    private Host[] hosts;
+    private boolean upgradeable = false;
+    private boolean connected = false;
+    private String location = "";
     public int index = 0;
-    public static RunShell[] mesh = null;
-    public ExpressvpnStatus status = Not_Connected;
+    public static RunShell[] mesh;
+    private ExpressvpnStatus status = Not_Connected;
+
+    public RunShell(){
+
+    }
+
+    public Host[] getHosts() {
+        RunShell zero = getZero();
+        zero=zero==null?this:zero;
+        return zero.hosts;
+    }
+    public void setHosts(Host...hosts) {
+        RunShell zero = getZero();
+        zero=zero==null?this:zero;
+        zero.hosts= hosts;
+    }
+
+    public String[] getUrls() {
+        RunShell zero = getZero();
+        zero=zero==null?this:zero;
+        return zero.urls;
+    }
+
+    public void setUrls(String...urls) {
+        RunShell zero = getZero();
+        zero=zero==null?this:zero;
+        zero.urls = urls;
+    }
+
+    public int getTolerance() {
+        RunShell zero = getZero();
+        zero=zero==null?this:zero;
+        return zero.tolerance;
+    }
+
+    @SuppressWarnings("unused")
+    public void getTolerance(int tolerance) {
+        RunShell zero = getZero();
+        zero=zero==null?this:zero;
+        zero.tolerance=tolerance;
+    }
 
     @EventListener(ApplicationReadyEvent.class)
     public void createRunners() {
         log.info("Spring Boot 应用启动完成，装填操作组。");
         ArrayList<RunShell> meshList = new ArrayList<>();
         meshList.add(this);
-        IntStream.range(1, hosts.length).forEach(i -> {
+        int bound = getHosts().length;
+        for (int i = 1; i < bound; i++) {
             RunShell r = new RunShell();
             r.index = i;
             meshList.add(r);
-        });
-        mesh = meshList.toArray(new RunShell[hosts.length]);
+            log.info("read config: {}", r);
+        }
+        mesh = meshList.toArray(new RunShell[0]);
     }
 
     public RunShell getNext() {
-        int offset=1;
-        RunShell runShell = mesh[(index + offset++) % hosts.length];
-        while (!runShell.getHost().enabled){
-            runShell=mesh[(index + offset++) % hosts.length];
+        int offset = 1;
+        RunShell runShell = mesh[(index + offset++) % getHosts().length];
+        while (!runShell.getHost().enabled) {
+            runShell = mesh[(index + offset++) % getHosts().length];
         }
         return runShell;
     }
 
     public Host getHost() {
-        return RunShell.mesh[0].hosts[index];
+        return getHosts()[index];
     }
 
-    public String[] getCommand() {
-        return getHost().command.split(" ");
+    public static RunShell getZero() {
+        if(mesh!=null&&mesh.length>0){
+            return mesh[0];
+        }
+        return null;
     }
 
-    public String[] getCommand(String... params) {
-        String[] cmd = getCommand();
-        String[] fullCommand = Arrays.copyOf(cmd, cmd.length + cmd.length);
-        System.arraycopy(params, 0, fullCommand, cmd.length, params.length);
-        return fullCommand;
+    public List<String> getCommand() {
+        return Arrays.stream(getHost().command.split(" ")).toList();
+    }
+
+    public List<String> getCommand(String... params) {
+        List<String> cmd = new ArrayList<>(getCommand());
+        cmd.addAll(List.of(params));
+        return cmd;
     }
 
     public boolean checkWebs() {
-        return RunShell.mesh[0].urls.stream().parallel().map(u -> {
+        assert getZero() != null;
+        return Arrays.stream(getZero().urls).parallel().map(u -> {
             try {
                 return checkUrl(u);
             } catch (IOException | InterruptedException | RuntimeException e) {
                 log.error("url: {}", u, e);
             }
             return 500;
-        }).filter(i -> i >= 200).filter(i -> i < 300).count() >= RunShell.mesh[0].urls.size() - tolerance;
+        }).filter(i -> i >= 200).filter(i -> i < 300).count() >= getUrls().length - getTolerance();
     }
 
     public int checkUrl(String url) throws IOException, InterruptedException {
@@ -112,6 +165,7 @@ public class RunShell extends ProxySelector {
     }
 
     public Process connect(String location) throws IOException {
+        location = location == null ? "" : location;
         var builder = initCommand(getCommand("connect", location));
         return builder.start();
     }
@@ -131,7 +185,7 @@ public class RunShell extends ProxySelector {
     }
 
     public ExpressvpnStatus checkStatus(String returns, ExpressvpnStatus... statuses) {
-        if(DISABLED.key.equals(returns)){
+        if (DISABLED.key.equals(returns)) {
             return DISABLED;
         }
         ExpressvpnStatus base = null;
@@ -164,7 +218,13 @@ public class RunShell extends ProxySelector {
     }
 
     public String[] getList() {
-        var run = run(getCommand("list", "all")).split("\\n");
+        String result = run(getCommand("list", "all"));
+        if(Halt.equals(checkStatus(result,Halt))){
+            log.error("expressvpnd is halt! {}", result);
+            return new String[]{"xv","smart"};
+        }
+        var run = result.split("\\n");
+
         var start = false;
         var newList = new ArrayList<String>();
 
@@ -184,17 +244,21 @@ public class RunShell extends ProxySelector {
         return newList.toArray(new String[]{});
     }
 
-    public String run(String[] commands) {
-        if(!getHost().enabled){
+    public String run(List<String> commands) {
+        if (!getHost().enabled) {
             return "DISABLED";
         }
         var builder = initCommand(commands);
-        PtyProcess start = null;
+        Process start = null;
         try {
-            log.debug("run command: {}", Arrays.toString(commands));
+            log.debug("run command: {}", commands);
             start = builder.start();
             start.waitFor(status.timeout, TimeUnit.SECONDS);
-            return new String(start.getInputStream().readAllBytes());
+            return new BufferedReader(
+                    new InputStreamReader(
+                            start.getInputStream()))
+                    .lines()
+                    .collect(Collectors.joining("\n"));
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
@@ -204,10 +268,9 @@ public class RunShell extends ProxySelector {
         }
     }
 
-    public PtyProcessBuilder initCommand(String[] commands) {
-        var builder = new PtyProcessBuilder();
-        builder.setCommand(commands);
-        return builder;
+    public ProcessBuilder initCommand(List<String> commands) {
+        commands.removeIf(Objects::isNull);
+        return new ProcessBuilder(commands);
     }
 
     @Override
@@ -225,9 +288,11 @@ public class RunShell extends ProxySelector {
 
     @Override
     public String toString() {
-        RunShell main = RunShell.mesh[0];
+        RunShell main = getZero();
+
+        main=main==null?this:main;
         return "RunShell{" +
-                "urls=" + main.urls +
+                "urls=" + Arrays.toString(main.urls) +
                 ", tolerance=" + main.tolerance +
                 ", hosts=" + Arrays.toString(main.hosts) +
                 ", upgradeable=" + upgradeable +

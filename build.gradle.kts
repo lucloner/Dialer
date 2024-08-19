@@ -3,13 +3,13 @@ import java.util.*
 
 plugins {
     java
-    id("org.springframework.boot") version "3.3.2"
+    id("org.springframework.boot") version "3.0.13"
     id("io.spring.dependency-management") version "+"
     id("org.graalvm.buildtools.native") version "+"
 }
 
 group = "net.vicp.biggee.aot.vpn.expressvpn"
-version = "1.0.0-rc"
+version = "1.0.0-rc2"
 
 java {
     toolchain {
@@ -42,7 +42,6 @@ dependencies {
     testImplementation("org.springframework.shell:spring-shell-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-    implementation("org.jetbrains.pty4j:pty4j:0.12.34")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     compileOnly("io.micronaut.sql:micronaut-jdbc-hikari:+")
 }
@@ -69,16 +68,16 @@ graalvmNative {
                  buildArgs.add("-march=native")
             }
             else{
-                buildArgs.add("-march=x86-64-v2")
+                buildArgs.add("-march=x86-64-v1")
             }
 //             buildArgs.add("--no-fallback")
 //             buildArgs.add("-H:-DebugInfo")
             buildArgs.add("-Djava.util.logging.ConsoleHandler.level=FINE")
-//             buildArgs.add("--trace-class-initialization=org.apache.tomcat.util.net.openssl.OpenSSLEngine")
+            buildArgs.add("--trace-class-initialization=org.hibernate.bytecode.internal.bytebuddy.BytecodeProviderImpl")
 //             buildArgs.add("--initialize-at-build-time="
 //             +"ch.qos.logback.core.status.InfoStatus")
-//            buildArgs.add("--initialize-at-run-time="
-//	        +"org.hibernate.bytecode.internal.bytebuddy.BytecodeProviderImpl")
+            buildArgs.add("--initialize-at-run-time="
+	        +"org.hibernate.bytecode.internal.bytebuddy.BytecodeProviderImpl")
             buildArgs.add("--report-unsupported-elements-at-runtime")
             buildArgs.add("-H:ReflectionConfigurationFiles=${project.rootDir}/META-INF/native-image/reflect-config.json")
             buildArgs.add("-H:ResourceConfigurationFiles=${project.rootDir}/META-INF/native-image/resource-config.json")

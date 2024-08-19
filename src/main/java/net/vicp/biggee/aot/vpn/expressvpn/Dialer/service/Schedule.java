@@ -107,8 +107,9 @@ public class Schedule {
                 ExpressvpnStatus expressvpnStatus = connect.status.status();
                 History last = historyDao.findTopByMeshIndexOrderByTimeDesc(meshIndex);
                 if (last == null) {
-                    //new init
-                    connect.plan();
+                    if(!connect.plan()){
+                        throw new RuntimeException("no plan list to pick!");
+                    }
                     last = new History();
                 }
                 String alias = last.location;

@@ -51,6 +51,10 @@ public class Status {
             s = s.trim();
             String[] c = s.split(" ", 2);
             String alias = c[0].trim();
+            //noinspection ConstantValue
+            if(alias==null||alias.isEmpty()){
+                continue;
+            }
             if (nodesDao.existsById(alias)) {
                 continue;
             }
@@ -87,19 +91,19 @@ public class Status {
 
     @RequestMapping("/listHost")
     public Host[] listHost() {
-        return RunShell.mesh[0].hosts;
+        return getConnect.get().getRunShell().getHosts();
     }
 
     @RequestMapping("/setHost")
     public Host setHost(int meshIndex,Host host) {
         host.enabled=true;
-        RunShell.mesh[0].hosts[meshIndex]=host;
-        return RunShell.mesh[0].hosts[meshIndex];
+        listHost()[meshIndex]=host;
+        return  listHost()[meshIndex];
     }
 
     @RequestMapping("/switchHost")
     public boolean switchHost(int meshIndex) {
-        Host host = RunShell.mesh[0].hosts[meshIndex];
+        Host host =  listHost()[meshIndex];
         host.enabled=!host.enabled;
         return host.enabled;
     }
