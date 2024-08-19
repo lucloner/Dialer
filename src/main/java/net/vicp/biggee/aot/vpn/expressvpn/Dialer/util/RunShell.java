@@ -1,9 +1,6 @@
 package net.vicp.biggee.aot.vpn.expressvpn.Dialer.util;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Transient;
 import lombok.Data;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Host;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Node;
@@ -25,7 +22,6 @@ import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus.*;
 
