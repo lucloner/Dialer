@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "net.vicp.biggee.aot.vpn.expressvpn"
-version = "1.0.0-rc3"
+version = "1.0.0-rc4"
 
 java {
     toolchain {
@@ -18,6 +18,7 @@ java {
 }
 
 val isArm = System.getProperty("os.arch").lowercase(Locale.getDefault()).contains("aarch64")
+        || System.getProperty("os.arch").lowercase(Locale.getDefault()).contains("arm64")
 
 configurations {
     compileOnly {
@@ -43,8 +44,8 @@ dependencies {
     runtimeOnly("com.h2database:h2")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     annotationProcessor("org.projectlombok:lombok")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.springframework.shell:spring-shell-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-test:3.0.+")
+    testImplementation("org.springframework.shell:spring-shell-starter-test:3.0.+")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     implementation("org.springframework.boot:spring-boot-starter-webflux")
@@ -70,7 +71,7 @@ tasks.withType<JavaCompile> {
     options.compilerArgs.add("-Xlint:deprecation")
     options.forkOptions.jvmArgs?.add("-XX:ParallelGCThreads=4")
     options.encoding = "UTF-8"
-    options.release.set(17)
+    options.release.set(18)
 }
 
 graalvmNative {

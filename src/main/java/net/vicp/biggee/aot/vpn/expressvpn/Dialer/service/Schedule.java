@@ -96,8 +96,10 @@ public class Schedule {
     public void checkStatus() {
         for (RunShell runShell : RunShell.mesh) {
             if(!runShell.getHost().enabled){
+                log.info("skiped: {}", runShell);
                 continue;
             }
+            log.info("ready to check: {}", runShell);
             //noinspection resource
             Executors.newCachedThreadPool().execute(() -> {
                 String tag=Integer.toHexString(new Object().hashCode());

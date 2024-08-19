@@ -10,7 +10,8 @@ spring:
     import: "optional:configserver:"
   cloud:
     zookeeper:
-      connect-string: "192.168.4.84:2181"
+      enabled: false
+      connect-string: 127.0.0.1:2181
       discovery:
         enabled: true
         register: true
@@ -93,3 +94,11 @@ info:
     - https://baidu.com
   tolerance: 1
   interval: 6
+  dns:
+    - 192.168.4.254
+    - 192.168.0.1
+    - 192.168.4.1
+    - 8.8.8.8
+    - 1.1.1.1
+    - 208.67.222.222
+

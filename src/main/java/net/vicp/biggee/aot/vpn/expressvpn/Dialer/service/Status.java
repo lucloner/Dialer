@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -46,7 +45,8 @@ public class Status {
 
     @RequestMapping("/refresh")
     public String refresh() {
-        String[] list = getConnect.get().getRunShell().flush();
+        List<String> list = getConnect.get().getRunShell().flush();
+        log.info("refresh read: {}", list);
         for (String s : list) {
             s = s.trim();
             String[] c = s.split(" ", 2);
@@ -71,8 +71,10 @@ public class Status {
             } catch (Exception e) {
                 log.error("nodesDao save error",e);
             }
+
+//            log.info("read list: {}", s);
         }
-        return Arrays.toString(list);
+        return list.toString();
     }
 
     public ExpressvpnStatus status() {

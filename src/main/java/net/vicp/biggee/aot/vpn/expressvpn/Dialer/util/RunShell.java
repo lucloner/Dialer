@@ -6,6 +6,7 @@ import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Host;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Node;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.NodesDao;
+import net.vicp.biggee.aot.vpn.expressvpn.Dialer.spi.DNSProvider;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.event.EventListener;
@@ -22,7 +23,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import static net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus.*;
 
@@ -37,14 +37,27 @@ public class RunShell extends ProxySelector {
     private boolean upgradeable = false;
     private boolean connected = false;
     private String location = "";
-    private int interval = 1;
     public int index = 0;
     public static RunShell[] mesh;
     private ExpressvpnStatus status = Not_Connected;
+    private int interval = 1;
     private LocalDateTime lastCheck = LocalDateTime.now().minusYears(1);
+    private String[] dns;
 
     public RunShell(){
 
+    }
+
+    public String[] getDns() {
+        RunShell zero = getZero();
+        zero = zero == null ? this : zero;
+        return zero.dns;
+    }
+
+    public void setDns(String[] dns) {
+        RunShell zero = getZero();
+        zero = zero == null ? this : zero;
+        zero.dns = dns;
     }
 
     public int getInterval() {
@@ -99,6 +112,7 @@ public class RunShell extends ProxySelector {
         log.info("Spring Boot 应用启动完成，装填操作组。");
         ArrayList<RunShell> meshList = new ArrayList<>();
         meshList.add(this);
+        log.info("read config zero: {}", this);
         int bound = getHosts().length;
         for (int i = 1; i < bound; i++) {
             RunShell r = new RunShell();
@@ -107,6 +121,22 @@ public class RunShell extends ProxySelector {
             log.info("read config: {}", r);
         }
         mesh = meshList.toArray(new RunShell[0]);
+    }
+
+    @EventListener(ApplicationReadyEvent.class)
+    public void bindDns() {
+        if (dns == null || dns.length < 1) {
+            return;
+        }
+
+        DNSProvider.dns = Arrays.stream(dns).map(host -> {
+            try {
+                return InetAddress.getByName(host);
+            } catch (UnknownHostException e) {
+                log.error("dns setting error: {}", host, e);
+            }
+            return null;
+        }).filter(Objects::nonNull);
     }
 
     public RunShell getNext() {
@@ -189,18 +219,18 @@ public class RunShell extends ProxySelector {
         return builder.start();
     }
 
-    public String[] flush() {
+    public List<String> flush() {
         run(getCommand("refresh"));
         return getList();
     }
 
     public String disconnect() {
-        return run(getCommand("disconnect"));
+        return run(getCommand("disconnect")).toString();
     }
 
     public ExpressvpnStatus status() {
         var returns = run(getCommand("status"));
-        return status(returns);
+        return status(returns.toString());
     }
 
     public ExpressvpnStatus checkStatus(String returns, ExpressvpnStatus... statuses) {
@@ -240,18 +270,17 @@ public class RunShell extends ProxySelector {
         return expressvpnStatus;
     }
 
-    public String[] getList() {
-        String result = run(getCommand("list", "all"));
-        if(Halt.equals(checkStatus(result,Halt))){
+    public List<String> getList() {
+        List<String> result = run(getCommand("list", "all"));
+        if (Halt.equals(checkStatus(result.toString(), Halt))) {
             log.error("expressvpnd is halt! {}", result);
-            return new String[]{"xv","smart"};
+            return List.of("xv", "smart");
         }
-        var run = result.split("\\n");
 
         var start = false;
         var newList = new ArrayList<String>();
 
-        for (String n : run) {
+        for (String n : result) {
             if (n.startsWith("--")) {
                 continue;
             } else if (n.startsWith("ALIAS")) {
@@ -264,12 +293,12 @@ public class RunShell extends ProxySelector {
             newList.add(n);
         }
 
-        return newList.toArray(new String[]{});
+        return newList;
     }
 
-    public String run(List<String> commands) {
+    public List<String> run(List<String> commands) {
         if (!getHost().enabled) {
-            return "DISABLED";
+            return Collections.singletonList("DISABLED");
         }
         var builder = initCommand(commands);
         Process start = null;
@@ -280,8 +309,7 @@ public class RunShell extends ProxySelector {
             return new BufferedReader(
                     new InputStreamReader(
                             start.getInputStream()))
-                    .lines()
-                    .collect(Collectors.joining("\n"));
+                    .lines().toList();
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
@@ -312,13 +340,17 @@ public class RunShell extends ProxySelector {
     @Override
     public String toString() {
         return "RunShell{" +
-                "urls=" + Arrays.toString(getUrls()) +
+                "urls=" + Arrays.toString(urls) +
                 ", tolerance=" + getTolerance() +
-                ", hosts=" + Arrays.toString(getHosts()) +
+                ", hosts=" + Arrays.toString(hosts) +
                 ", upgradeable=" + upgradeable +
                 ", connected=" + connected +
                 ", location='" + location + '\'' +
                 ", index=" + index +
+                ", status=" + status +
+                ", interval=" + interval +
+                ", lastCheck=" + lastCheck +
+                ", dns=" + Arrays.toString(dns) +
                 '}';
     }
 
@@ -332,14 +364,15 @@ public class RunShell extends ProxySelector {
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + Arrays.hashCode(getUrls());
+        long result = super.hashCode();
         result = 31 * result + getTolerance();
-        result = 31 * result + Arrays.hashCode(getHosts());
-        result = 31 * result + Boolean.hashCode(isUpgradeable());
-        result = 31 * result + Boolean.hashCode(isConnected());
-        result = 31 * result + getLocation().hashCode();
-        result = 31 * result + getIndex();
-        return result;
+        result = 31 * result + (isUpgradeable() ? 0 : 1);
+        result = 2 * result + (isConnected() ? 0 : 1);
+        result = 2 * result + getLocation().hashCode();
+        result = 31 * result + Integer.hashCode(getIndex());
+        result = 31 * result + status.hashCode();
+        result = 31 * result + Integer.hashCode(getInterval());
+        result = 31 * result + lastCheck.hashCode();
+        return (int) result;
     }
 }
