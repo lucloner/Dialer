@@ -19,6 +19,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -36,12 +37,26 @@ public class RunShell extends ProxySelector {
     private boolean upgradeable = false;
     private boolean connected = false;
     private String location = "";
+    private int interval = 1;
     public int index = 0;
     public static RunShell[] mesh;
     private ExpressvpnStatus status = Not_Connected;
+    private LocalDateTime lastCheck = LocalDateTime.now().minusYears(1);
 
     public RunShell(){
 
+    }
+
+    public int getInterval() {
+        RunShell zero = getZero();
+        zero = zero == null ? this : zero;
+        return zero.interval + getUrls().length;
+    }
+
+    public void setInterval(int interval) {
+        RunShell zero = getZero();
+        zero = zero == null ? this : zero;
+        zero.interval = interval;
     }
 
     public Host[] getHosts() {
@@ -73,8 +88,7 @@ public class RunShell extends ProxySelector {
         return zero.tolerance;
     }
 
-    @SuppressWarnings("unused")
-    public void getTolerance(int tolerance) {
+    public void setTolerance(int tolerance) {
         RunShell zero = getZero();
         zero=zero==null?this:zero;
         zero.tolerance=tolerance;
@@ -127,7 +141,10 @@ public class RunShell extends ProxySelector {
 
     public boolean checkWebs() {
         assert getZero() != null;
-        return Arrays.stream(getZero().urls).parallel().map(u -> {
+        if (Duration.between(lastCheck, LocalDateTime.now()).toMinutes() < getInterval()) {
+            return true;
+        }
+        boolean checked = Arrays.stream(getZero().urls).parallel().map(u -> {
             try {
                 return checkUrl(u);
             } catch (IOException | InterruptedException | RuntimeException e) {
@@ -135,6 +152,12 @@ public class RunShell extends ProxySelector {
             }
             return 500;
         }).filter(i -> i >= 200).filter(i -> i < 300).count() >= getUrls().length - getTolerance();
+        if (checked) {
+            lastCheck = LocalDateTime.now();
+        } else {
+            lastCheck = lastCheck.minusHours(1);
+        }
+        return checked;
     }
 
     public int checkUrl(String url) throws IOException, InterruptedException {
@@ -210,7 +233,11 @@ public class RunShell extends ProxySelector {
             return Connected;
         }
 
-        return checkStatus(returns, Halt, Connected, Connecting, Reconnecting, Unable_Connect, base, Unknown_Error, Busy);
+        ExpressvpnStatus expressvpnStatus = checkStatus(returns, Halt, Connected, Connecting, Reconnecting, Unable_Connect, base, Unknown_Error, Busy);
+        if (!Connected.equals(expressvpnStatus)) {
+            lastCheck = lastCheck.minusHours(1);
+        }
+        return expressvpnStatus;
     }
 
     public String[] getList() {
@@ -284,13 +311,10 @@ public class RunShell extends ProxySelector {
 
     @Override
     public String toString() {
-        RunShell main = getZero();
-
-        main=main==null?this:main;
         return "RunShell{" +
-                "urls=" + Arrays.toString(main.urls) +
-                ", tolerance=" + main.tolerance +
-                ", hosts=" + Arrays.toString(main.hosts) +
+                "urls=" + Arrays.toString(getUrls()) +
+                ", tolerance=" + getTolerance() +
+                ", hosts=" + Arrays.toString(getHosts()) +
                 ", upgradeable=" + upgradeable +
                 ", connected=" + connected +
                 ", location='" + location + '\'' +

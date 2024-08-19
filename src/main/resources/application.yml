@@ -9,12 +9,20 @@ spring:
   config:
     import: "optional:configserver:"
   cloud:
+    zookeeper:
+      connect-string: "192.168.4.84:2181"
+      discovery:
+        enabled: true
+        register: true
+        root: /big-serv
+      config:
+        enabled: true
+        root: /big-conf
+        defaultContext: application
+        profile-separator: ','
     config:
-#      zookeeper:
-#        connect-string: 192.168.4.251:32770
       server:
         native:
-          # noinspection SpringBootApplicationYaml
           search-locations: classpath:/config
 #        git:
 #          uri: https://github.com/spring-cloud-samples/config-repo
@@ -84,3 +92,4 @@ info:
     - https://t66y.com
     - https://baidu.com
   tolerance: 1
+  interval: 6

@@ -3,13 +3,13 @@ import java.util.*
 
 plugins {
     java
-    id("org.springframework.boot") version "3.0.13"
+    id("org.springframework.boot") version "3.0.+"
     id("io.spring.dependency-management") version "+"
     id("org.graalvm.buildtools.native") version "+"
 }
 
 group = "net.vicp.biggee.aot.vpn.expressvpn"
-version = "1.0.0-rc2"
+version = "1.0.0-rc3"
 
 java {
     toolchain {
@@ -26,11 +26,16 @@ configurations {
 }
 
 repositories {
+    maven { url = uri("https://mirrors.cloud.tencent.com/nexus/repository/maven-public/") }
+    maven { url = uri("https://maven.aliyun.com/repository/google") }
+    maven { url = uri("https://maven.aliyun.com/repository/spring") }
     maven { url = uri("https://maven.aliyun.com/repository/public") }
     mavenCentral()
     maven { url = uri("https://repo.spring.io/milestone") }
     maven { url = uri("https://repo.spring.io/snapshot") }
 }
+
+extra["springCloudVersion"] = "2022.+"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -44,6 +49,16 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     compileOnly("io.micronaut.sql:micronaut-jdbc-hikari:+")
+
+    implementation("org.springframework.cloud:spring-cloud-starter-zookeeper-discovery")
+//    implementation("org.springframework.cloud:spring-cloud-starter-zookeeper-config")
+}
+
+
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
+    }
 }
 
 tasks.withType<Test> {
@@ -64,10 +79,9 @@ graalvmNative {
         named("main") {
             imageName.set("dialer")
             buildArgs.add("-H:+UnlockExperimentalVMOptions")
-            if(isArm){
-                 buildArgs.add("-march=native")
-            }
-            else{
+            if (isArm) {
+                buildArgs.add("-march=native")
+            } else {
                 buildArgs.add("-march=x86-64-v1")
             }
 //             buildArgs.add("--no-fallback")
@@ -76,8 +90,10 @@ graalvmNative {
             buildArgs.add("--trace-class-initialization=org.hibernate.bytecode.internal.bytebuddy.BytecodeProviderImpl")
 //             buildArgs.add("--initialize-at-build-time="
 //             +"ch.qos.logback.core.status.InfoStatus")
-            buildArgs.add("--initialize-at-run-time="
-	        +"org.hibernate.bytecode.internal.bytebuddy.BytecodeProviderImpl")
+            buildArgs.add(
+                "--initialize-at-run-time="
+                        + "org.hibernate.bytecode.internal.bytebuddy.BytecodeProviderImpl"
+            )
             buildArgs.add("--report-unsupported-elements-at-runtime")
             buildArgs.add("-H:ReflectionConfigurationFiles=${project.rootDir}/META-INF/native-image/reflect-config.json")
             buildArgs.add("-H:ResourceConfigurationFiles=${project.rootDir}/META-INF/native-image/resource-config.json")
@@ -104,18 +120,20 @@ tasks.named<BootBuildImage>("bootBuildImage") {
     imageName.set("lucloner/dialer")
     builder = "paketobuildpacks/builder:tiny"
 
-    if(isArm){
+    if (isArm) {
         println("arm build")
         builder = "dashaun/builder-arm:20240403"
-    }
-    else{
+    } else {
         environment.put("BP_CYCLONE_DX_SYFT_URI", "http://10.8.0.6/Downloads/syft_0.84.0_linux_amd64.tar.gz")
-        environment.put("BP_JVM_DL_URL","http://10.8.0.6/Downloads/bellsoft-liberica-vm-core-openjdk17.0.7+7-23.0.0+1-linux-amd64.tar.gz")
-        environment.put("BP_NATIVE_IMAGE","true")
+        environment.put(
+            "BP_JVM_DL_URL",
+            "http://10.8.0.6/Downloads/bellsoft-liberica-vm-core-openjdk17.0.7+7-23.0.0+1-linux-amd64.tar.gz"
+        )
+        environment.put("BP_NATIVE_IMAGE", "true")
     }
 
     environment.keySet().get().forEach {
-        println(it+" "+environment.getting(it).get())
+        println(it + " " + environment.getting(it).get())
     }
 }
 
