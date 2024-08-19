@@ -313,7 +313,7 @@ public class RunShell extends ProxySelector {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + getUrls().hashCode();
+        result = 31 * result + Arrays.hashCode(getUrls());
         result = 31 * result + getTolerance();
         result = 31 * result + Arrays.hashCode(getHosts());
         result = 31 * result + Boolean.hashCode(isUpgradeable());
