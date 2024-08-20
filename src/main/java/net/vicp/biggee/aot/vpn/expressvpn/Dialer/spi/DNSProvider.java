@@ -1,16 +1,20 @@
 package net.vicp.biggee.aot.vpn.expressvpn.Dialer.spi;
 
+import lombok.extern.slf4j.Slf4j;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.util.RunShell;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.io.IOException;
+import java.net.*;
 import java.net.spi.InetAddressResolver;
 import java.net.spi.InetAddressResolverProvider;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Stream;
 
+@Slf4j
 public class DNSProvider extends InetAddressResolverProvider implements InetAddressResolver {
-    public static Stream<InetAddress> dns;
+    public static final ProxySelector sysDefault = ProxySelector.getDefault();
+    public static List<Proxy> dnsList;
     @SuppressWarnings("FieldCanBeLocal")
     private Configuration configuration;
     @SuppressWarnings({"FieldCanBeLocal", "FieldMayBeFinal", "SpellCheckingInspection"})
@@ -32,28 +36,8 @@ public class DNSProvider extends InetAddressResolverProvider implements InetAddr
     @Override
     public Stream<InetAddress> lookupByName(String host, LookupPolicy lookupPolicy) throws UnknownHostException {
         this.lookupPolicy = lookupPolicy;
-        Stream<InetAddress> inetAddressStream = Stream.empty();
-        if (dns != null) {
-            inetAddressStream = dns;
-        }
-        if (configuration != null) {
-            inetAddressStream = Stream.concat(inetAddressStream, configuration.builtinResolver().lookupByName(host, lookupPolicy));
-        }
-        Stream<InetAddress> base = Stream.of(InetAddress.getByName("202.96.209.133"),
-                InetAddress.getByName("114.114.114.114"));
-        if (inetAddressStream.findAny().isEmpty()) {
-            inetAddressStream = base;
-        }
-        RunShell zero = RunShell.getZero();
-        //noinspection HttpUrlsUsage
-        if (zero != null && Arrays.stream(zero.getUrls())
-                .map(u -> u.replace("https://", "")
-                        .replace("http://", ""))
-                .anyMatch(host::contains)) {
-            return inetAddressStream.distinct();
-        }
-
-        return Stream.concat(base, inetAddressStream).distinct();
+        ProxySelector.setDefault(getProxyList());
+        return Arrays.stream(InetAddress.getAllByName(host)).distinct();
     }
 
     @Override
@@ -62,5 +46,28 @@ public class DNSProvider extends InetAddressResolverProvider implements InetAddr
             return InetAddress.getByAddress(addr).toString();
         }
         return configuration.builtinResolver().lookupByAddress(addr);
+    }
+
+    public ProxySelector getProxyList() {
+        if (dnsList == null || dnsList.isEmpty()) {
+            return sysDefault;
+        }
+        return new ProxySelector() {
+            @Override
+            public List<Proxy> select(URI uri) {
+                RunShell zero = RunShell.getZero();
+                if (zero != null && Arrays.stream(zero.getUrls()).anyMatch(u -> u.contains(uri.getHost()))) {
+                    log.info("select custom dns: {}", dnsList);
+                    return dnsList;
+                }
+                log.info("select normal dns");
+                return sysDefault.select(uri);
+            }
+
+            @Override
+            public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
+                log.error("ProxySelector error from {} by {}", uri, sa, ioe);
+            }
+        };
     }
 }

@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "net.vicp.biggee.aot.vpn.expressvpn"
-version = "1.0.0-rc4"
+version = "1.0.0-rc5"
 
 java {
     toolchain {

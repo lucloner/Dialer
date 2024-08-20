@@ -44,7 +44,7 @@ public class RunShell extends ProxySelector {
     private LocalDateTime lastCheck = LocalDateTime.now().minusYears(1);
     private String[] dns;
 
-    public RunShell(){
+    public RunShell() {
 
     }
 
@@ -72,39 +72,41 @@ public class RunShell extends ProxySelector {
         zero.interval = interval;
     }
 
+    public static RunShell getZero() {
+        if (mesh != null && mesh.length > 0) {
+            return mesh[0];
+        }
+        return null;
+    }
+
     public Host[] getHosts() {
         RunShell zero = getZero();
-        zero=zero==null?this:zero;
+        zero = zero == null ? this : zero;
         return zero.hosts;
     }
-    public void setHosts(Host...hosts) {
+
+    public void setHosts(Host... hosts) {
         RunShell zero = getZero();
-        zero=zero==null?this:zero;
-        zero.hosts= hosts;
+        zero = zero == null ? this : zero;
+        zero.hosts = hosts;
     }
 
     public String[] getUrls() {
         RunShell zero = getZero();
-        zero=zero==null?this:zero;
+        zero = zero == null ? this : zero;
         return zero.urls;
     }
 
-    public void setUrls(String...urls) {
+    public void setUrls(String... urls) {
         RunShell zero = getZero();
-        zero=zero==null?this:zero;
+        zero = zero == null ? this : zero;
         zero.urls = urls;
     }
 
     public int getTolerance() {
         RunShell zero = getZero();
-        zero=zero==null?this:zero;
+        zero = zero == null ? this : zero;
         return zero.tolerance;
-    }
-
-    public void setTolerance(int tolerance) {
-        RunShell zero = getZero();
-        zero=zero==null?this:zero;
-        zero.tolerance=tolerance;
     }
 
     @EventListener(ApplicationReadyEvent.class)
@@ -123,20 +125,10 @@ public class RunShell extends ProxySelector {
         mesh = meshList.toArray(new RunShell[0]);
     }
 
-    @EventListener(ApplicationReadyEvent.class)
-    public void bindDns() {
-        if (dns == null || dns.length < 1) {
-            return;
-        }
-
-        DNSProvider.dns = Arrays.stream(dns).map(host -> {
-            try {
-                return InetAddress.getByName(host);
-            } catch (UnknownHostException e) {
-                log.error("dns setting error: {}", host, e);
-            }
-            return null;
-        }).filter(Objects::nonNull);
+    public void setTolerance(int tolerance) {
+        RunShell zero = getZero();
+        zero = zero == null ? this : zero;
+        zero.tolerance = tolerance;
     }
 
     public RunShell getNext() {
@@ -152,11 +144,23 @@ public class RunShell extends ProxySelector {
         return getHosts()[index];
     }
 
-    public static RunShell getZero() {
-        if(mesh!=null&&mesh.length>0){
-            return mesh[0];
+    @EventListener(ApplicationReadyEvent.class)
+    public void bindDns() {
+        if (dns == null || dns.length < 1) {
+            return;
         }
-        return null;
+
+        DNSProvider.dnsList = Arrays.stream(dns).map(host -> {
+                    try {
+                        return InetAddress.getByName(host);
+                    } catch (UnknownHostException e) {
+                        log.error("dns setting error: {}", host, e);
+                    }
+                    return null;
+                }).filter(Objects::nonNull)
+                .map(ip -> new InetSocketAddress(ip, 53))
+                .map(socks -> new Proxy(Proxy.Type.SOCKS, socks))
+                .toList();
     }
 
     public List<String> getCommand() {
