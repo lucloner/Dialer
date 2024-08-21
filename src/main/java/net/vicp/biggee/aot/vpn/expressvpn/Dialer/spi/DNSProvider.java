@@ -84,9 +84,7 @@ public class DNSProvider extends InetAddressResolverProvider implements InetAddr
                     .map(dns -> nsLookup(host, dns))
                     .filter(Objects::nonNull)
                     .forEach(addresses::addAll);
-            if (!addresses.isEmpty()) {
-                result = addresses.stream();
-            }
+            result = addresses.stream();
         }
         if (result.findAny().isEmpty()) {
             result = Arrays.stream(Address.getAllByName(host));
