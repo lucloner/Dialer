@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 
 @Slf4j
 public class DNSProvider extends InetAddressResolverProvider implements InetAddressResolver {
+    @SuppressWarnings("unused")
     public static final ProxySelector sysDefault = RunShell.getDefault();
     @SuppressWarnings("FieldCanBeLocal")
     private Configuration configuration;
@@ -44,31 +45,22 @@ public class DNSProvider extends InetAddressResolverProvider implements InetAddr
             Record[] records = lookup.run();
             if (Lookup.SUCCESSFUL == lookup.getResult()) {
                 records = lookup.getAnswers();
-                Stream<InetAddress> addressStream = Arrays.stream(records)
+                return Arrays.stream(records)
                         .parallel()
-                        .filter(r -> r instanceof ARecord)
                         .map(r -> {
                             try {
-                                return Inet4Address.getByAddress(host, ((ARecord) r).getAddress().getAddress());
+                                if (r instanceof ARecord) {
+                                    return Inet4Address.getByAddress(host, ((ARecord) r).getAddress().getAddress());
+                                } else if (r instanceof AAAARecord) {
+                                    return Inet6Address.getByAddress(host, ((AAAARecord) r).getAddress().getAddress());
+                                }
                             } catch (UnknownHostException e) {
                                 log.error("lookup resolve error: {} address: {} from {}", host, r, dns, e);
                             }
                             return null;
                         })
-                        .filter(Objects::nonNull);
-                Stream<InetAddress> addressStream6 = Arrays.stream(records)
-                        .parallel()
-                        .filter(r -> r instanceof AAAARecord)
-                        .map(r -> {
-                            try {
-                                return Inet6Address.getByAddress(host, ((AAAARecord) r).getAddress().getAddress());
-                            } catch (UnknownHostException e) {
-                                log.error("lookup6 resolve error: {} is address {} from {}", host, r, dns, e);
-                            }
-                            return null;
-                        })
-                        .filter(Objects::nonNull);
-                return Stream.concat(addressStream, addressStream6).collect(Collectors.toSet());
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toSet());
             }
             log.warn("lookup resolver not reached: {} from {}", host, dns);
         } catch (TextParseException | UnknownHostException e) {
@@ -84,7 +76,8 @@ public class DNSProvider extends InetAddressResolverProvider implements InetAddr
         Stream<InetAddress> result = Stream.empty();
         RunShell zero = RunShell.getZero();
         if (zero != null
-                && Arrays.stream(zero.getUrls()).anyMatch(url -> url.contains(host))) {
+                && Arrays.stream(zero.getUrls())
+                .anyMatch(url -> url.contains(host))) {
             Set<InetAddress> addresses = new HashSet<>();
             Arrays.stream(zero.getDns())
                     .parallel()
