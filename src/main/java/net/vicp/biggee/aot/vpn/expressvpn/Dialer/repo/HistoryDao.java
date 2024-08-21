@@ -14,4 +14,6 @@ public interface HistoryDao extends JpaRepository<History,Long>, JpaSpecificatio
 
     History findFirstByIdAfterOrderByIdDesc(long id);
     History findTopByMeshIndexOrderByTimeDesc(int meshIndex);
+
+    List<History> findAllByMeshIndexOrderByTimeDesc(int meshIndex);
 }

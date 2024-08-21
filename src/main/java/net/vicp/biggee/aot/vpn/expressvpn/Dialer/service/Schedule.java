@@ -128,7 +128,21 @@ public class Schedule {
                     log.info("[{}]checkStatus disconnect: {}",tag, disconnect);
                     last.status = Not_Connected;
                 } else if (Arrays.asList(Connecting, Reconnecting).contains(expressvpnStatus)) {
-                    long minutes = Duration.between(last.time, LocalDateTime.now()).toMinutes();
+                    LocalDateTime since = LocalDateTime.now();
+                    for (History h : historyDao.findAllByMeshIndexOrderByTimeDesc(meshIndex)) {
+                        ExpressvpnStatus status = h.status;
+                        if (String.valueOf(alias).equals(h.location)) {
+                            if (!status.equals(expressvpnStatus)) {
+                                break;
+                            }
+                            since = h.time;
+                            log.info("[{}]checkStatus lasts: {} {}", tag, status, since);
+                            continue;
+                        }
+                        break;
+                    }
+
+                    long minutes = Duration.between(since, LocalDateTime.now()).toMinutes();
                     if (minutes > 10) {
                         String disconnect = runShell.disconnect();
                         log.info("[{}]checkStatus timeout: {} message: {}",tag, minutes, disconnect);
@@ -144,7 +158,7 @@ public class Schedule {
                     recycle.clearAndRePlan();
                     return;
                 }
-                last.id = 0;
+
                 last.meshIndex = meshIndex;
                 historyDao.save(new History(last));
                 scheduleConnect();
