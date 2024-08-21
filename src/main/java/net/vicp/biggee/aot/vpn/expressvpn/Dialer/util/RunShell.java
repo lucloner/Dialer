@@ -6,7 +6,6 @@ import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Host;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Node;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.NodesDao;
-import net.vicp.biggee.aot.vpn.expressvpn.Dialer.spi.DNSProvider;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.event.EventListener;
@@ -54,7 +53,7 @@ public class RunShell extends ProxySelector {
         return zero.dns;
     }
 
-    public void setDns(String[] dns) {
+    public void setDns(String... dns) {
         RunShell zero = getZero();
         zero = zero == null ? this : zero;
         zero.dns = dns;
@@ -142,25 +141,6 @@ public class RunShell extends ProxySelector {
 
     public Host getHost() {
         return getHosts()[index];
-    }
-
-    @EventListener(ApplicationReadyEvent.class)
-    public void bindDns() {
-        if (dns == null || dns.length < 1) {
-            return;
-        }
-
-        DNSProvider.dnsList = Arrays.stream(dns).map(host -> {
-                    try {
-                        return InetAddress.getByName(host);
-                    } catch (UnknownHostException e) {
-                        log.error("dns setting error: {}", host, e);
-                    }
-                    return null;
-                }).filter(Objects::nonNull)
-                .map(ip -> new InetSocketAddress(ip, 53))
-                .map(socks -> new Proxy(Proxy.Type.SOCKS, socks))
-                .toList();
     }
 
     public List<String> getCommand() {

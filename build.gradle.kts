@@ -52,6 +52,8 @@ dependencies {
     compileOnly("io.micronaut.sql:micronaut-jdbc-hikari:+")
 
     implementation("org.springframework.cloud:spring-cloud-starter-zookeeper-discovery")
+    implementation("dnsjava:dnsjava:+")
+
 //    implementation("org.springframework.cloud:spring-cloud-starter-zookeeper-config")
 }
 
