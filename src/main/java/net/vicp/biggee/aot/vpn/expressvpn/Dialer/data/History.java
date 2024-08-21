@@ -34,7 +34,7 @@ public class History {
     }
 
     public History(History history) {
-        this.id = history.id;
+        this.id = -1;
         this.location = history.location;
         this.time = history.time;
         this.status = history.status;

@@ -9,7 +9,9 @@ import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.PlanDao;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Executors;
 
 import static net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus.Connected;
@@ -39,13 +41,13 @@ public class Recycle {
         for (int i = all.size() - 1; i >= 0; i--) {
             History history = all.get(i);
             String location = history.location;
-            if (removed.contains(location)) {
+            ExpressvpnStatus expressvpnStatus = history.status;
+            if (removed.contains(location) && !Connected.equals(history.status)) {
                 historyDao.deleteById(history.id);
-                log.info("Recycle [{}]: {} is Duplicated, deleted id: {}",meshIndex, location, history.id);
+                log.info("Recycle [{}]: {} is Duplicated, deleted id: {}", meshIndex, location, history.id);
                 continue;
             }
             removed.add(location);
-            ExpressvpnStatus expressvpnStatus = history.status;
             if (Connected.equals(expressvpnStatus)) {
                 long deleted = historyDao.delete((r, q, b) -> b.and(b.equal(r.get("location"), location),
                         b.notEqual(r.get("status"), Connected)));
@@ -64,7 +66,7 @@ public class Recycle {
             }
         }
 
-        log.info("Recycle Finished, Count " + historyDao.count());
+        log.info("Recycle Finished, Count {}", historyDao.count());
     }
 
     @RequestMapping("/rePlan")
