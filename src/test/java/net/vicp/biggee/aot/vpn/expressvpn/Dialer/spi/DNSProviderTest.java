@@ -41,6 +41,6 @@ public class DNSProviderTest {
     @Test
     public void testGet() {
         Range<Integer> range = Range.closedOpen(200, 300);
-        Assert.isTrue(range.test(dnsCheck("114.114.114.114")), "test baidu from dns 114");
+        Assert.isTrue(range.test(dnsCheck("202.96.209.133")), "test baidu from dns 114");
     }
 }

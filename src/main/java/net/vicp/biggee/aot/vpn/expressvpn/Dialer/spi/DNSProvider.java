@@ -73,26 +73,26 @@ public class DNSProvider extends InetAddressResolverProvider implements InetAddr
     public Stream<InetAddress> lookupByName(String host, LookupPolicy lookupPolicy) throws UnknownHostException {
         this.lookupPolicy = lookupPolicy;
 
-        Stream<InetAddress> result = Stream.empty();
+        Set<InetAddress> addresses = new HashSet<>();
         RunShell zero = RunShell.getZero();
         if (zero != null
                 && Arrays.stream(zero.getUrls())
                 .anyMatch(url -> url.contains(host))) {
-            Set<InetAddress> addresses = new HashSet<>();
+
             Arrays.stream(zero.getDns())
                     .parallel()
                     .map(dns -> nsLookup(host, dns))
                     .filter(Objects::nonNull)
                     .forEach(addresses::addAll);
-            result = addresses.stream();
         }
-        if (result.findAny().isEmpty()) {
-            result = Arrays.stream(Address.getAllByName(host));
+        if (addresses.isEmpty()) {
+            addresses.addAll(List.of(Address.getAllByName(host)));
         }
-
-        //noinspection DataFlowIssue
-        return result.peek(ip -> log.debug("dns: {} -> {}", host, ip))
-                .peek(ip -> cache.put(Address.toDottedQuad(ip.getAddress()), host));
+        addresses.stream()
+                .parallel()
+                .peek(ip -> log.debug("dns: {} -> {}", host, ip))
+                .forEach(ip -> cache.put(Address.toDottedQuad(ip.getAddress()), host));
+        return addresses.stream();
     }
 
     @Override
