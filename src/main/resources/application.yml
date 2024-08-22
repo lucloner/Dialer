@@ -92,6 +92,7 @@ info:
     - https://google.com
     - https://t66y.com
     - https://baidu.com
+  supportIPv6: false
   tolerance: 1
   interval: 6
   dns:

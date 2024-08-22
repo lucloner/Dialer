@@ -86,7 +86,47 @@ public class DNSProvider extends InetAddressResolverProvider implements InetAddr
                     .forEach(addresses::addAll);
         }
         if (addresses.isEmpty()) {
-            addresses.addAll(List.of(Address.getAllByName(host)));
+            cache.entrySet()
+                    .stream()
+                    .parallel()
+                    .filter(e -> e.getValue().equals(host))
+                    .forEach(e -> {
+                        String ip = e.getKey();
+                        try {
+                            addresses.add(InetAddress.getByAddress(host, Address.getByAddress(ip).getAddress()));
+                            log.info("lookup load cache: {} from {}", host, ip);
+                        } catch (UnknownHostException ex) {
+                            log.warn("lookup load cache but useless: {} from {}", host, ip, ex);
+                        }
+                    });
+        }
+//        addresses.clear();
+        if (addresses.isEmpty()) {
+            Arrays.stream(Address.getAllByName(host))
+                    .parallel()
+                    .forEach(ip -> {
+                        try {
+                            addresses.add(InetAddress.getByAddress(host, ip.getAddress()));
+                        } catch (UnknownHostException e) {
+                            log.warn("lookup dnsjava but useless: {} from {}", host, ip, e);
+                        }
+                    });
+        }
+//        addresses.clear();
+        if (addresses.isEmpty()) {
+            configuration.builtinResolver()
+                    .lookupByName(host, lookupPolicy)
+                    .parallel()
+                    .forEach(ip -> {
+                        try {
+                            addresses.add(InetAddress.getByAddress(host, ip.getAddress()));
+                        } catch (UnknownHostException e) {
+                            log.warn("lookup builtin dns but useless: {} from {}", host, ip, e);
+                        }
+                    });
+        }
+        if (zero == null || !zero.isSupportIPv6()) {
+            addresses.removeIf(ip -> ip instanceof Inet6Address);
         }
         addresses.stream()
                 .parallel()

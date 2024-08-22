@@ -42,9 +42,22 @@ public class RunShell extends ProxySelector {
     private int interval = 1;
     private LocalDateTime lastCheck = LocalDateTime.now().minusYears(1);
     private String[] dns;
+    private boolean supportIPv6 = false;
 
     public RunShell() {
 
+    }
+
+    public boolean isSupportIPv6() {
+        RunShell zero = getZero();
+        zero = zero == null ? this : zero;
+        return zero.supportIPv6;
+    }
+
+    public void setSupportIPv6(boolean supportIPv6) {
+        RunShell zero = getZero();
+        zero = zero == null ? this : zero;
+        zero.supportIPv6 = supportIPv6;
     }
 
     public String[] getDns() {
