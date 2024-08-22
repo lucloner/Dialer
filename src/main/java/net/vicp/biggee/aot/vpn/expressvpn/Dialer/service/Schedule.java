@@ -78,6 +78,8 @@ public class Schedule {
 
         if (Connected.equals(expressvpnStatus)) {
             log.info("[{}]schedule Connect done: {} message: {}",tag, expressvpnStatus, returns);
+            last.status = Connected;
+            historyDao.save(new History(last));
             return CompletableFuture.completedFuture(Connected);
         } else if (Busy.equals(expressvpnStatus)) {
             log.warn("[{}]schedule Connect is busy: {} message: {}",tag, expressvpnStatus, returns);
@@ -114,15 +116,14 @@ public class Schedule {
                     }
                     last = new History();
                 }
+                last.meshIndex = meshIndex;
+                last.status = expressvpnStatus;
                 String alias = last.location;
                 String runShellLocation = runShell.getLocation(nodesDao);
                 if (Connected.equals(expressvpnStatus) && !Objects.equals(alias, runShellLocation)) {
                     log.warn("[{}]checkStatus location sync: {} <++ {}",tag, alias, runShellLocation);
                     last.location = runShellLocation;
-                } else if (!Reconnecting.equals(last.status)) {
-                    last.time = LocalDateTime.now();
                 }
-                last.status = expressvpnStatus;
                 if (Arrays.asList(Not_Connected, Unable_Connect, Unknown_Error).contains(expressvpnStatus)) {
                     String disconnect = runShell.disconnect();
                     log.info("[{}]checkStatus disconnect: {}",tag, disconnect);
@@ -148,7 +149,6 @@ public class Schedule {
                         log.info("[{}]checkStatus timeout: {} message: {}",tag, minutes, disconnect);
                         last.status = Not_Connected;
                     } else {
-                        last.meshIndex = meshIndex;
                         historyDao.save(new History(last));
                         return;
                     }
@@ -159,7 +159,6 @@ public class Schedule {
                     return;
                 }
 
-                last.meshIndex = meshIndex;
                 historyDao.save(new History(last));
                 scheduleConnect();
             });

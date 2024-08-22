@@ -169,6 +169,7 @@ public class RunShell extends ProxySelector {
     public boolean checkWebs() {
         assert getZero() != null;
         if (Duration.between(lastCheck, LocalDateTime.now()).toMinutes() < getInterval()) {
+            log.info("[{}]checkWebs or Connected did {} minus before, skipping", getIndex(), getInterval());
             return true;
         }
         boolean checked = Arrays.stream(getZero().urls).parallel().map(u -> {
@@ -213,6 +214,7 @@ public class RunShell extends ProxySelector {
     public Process connect(String location) throws IOException {
         location = location == null ? "" : location;
         var builder = initCommand(getCommand("connect", location));
+        lastCheck = LocalDateTime.now();
         return builder.start();
     }
 
