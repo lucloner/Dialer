@@ -172,20 +172,25 @@ public class RunShell extends ProxySelector {
             log.info("[{}]checkWebs or Connected did {} minus before, skipping", getIndex(), getInterval());
             return true;
         }
-        boolean checked = Arrays.stream(getZero().urls).parallel().map(u -> {
+        int passLine = getUrls().length - getTolerance();
+        long padded = Arrays.stream(getZero().urls).parallel().map(u -> {
             try {
-                return checkUrl(u);
+                int code = checkUrl(u);
+                log.info("[{}]checkWebs {} checked {} ok", getIndex(), u, code);
+                return code;
             } catch (IOException | InterruptedException | RuntimeException e) {
                 log.error("url: {}", u, e);
             }
             return 500;
-        }).filter(i -> i >= 200).filter(i -> i < 300).count() >= getUrls().length - getTolerance();
-        if (checked) {
+        }).filter(i -> i >= 200).filter(i -> i < 300).count();
+        if (padded > passLine) {
+            log.info("[{}]checkWebs done {}/{}", getIndex(), padded, passLine);
             lastCheck = LocalDateTime.now();
-        } else {
-            lastCheck = lastCheck.minusHours(1);
+            return true;
         }
-        return checked;
+        log.info("[{}]checkWebs failed {}/{}", getIndex(), padded, passLine);
+        lastCheck = lastCheck.minusHours(1);
+        return false;
     }
 
     public int checkUrl(String url) throws IOException, InterruptedException {
