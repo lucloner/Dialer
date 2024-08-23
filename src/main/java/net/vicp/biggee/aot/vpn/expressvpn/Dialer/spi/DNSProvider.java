@@ -99,32 +99,31 @@ public class DNSProvider extends InetAddressResolverProvider implements InetAddr
                             log.warn("lookup load cache but useless: {} from {}", host, ip, ex);
                         }
                     });
+        } else {
+            cache.clear();
         }
-//        addresses.clear();
-        if (addresses.isEmpty()) {
-            Arrays.stream(Address.getAllByName(host))
-                    .parallel()
-                    .forEach(ip -> {
-                        try {
-                            addresses.add(InetAddress.getByAddress(host, ip.getAddress()));
-                        } catch (UnknownHostException e) {
-                            log.warn("lookup dnsjava but useless: {} from {}", host, ip, e);
-                        }
-                    });
-        }
-//        addresses.clear();
-        if (addresses.isEmpty()) {
-            configuration.builtinResolver()
-                    .lookupByName(host, lookupPolicy)
-                    .parallel()
-                    .forEach(ip -> {
-                        try {
-                            addresses.add(InetAddress.getByAddress(host, ip.getAddress()));
-                        } catch (UnknownHostException e) {
-                            log.warn("lookup builtin dns but useless: {} from {}", host, ip, e);
-                        }
-                    });
-        }
+
+        Arrays.stream(Address.getAllByName(host))
+                .parallel()
+                .forEach(ip -> {
+                    try {
+                        addresses.add(InetAddress.getByAddress(host, ip.getAddress()));
+                    } catch (UnknownHostException e) {
+                        log.warn("lookup dnsjava but useless: {} from {}", host, ip, e);
+                    }
+                });
+
+        configuration.builtinResolver()
+                .lookupByName(host, lookupPolicy)
+                .parallel()
+                .forEach(ip -> {
+                    try {
+                        addresses.add(InetAddress.getByAddress(host, ip.getAddress()));
+                    } catch (UnknownHostException e) {
+                        log.warn("lookup builtin dns but useless: {} from {}", host, ip, e);
+                    }
+                });
+
         if (zero == null || !zero.isSupportIPv6()) {
             addresses.removeIf(ip -> ip instanceof Inet6Address);
         }
