@@ -77,10 +77,6 @@ public class Status {
         return list.toString();
     }
 
-    public ExpressvpnStatus status() {
-        return status(getConnect.get().getRunShell().index);
-    }
-
     @RequestMapping("/status")
     public ExpressvpnStatus status(@RequestParam(defaultValue = "0") int meshIndex) {
         RunShell runShell = RunShell.mesh[meshIndex];

@@ -10,6 +10,7 @@ import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.NodesDao;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.PlanDao;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.util.RunShell;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
@@ -91,13 +92,18 @@ public class Connect {
         return planDao.findFirstBy();
     }
 
-    @RequestMapping("/connect")
     public Future<Process> connect(String alias) {
-        ExpressvpnStatus expressvpnStatus = status.status();
+        return connect(runShell.index,alias);
+    }
+
+    @RequestMapping("/connect")
+    public Future<Process> connect(@RequestParam(defaultValue = "0") int meshIndex, String alias) {
+        RunShell rs= RunShell.mesh[meshIndex];
+        ExpressvpnStatus expressvpnStatus = status.status(meshIndex);
         if (Arrays.asList(Not_Connected, Unable_Connect, Unknown_Error).contains(expressvpnStatus)) {
-            Future<Process> submit = executor.submit(() -> runShell.connect(alias));
+            Future<Process> submit = executor.submit(() -> rs.connect(alias));
             planDao.deleteAll(planDao.findAll((r, q, b) -> b.equal(r.get("alias"), alias)));
-            historyDao.save(new History(alias, Connecting, runShell.index));
+            historyDao.save(new History(alias, Connecting, meshIndex));
             return submit;
         }
 
@@ -105,7 +111,7 @@ public class Connect {
     }
 
     @RequestMapping("/autoconnect")
-    public Future<Process> autoconnect() {
+    public Future<Process> autoconnect(@RequestParam(defaultValue = "0") int meshIndex) {
         Plan pick = pick();
         if (pick == null) {
             if(plan()){
@@ -115,14 +121,14 @@ public class Connect {
             }
         }
 
-        return connect(pick.alias);
+        return connect(meshIndex,pick.alias);
     }
 
     @RequestMapping("/init")
-    public ExpressvpnStatus init() {
+    public ExpressvpnStatus init(@RequestParam(defaultValue = "0") int meshIndex) {
         plan();
-        autoconnect();
-        return status.status();
+        autoconnect(meshIndex);
+        return status.status(meshIndex);
     }
 
     @RequestMapping("/switch")

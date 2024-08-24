@@ -211,9 +211,10 @@ public class RunShell extends ProxySelector {
     public String getLocation(NodesDao nodesDao) {
         Optional<Node> node = nodesDao.findOne((r, q, b) -> b.or(b.equal(r.get("location"), location), b.equal(r.get("alias"), location)));
         if (node.isEmpty()) {
-            node = nodesDao.findOne((r, q, b) -> b.or(b.like(b.literal(location + "%"), r.get("location")), b.equal(b.literal(location + "%"), r.get("alias"))));
+            node = nodesDao.findOne((r, q, b) -> b.or(b.like(b.literal(location), b.concat("%", b.concat(r.get("location"), "%"))),
+                    b.like(b.literal(location), b.concat("%", b.concat(r.get("location"), "%")))));
         }
-        return node.orElse(new Node(location, location, false)).alias;
+        return node.orElse(new Node("", location, false)).alias;
     }
 
     public Process connect(String location) throws IOException {
@@ -270,7 +271,7 @@ public class RunShell extends ProxySelector {
         }
         connected = returns.contains(Connected.key);
         if (connected) {
-            location = returns.split(Connected.key)[1].trim().split("\\n")[0].trim();
+            //location = returns.split(Connected.key)[1].trim().split("\\n")[0].trim();
             return Connected;
         }
 

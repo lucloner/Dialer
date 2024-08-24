@@ -46,49 +46,52 @@ public class Schedule {
     @SuppressWarnings("UnusedReturnValue")
     @Async
     public CompletableFuture<ExpressvpnStatus> scheduleConnect() {
-        String tag=Integer.toHexString(new Object().hashCode());
-        RunShell runShell = connect.getRunShell();
-        while (!runShell.getHost().enabled){
-            runShell=connect.setRunShell(runShell.getNext());
-        }
-        int meshIndex = runShell.index;
-        log.info("[{}]scheduleConnect launched: {}",tag, meshIndex);
+        String tag = Integer.toHexString(new Object().hashCode());
 
-        Future<Process> autoconnect = connect.autoconnect();
-        //noinspection UnusedAssignment
-        String returns = null;
-        //noinspection UnusedAssignment
-        int returnCode = -1;
-        try {
-            Process process = autoconnect.get();
-            returnCode = process.waitFor();
-            returns = new String(process.getInputStream().readAllBytes());
-            log.info("[{}]scheduleConnect return: {} message: {}",tag, returnCode, returns);
-            process.destroy();
-        } catch (InterruptedException | ExecutionException | IOException e) {
-            log.warn("[{}]scheduleConnect launched error", tag, e);
-            throw new RuntimeException(e);
-        }
-        ExpressvpnStatus expressvpnStatus = connect.status.status();
+        Arrays.stream(RunShell.mesh).parallel().forEach(runShell -> {
+            if (!runShell.getHost().enabled) {
+                return;
+            }
 
-        History last = historyDao.findTopByMeshIndexOrderByTimeDesc(meshIndex);
-        last.status = expressvpnStatus;
-        last.meshIndex = meshIndex;
-        historyDao.save(new History(last));
+            int meshIndex = runShell.index;
+            log.info("[{}]scheduleConnect launched: {}", tag, meshIndex);
 
-        if (Connected.equals(expressvpnStatus)) {
-            log.info("[{}]schedule Connect done: {} message: {}",tag, expressvpnStatus, returns);
-            last.status = Connected;
+            Future<Process> autoconnect = connect.autoconnect(meshIndex);
+
+            String returns = null;
+            //noinspection UnusedAssignment
+            int returnCode = -1;
+            try {
+                Process process = autoconnect.get();
+                returnCode = process.waitFor();
+                returns = new String(process.getInputStream().readAllBytes());
+                log.info("[{}]scheduleConnect return: {} message: {}", tag, returnCode, returns);
+                process.destroy();
+            } catch (InterruptedException | ExecutionException | IOException e) {
+                log.warn("[{}]scheduleConnect launched error", tag, e);
+//                throw new RuntimeException(e);
+            }
+            ExpressvpnStatus expressvpnStatus = connect.status.status(meshIndex);
+
+            History last = historyDao.findTopByMeshIndexOrderByTimeDesc(meshIndex);
+            last.status = expressvpnStatus;
+            last.meshIndex = meshIndex;
             historyDao.save(new History(last));
-            return CompletableFuture.completedFuture(Connected);
-        } else if (Busy.equals(expressvpnStatus)) {
-            log.warn("[{}]schedule Connect is busy: {} message: {}",tag, expressvpnStatus, returns);
-            return CompletableFuture.completedFuture(Busy);
-        }
 
-        log.info("[{}]schedule Connect run again: {} message: {}",tag, expressvpnStatus, returns);
+            if (Connected.equals(expressvpnStatus)) {
+                log.info("[{}]schedule Connect done: {} message: {}", tag, expressvpnStatus, returns);
+                last.status = Connected;
+                historyDao.save(new History(last));
+                return;
+            } else if (Busy.equals(expressvpnStatus)) {
+                log.warn("[{}]schedule Connect is busy: {} message: {}", tag, expressvpnStatus, returns);
+                return;
+            }
 
-        Connect.executor.execute(connect::init);
+            log.info("[{}]schedule Connect run again: {} message: {}", tag, expressvpnStatus, returns);
+
+            Connect.executor.execute(() -> connect.init(meshIndex));
+        });
 
         return CompletableFuture.completedFuture(Connecting);
     }
@@ -97,21 +100,21 @@ public class Schedule {
     @Scheduled(initialDelay = 1, fixedRate = 1, timeUnit = TimeUnit.MINUTES)
     public void checkStatus() {
         for (RunShell runShell : RunShell.mesh) {
-            if(!runShell.getHost().enabled){
+            if (!runShell.getHost().enabled) {
                 log.info("skiped: {}", runShell);
                 continue;
             }
             log.info("ready to check: {}", runShell);
             //noinspection resource
             Executors.newCachedThreadPool().execute(() -> {
-                String tag=Integer.toHexString(new Object().hashCode());
+                String tag = Integer.toHexString(new Object().hashCode());
                 connect.setRunShell(runShell);
                 int meshIndex = runShell.index;
-                log.info("[{}]checkStatus run [{}]: {}",tag, meshIndex, LocalDateTime.now());
-                ExpressvpnStatus expressvpnStatus = connect.status.status();
+                log.info("[{}]checkStatus run [{}]: {}", tag, meshIndex, LocalDateTime.now());
+                ExpressvpnStatus expressvpnStatus = connect.status.status(meshIndex);
                 History last = historyDao.findTopByMeshIndexOrderByTimeDesc(meshIndex);
                 if (last == null) {
-                    if(!connect.plan()){
+                    if (!connect.plan()) {
                         throw new RuntimeException("no plan list to pick!");
                     }
                     last = new History();
@@ -120,13 +123,16 @@ public class Schedule {
                 last.status = expressvpnStatus;
                 String alias = last.location;
                 String runShellLocation = runShell.getLocation(nodesDao);
-                if (Connected.equals(expressvpnStatus) && !Objects.equals(alias, runShellLocation)) {
-                    log.warn("[{}]checkStatus location sync: {} <++ {}",tag, alias, runShellLocation);
+                if (Connected.equals(expressvpnStatus)
+                        && !Objects.equals(alias, runShellLocation)
+                        && runShellLocation != null
+                        && !runShellLocation.isEmpty()) {
+                    log.warn("[{}]checkStatus location sync: {} <++ {}", tag, alias, runShellLocation);
                     last.location = runShellLocation;
                 }
                 if (Arrays.asList(Not_Connected, Unable_Connect, Unknown_Error).contains(expressvpnStatus)) {
                     String disconnect = runShell.disconnect();
-                    log.info("[{}]checkStatus disconnect: {}",tag, disconnect);
+                    log.info("[{}]checkStatus disconnect: {}", tag, disconnect);
                     last.status = Not_Connected;
                 } else if (Arrays.asList(Connecting, Reconnecting).contains(expressvpnStatus)) {
                     LocalDateTime since = LocalDateTime.now();
@@ -146,14 +152,14 @@ public class Schedule {
                     long minutes = Duration.between(since, LocalDateTime.now()).toMinutes();
                     if (minutes > 10) {
                         String disconnect = runShell.disconnect();
-                        log.info("[{}]checkStatus timeout: {} message: {}",tag, minutes, disconnect);
+                        log.info("[{}]checkStatus timeout: {} message: {}", tag, minutes, disconnect);
                         last.status = Not_Connected;
                     } else {
                         historyDao.save(new History(last));
                         return;
                     }
                 } else if (Connected.equals(expressvpnStatus)) {
-                    log.info("[{}]checkStatus connected: [{}] {} <==> {}",tag, meshIndex, last.location, runShellLocation);
+                    log.info("[{}]checkStatus connected: [{}] {} <==> {}", tag, meshIndex, last.location, runShellLocation);
                     historyDao.save(new History(runShellLocation, Connected, meshIndex));
                     recycle.clearAndRePlan();
                     return;
@@ -172,7 +178,7 @@ public class Schedule {
 
         synchronized (connect) {
             connect.setRunShell(runShell);
-            ExpressvpnStatus expressvpnStatus = connect.status.status();
+            ExpressvpnStatus expressvpnStatus = connect.status.status(meshIndex);
             log.info("watchCat run [{}]: {}", meshIndex, expressvpnStatus);
             History history = historyDao.findTopByMeshIndexOrderByTimeDesc(meshIndex);
             if (Duration.between(history.time, LocalDateTime.now()).toMinutes() > 20) {
