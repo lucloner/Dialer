@@ -21,6 +21,7 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import static net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus.*;
@@ -168,10 +169,6 @@ public class RunShell extends ProxySelector {
 
     public boolean checkWebs() {
         assert getZero() != null;
-        if (Duration.between(lastCheck, LocalDateTime.now()).toMinutes() < getInterval()) {
-            log.info("[{}]checkWebs or Connected did {} minus before, skipping", getIndex(), getInterval());
-            return true;
-        }
         int passLine = getUrls().length - getTolerance();
         long padded = Arrays.stream(getZero().urls).parallel().map(u -> {
             try {
@@ -213,6 +210,9 @@ public class RunShell extends ProxySelector {
 
     public String getLocation(NodesDao nodesDao) {
         Optional<Node> node = nodesDao.findOne((r, q, b) -> b.or(b.equal(r.get("location"), location), b.equal(r.get("alias"), location)));
+        if (node.isEmpty()) {
+            node = nodesDao.findOne((r, q, b) -> b.or(b.like(b.literal(location + "%"), r.get("location")), b.equal(b.literal(location + "%"), r.get("alias"))));
+        }
         return node.orElse(new Node(location, location, false)).alias;
     }
 
@@ -229,6 +229,13 @@ public class RunShell extends ProxySelector {
     }
 
     public String disconnect() {
+        if (getInterval() <= 0
+                || getTolerance() <= 0
+                || getTolerance() >= getUrls().length
+                || Duration.between(lastCheck, LocalDateTime.now()).toMinutes() < getInterval()) {
+            log.info("[{}]disconnect disabled {}/{} {}", getIndex(), getInterval(),getTolerance(),lastCheck);
+            return Connecting.key;
+        }
         return run(getCommand("disconnect")).toString();
     }
 
@@ -317,8 +324,21 @@ public class RunShell extends ProxySelector {
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
-            if (start != null) {
+            if (start != null && !commands.contains("kill")) {
+                String pid = String.valueOf(start.pid());
                 start.destroy();
+                //noinspection resource
+                Executors.newSingleThreadScheduledExecutor()
+                                .scheduleWithFixedDelay(start::destroyForcibly,15,15,TimeUnit.SECONDS);
+                Process finalStart = start;
+                //noinspection resource
+                Executors.newSingleThreadScheduledExecutor()
+                        .scheduleWithFixedDelay(() -> {
+                            if(finalStart.isAlive()){
+                                log.warn("Commands {} troubled Destroy: {}, force killing",commands,pid);
+                                run(List.of("kill","-9",pid));
+                            }
+                        },30,30,TimeUnit.SECONDS);
             }
         }
     }
