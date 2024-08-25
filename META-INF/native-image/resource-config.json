@@ -7,35 +7,34 @@
   }, {
     "pattern":"\\QMETA-INF/jpa-named-queries.properties\\E"
   }, {
-    "pattern": "\\QMETA-INF/native/libnetty_transport_native_epoll_x86_64.so\\E"
-  },
-    {
+    "pattern":"\\QMETA-INF/native/libnetty_transport_native_epoll.so\\E"
+  }, {
+    "pattern":"\\QMETA-INF/native/libnetty_transport_native_epoll_aarch_64.so\\E"
+  }, {
     "pattern":"\\QMETA-INF/orm.xml\\E"
   }, {
     "pattern":"\\QMETA-INF/persistence.xml\\E"
   }, {
-      "pattern": "\\QMETA-INF/resources/index.html\\E"
-    },
-    {
+    "pattern":"\\QMETA-INF/resources/index.html\\E"
+  }, {
     "pattern":"\\QMETA-INF/services/ch.qos.logback.classic.spi.Configurator\\E"
   }, {
     "pattern":"\\QMETA-INF/services/java.lang.System$LoggerFinder\\E"
   }, {
-      "pattern": "\\QMETA-INF/services/java.net.spi.InetAddressResolverProvider\\E"
-    },
-    {
-      "pattern": "\\QMETA-INF/services/java.nio.channels.spi.SelectorProvider\\E"
-    },
-    {
+    "pattern":"\\QMETA-INF/services/java.net.spi.InetAddressResolverProvider\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/java.net.spi.URLStreamHandlerProvider\\E"
+  }, {
+    "pattern":"\\QMETA-INF/services/java.nio.channels.spi.SelectorProvider\\E"
+  }, {
     "pattern":"\\QMETA-INF/services/java.sql.Driver\\E"
   }, {
     "pattern":"\\QMETA-INF/services/java.time.zone.ZoneRulesProvider\\E"
   }, {
     "pattern":"\\QMETA-INF/services/javax.xml.stream.XMLEventFactory\\E"
   }, {
-      "pattern": "\\QMETA-INF/services/javax.xml.stream.XMLInputFactory\\E"
-    },
-    {
+    "pattern":"\\QMETA-INF/services/javax.xml.stream.XMLInputFactory\\E"
+  }, {
     "pattern":"\\QMETA-INF/services/javax.xml.transform.TransformerFactory\\E"
   }, {
     "pattern":"\\QMETA-INF/services/org.hibernate.boot.model.FunctionContributor\\E"
@@ -84,13 +83,13 @@
   }, {
     "pattern":"\\Q\\E"
   }, {
-    "pattern":"\\Qapplication-default.properties\\E"
+    "pattern":"\\Qapplication-tx2.properties\\E"
   }, {
-    "pattern":"\\Qapplication-default.xml\\E"
+    "pattern":"\\Qapplication-tx2.xml\\E"
   }, {
-    "pattern":"\\Qapplication-default.yaml\\E"
+    "pattern":"\\Qapplication-tx2.yaml\\E"
   }, {
-    "pattern":"\\Qapplication-default.yml\\E"
+    "pattern":"\\Qapplication-tx2.yml\\E"
   }, {
     "pattern":"\\Qapplication.properties\\E"
   }, {
@@ -102,13 +101,13 @@
   }, {
     "pattern":"\\Qbanner.txt\\E"
   }, {
-    "pattern":"\\Qconfig/application-default.properties\\E"
+    "pattern":"\\Qconfig/application-tx2.properties\\E"
   }, {
-    "pattern":"\\Qconfig/application-default.xml\\E"
+    "pattern":"\\Qconfig/application-tx2.xml\\E"
   }, {
-    "pattern":"\\Qconfig/application-default.yaml\\E"
+    "pattern":"\\Qconfig/application-tx2.yaml\\E"
   }, {
-    "pattern":"\\Qconfig/application-default.yml\\E"
+    "pattern":"\\Qconfig/application-tx2.yml\\E"
   }, {
     "pattern":"\\Qconfig/application.properties\\E"
   }, {
@@ -118,12 +117,10 @@
   }, {
     "pattern":"\\Qconfig/application.yml\\E"
   }, {
-      "pattern": "\\Qdata-all.sql\\E"
-    },
-    {
-      "pattern": "\\Qdata.sql\\E"
-    },
-    {
+    "pattern":"\\Qdata-all.sql\\E"
+  }, {
+    "pattern":"\\Qdata.sql\\E"
+  }, {
     "pattern":"\\Qgit.properties\\E"
   }, {
     "pattern":"\\Qhibernate.properties\\E"
@@ -192,17 +189,14 @@
   }, {
     "pattern":"\\Qorg/springframework/beans/factory/BeanFactoryAware.class\\E"
   }, {
-      "pattern": "\\Qorg/springframework/beans/factory/InitializingBean.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/beans/factory/SmartInitializingSingleton.class\\E"
-    },
-    {
+    "pattern":"\\Qorg/springframework/beans/factory/InitializingBean.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/beans/factory/SmartInitializingSingleton.class\\E"
+  }, {
     "pattern":"\\Qorg/springframework/beans/factory/config/BeanFactoryPostProcessor.class\\E"
   }, {
-      "pattern": "\\Qorg/springframework/beans/factory/support/BeanDefinitionRegistryPostProcessor.class\\E"
-    },
-    {
+    "pattern":"\\Qorg/springframework/beans/factory/support/BeanDefinitionRegistryPostProcessor.class\\E"
+  }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/AbstractDependsOnBeanFactoryPostProcessor.class\\E"
   }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/AutoConfiguration.class\\E"
@@ -258,6 +252,8 @@
     "pattern":"\\Qorg/springframework/boot/autoconfigure/context/ConfigurationPropertiesAutoConfiguration.class\\E"
   }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/context/LifecycleAutoConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/boot/autoconfigure/context/MessageSourceAutoConfiguration$ResourceBundleCondition.class\\E"
   }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/context/MessageSourceAutoConfiguration.class\\E"
   }, {
@@ -369,9 +365,8 @@
   }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/jmx/JmxAutoConfiguration.class\\E"
   }, {
-      "pattern": "\\Qorg/springframework/boot/autoconfigure/mail/MailSenderValidatorAutoConfiguration.class\\E"
-    },
-    {
+    "pattern":"\\Qorg/springframework/boot/autoconfigure/mail/MailSenderValidatorAutoConfiguration.class\\E"
+  }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/netty/NettyAutoConfiguration.class\\E"
   }, {
     "pattern":"\\Qorg/springframework/boot/autoconfigure/orm/jpa/EntityManagerFactoryDependsOnPostProcessor.class\\E"
@@ -496,244 +491,178 @@
   }, {
     "pattern":"\\Qorg/springframework/boot/sql/init/dependency/DatabaseInitializationDependencyConfigurer.class\\E"
   }, {
-      "pattern": "\\Qorg/springframework/cloud/autoconfigure/ConfigurationPropertiesRebinderAutoConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/autoconfigure/LifecycleMvcEndpointAutoConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/autoconfigure/RefreshAutoConfiguration$JpaInvokerConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/autoconfigure/RefreshAutoConfiguration$RefreshProperties.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/autoconfigure/RefreshAutoConfiguration$RefreshScopeBeanDefinitionEnhancer.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/autoconfigure/RefreshAutoConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/client/CommonsClientAutoConfiguration$ActuatorConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/client/CommonsClientAutoConfiguration$DiscoveryLoadBalancerConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/client/CommonsClientAutoConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/client/ConditionalOnDiscoveryEnabled.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/client/ConditionalOnReactiveDiscoveryEnabled.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/client/ReactiveCommonsClientAutoConfiguration$ReactiveDiscoveryLoadBalancerConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/client/ReactiveCommonsClientAutoConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/client/discovery/composite/CompositeDiscoveryClientAutoConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/client/discovery/composite/reactive/ReactiveCompositeDiscoveryClientAutoConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/client/discovery/simple/SimpleDiscoveryClientAutoConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/client/discovery/simple/reactive/SimpleReactiveDiscoveryClientAutoConfiguration$HealthConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/client/discovery/simple/reactive/SimpleReactiveDiscoveryClientAutoConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/client/hypermedia/CloudHypermediaAutoConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/client/loadbalancer/LoadBalancerAutoConfiguration$LoadBalancerInterceptorConfig.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/client/loadbalancer/LoadBalancerAutoConfiguration$RetryAutoConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/client/loadbalancer/LoadBalancerAutoConfiguration$RetryInterceptorAutoConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/client/loadbalancer/LoadBalancerAutoConfiguration$RetryMissingOrDisabledCondition$RetryDisabled.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/client/loadbalancer/LoadBalancerAutoConfiguration$RetryMissingOrDisabledCondition$RetryTemplateMissing.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/client/loadbalancer/LoadBalancerAutoConfiguration$RetryMissingOrDisabledCondition.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/client/loadbalancer/LoadBalancerAutoConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/client/loadbalancer/LoadBalancerDefaultMappingsProviderAutoConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/client/loadbalancer/reactive/LoadBalancerBeanPostProcessorAutoConfiguration$OnAnyLoadBalancerImplementationPresentCondition$LoadBalancerClientPresent.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/client/loadbalancer/reactive/LoadBalancerBeanPostProcessorAutoConfiguration$OnAnyLoadBalancerImplementationPresentCondition$ReactiveLoadBalancerFactoryPresent.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/client/loadbalancer/reactive/LoadBalancerBeanPostProcessorAutoConfiguration$OnAnyLoadBalancerImplementationPresentCondition.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/client/loadbalancer/reactive/LoadBalancerBeanPostProcessorAutoConfiguration$ReactorDeferringLoadBalancerFilterConfig.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/client/loadbalancer/reactive/LoadBalancerBeanPostProcessorAutoConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/client/loadbalancer/reactive/ReactorLoadBalancerClientAutoConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/client/serviceregistry/AutoServiceRegistrationAutoConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/client/serviceregistry/AutoServiceRegistrationConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/client/serviceregistry/ServiceRegistryAutoConfiguration$ServiceRegistryEndpointConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/client/serviceregistry/ServiceRegistryAutoConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/commons/config/CommonsConfigAutoConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/commons/security/ResourceServerTokenRelayAutoConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/commons/util/UtilAutoConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/configuration/CompatibilityVerifierAutoConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/loadbalancer/annotation/LoadBalancerClientConfigurationRegistrar.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/loadbalancer/annotation/LoadBalancerClients.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/loadbalancer/config/BlockingLoadBalancerClientAutoConfiguration$BlockingLoadBalancerRetryConfig.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/loadbalancer/config/BlockingLoadBalancerClientAutoConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/loadbalancer/config/LoadBalancerAutoConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/loadbalancer/config/LoadBalancerCacheAutoConfiguration$CaffeineLoadBalancerCacheManagerConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/loadbalancer/config/LoadBalancerCacheAutoConfiguration$DefaultLoadBalancerCacheManagerConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/loadbalancer/config/LoadBalancerCacheAutoConfiguration$LoadBalancerCacheManagerWarnConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/loadbalancer/config/LoadBalancerCacheAutoConfiguration$LoadBalancerCaffeineWarnLogger.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/loadbalancer/config/LoadBalancerCacheAutoConfiguration$OnCaffeineCacheMissingCondition$CaffeineCacheManagerClassMissing.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/loadbalancer/config/LoadBalancerCacheAutoConfiguration$OnCaffeineCacheMissingCondition$CaffeineClassMissing.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/loadbalancer/config/LoadBalancerCacheAutoConfiguration$OnCaffeineCacheMissingCondition.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/loadbalancer/config/LoadBalancerCacheAutoConfiguration$OnLoadBalancerCachingEnabledCondition$LoadBalancerCacheEnabled.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/loadbalancer/config/LoadBalancerCacheAutoConfiguration$OnLoadBalancerCachingEnabledCondition$LoadBalancerEnabled.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/loadbalancer/config/LoadBalancerCacheAutoConfiguration$OnLoadBalancerCachingEnabledCondition.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/loadbalancer/config/LoadBalancerCacheAutoConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/loadbalancer/security/OAuth2LoadBalancerClientAutoConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/util/ConditionalOnBootstrapDisabled$OnBootstrapDisabledCondition$OnBootstrapEnabled.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/util/ConditionalOnBootstrapDisabled$OnBootstrapDisabledCondition$OnBootstrapMarkerClassPresent.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/util/ConditionalOnBootstrapDisabled$OnBootstrapDisabledCondition$OnUseLegacyProcessingEnabled.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/util/ConditionalOnBootstrapDisabled$OnBootstrapDisabledCondition.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/util/ConditionalOnBootstrapEnabled$OnBootstrapEnabledCondition$OnBootstrapEnabled.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/util/ConditionalOnBootstrapEnabled$OnBootstrapEnabledCondition$OnBootstrapMarkerClassPresent.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/util/ConditionalOnBootstrapEnabled$OnBootstrapEnabledCondition$OnUseLegacyProcessingEnabled.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/util/ConditionalOnBootstrapEnabled$OnBootstrapEnabledCondition.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/zookeeper/ZookeeperAutoConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/zookeeper/discovery/LoadBalancerZookeeperAutoConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/zookeeper/discovery/ZookeeperDiscoveryAutoConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/zookeeper/discovery/ZookeeperDiscoveryClientConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/zookeeper/discovery/dependency/DependencyRestTemplateAutoConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/zookeeper/discovery/dependency/ZookeeperDependenciesAutoConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/zookeeper/discovery/reactive/ZookeeperReactiveDiscoveryClientConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/zookeeper/discovery/watcher/DependencyWatcherAutoConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/zookeeper/serviceregistry/ZookeeperAutoServiceRegistrationAutoConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/zookeeper/serviceregistry/ZookeeperServiceRegistryAutoConfiguration.class\\E"
-    },
-    {
-      "pattern": "\\Qorg/springframework/cloud/zookeeper/support/CuratorServiceDiscoveryAutoConfiguration.class\\E"
-    },
-    {
+    "pattern":"\\Qorg/springframework/cloud/autoconfigure/ConfigurationPropertiesRebinderAutoConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/autoconfigure/LifecycleMvcEndpointAutoConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/autoconfigure/RefreshAutoConfiguration$JpaInvokerConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/autoconfigure/RefreshAutoConfiguration$RefreshProperties.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/autoconfigure/RefreshAutoConfiguration$RefreshScopeBeanDefinitionEnhancer.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/autoconfigure/RefreshAutoConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/client/CommonsClientAutoConfiguration$ActuatorConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/client/CommonsClientAutoConfiguration$DiscoveryLoadBalancerConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/client/CommonsClientAutoConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/client/ConditionalOnBlockingDiscoveryEnabled.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/client/ConditionalOnDiscoveryEnabled.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/client/ConditionalOnReactiveDiscoveryEnabled.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/client/ReactiveCommonsClientAutoConfiguration$ReactiveDiscoveryLoadBalancerConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/client/ReactiveCommonsClientAutoConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/client/discovery/composite/CompositeDiscoveryClientAutoConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/client/discovery/composite/reactive/ReactiveCompositeDiscoveryClientAutoConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/client/discovery/simple/SimpleDiscoveryClientAutoConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/client/discovery/simple/reactive/SimpleReactiveDiscoveryClientAutoConfiguration$HealthConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/client/discovery/simple/reactive/SimpleReactiveDiscoveryClientAutoConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/client/hypermedia/CloudHypermediaAutoConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/client/loadbalancer/LoadBalancerAutoConfiguration$LoadBalancerInterceptorConfig.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/client/loadbalancer/LoadBalancerAutoConfiguration$RetryAutoConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/client/loadbalancer/LoadBalancerAutoConfiguration$RetryInterceptorAutoConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/client/loadbalancer/LoadBalancerAutoConfiguration$RetryMissingOrDisabledCondition$RetryDisabled.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/client/loadbalancer/LoadBalancerAutoConfiguration$RetryMissingOrDisabledCondition$RetryTemplateMissing.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/client/loadbalancer/LoadBalancerAutoConfiguration$RetryMissingOrDisabledCondition.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/client/loadbalancer/LoadBalancerAutoConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/client/loadbalancer/LoadBalancerDefaultMappingsProviderAutoConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/client/loadbalancer/reactive/LoadBalancerBeanPostProcessorAutoConfiguration$OnAnyLoadBalancerImplementationPresentCondition$LoadBalancerClientPresent.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/client/loadbalancer/reactive/LoadBalancerBeanPostProcessorAutoConfiguration$OnAnyLoadBalancerImplementationPresentCondition$ReactiveLoadBalancerFactoryPresent.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/client/loadbalancer/reactive/LoadBalancerBeanPostProcessorAutoConfiguration$OnAnyLoadBalancerImplementationPresentCondition.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/client/loadbalancer/reactive/LoadBalancerBeanPostProcessorAutoConfiguration$ReactorDeferringLoadBalancerFilterConfig.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/client/loadbalancer/reactive/LoadBalancerBeanPostProcessorAutoConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/client/loadbalancer/reactive/ReactorLoadBalancerClientAutoConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/client/serviceregistry/AutoServiceRegistrationAutoConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/client/serviceregistry/AutoServiceRegistrationConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/client/serviceregistry/ServiceRegistryAutoConfiguration$ServiceRegistryEndpointConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/client/serviceregistry/ServiceRegistryAutoConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/commons/config/CommonsConfigAutoConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/commons/security/ResourceServerTokenRelayAutoConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/commons/util/UtilAutoConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/configuration/CompatibilityVerifierAutoConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/loadbalancer/annotation/LoadBalancerClientConfigurationRegistrar.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/loadbalancer/annotation/LoadBalancerClients.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/loadbalancer/config/BlockingLoadBalancerClientAutoConfiguration$BlockingLoadBalancerRetryConfig.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/loadbalancer/config/BlockingLoadBalancerClientAutoConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/loadbalancer/config/LoadBalancerAutoConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/loadbalancer/config/LoadBalancerCacheAutoConfiguration$CaffeineLoadBalancerCacheManagerConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/loadbalancer/config/LoadBalancerCacheAutoConfiguration$DefaultLoadBalancerCacheManagerConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/loadbalancer/config/LoadBalancerCacheAutoConfiguration$LoadBalancerCacheManagerWarnConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/loadbalancer/config/LoadBalancerCacheAutoConfiguration$LoadBalancerCaffeineWarnLogger.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/loadbalancer/config/LoadBalancerCacheAutoConfiguration$OnCaffeineCacheMissingCondition$CaffeineCacheManagerClassMissing.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/loadbalancer/config/LoadBalancerCacheAutoConfiguration$OnCaffeineCacheMissingCondition$CaffeineClassMissing.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/loadbalancer/config/LoadBalancerCacheAutoConfiguration$OnCaffeineCacheMissingCondition.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/loadbalancer/config/LoadBalancerCacheAutoConfiguration$OnLoadBalancerCachingEnabledCondition$LoadBalancerCacheEnabled.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/loadbalancer/config/LoadBalancerCacheAutoConfiguration$OnLoadBalancerCachingEnabledCondition$LoadBalancerEnabled.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/loadbalancer/config/LoadBalancerCacheAutoConfiguration$OnLoadBalancerCachingEnabledCondition.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/loadbalancer/config/LoadBalancerCacheAutoConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/loadbalancer/security/OAuth2LoadBalancerClientAutoConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/util/ConditionalOnBootstrapDisabled$OnBootstrapDisabledCondition$OnBootstrapEnabled.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/util/ConditionalOnBootstrapDisabled$OnBootstrapDisabledCondition$OnBootstrapMarkerClassPresent.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/util/ConditionalOnBootstrapDisabled$OnBootstrapDisabledCondition$OnUseLegacyProcessingEnabled.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/util/ConditionalOnBootstrapDisabled$OnBootstrapDisabledCondition.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/util/ConditionalOnBootstrapEnabled$OnBootstrapEnabledCondition$OnBootstrapEnabled.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/util/ConditionalOnBootstrapEnabled$OnBootstrapEnabledCondition$OnBootstrapMarkerClassPresent.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/util/ConditionalOnBootstrapEnabled$OnBootstrapEnabledCondition$OnUseLegacyProcessingEnabled.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/util/ConditionalOnBootstrapEnabled$OnBootstrapEnabledCondition.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/zookeeper/ConditionalOnZookeeperEnabled.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/zookeeper/ZookeeperAutoConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/zookeeper/discovery/ConditionalOnLoadBalancerForZookeeperEnabled.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/zookeeper/discovery/ConditionalOnZookeeperDiscoveryEnabled.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/zookeeper/discovery/LoadBalancerZookeeperAutoConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/zookeeper/discovery/ZookeeperDiscoveryAutoConfiguration$ZookeeperDiscoveryHealthConfig.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/zookeeper/discovery/ZookeeperDiscoveryAutoConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/zookeeper/discovery/ZookeeperDiscoveryClientConfiguration$Marker.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/zookeeper/discovery/ZookeeperDiscoveryClientConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/zookeeper/discovery/dependency/DependencyRestTemplateAutoConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/zookeeper/discovery/dependency/ZookeeperDependenciesAutoConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/zookeeper/discovery/reactive/ZookeeperReactiveDiscoveryClientConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/zookeeper/discovery/watcher/DependencyWatcherAutoConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/zookeeper/serviceregistry/ZookeeperAutoServiceRegistrationAutoConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/zookeeper/serviceregistry/ZookeeperServiceRegistryAutoConfiguration.class\\E"
+  }, {
+    "pattern":"\\Qorg/springframework/cloud/zookeeper/support/CuratorServiceDiscoveryAutoConfiguration.class\\E"
+  }, {
     "pattern":"\\Qorg/springframework/context/ApplicationContextAware.class\\E"
   }, {
     "pattern":"\\Qorg/springframework/context/ApplicationContextInitializer.class\\E"
   }, {
-      "pattern": "\\Qorg/springframework/context/ApplicationListener.class\\E"
-    },
-    {
+    "pattern":"\\Qorg/springframework/context/ApplicationListener.class\\E"
+  }, {
     "pattern":"\\Qorg/springframework/context/EnvironmentAware.class\\E"
   }, {
     "pattern":"\\Qorg/springframework/context/ResourceLoaderAware.class\\E"
@@ -776,9 +705,8 @@
   }, {
     "pattern":"\\Qorg/springframework/data/repository/ListCrudRepository.class\\E"
   }, {
-      "pattern": "\\Qorg/springframework/http/codec/CodecConfigurer.properties\\E"
-    },
-    {
+    "pattern":"\\Qorg/springframework/http/codec/CodecConfigurer.properties\\E"
+  }, {
     "pattern":"\\Qorg/springframework/transaction/annotation/AbstractTransactionManagementConfiguration.class\\E"
   }, {
     "pattern":"\\Qorg/springframework/transaction/annotation/EnableTransactionManagement.class\\E"
@@ -807,23 +735,22 @@
   }, {
     "pattern":"\\Qorg/springframework/web/reactive/config/WebFluxConfigurer.class\\E"
   }, {
-      "pattern": "\\Qpublic/index.html\\E"
-    },
-    {
-      "pattern": "\\Qresources/index.html\\E"
-    },
-    {
-      "pattern": "\\Qschema-all.sql\\E"
-    },
-    {
-      "pattern": "\\Qschema.sql\\E"
-    },
-    {
+    "pattern":"\\Qpublic/index.html\\E"
+  }, {
+    "pattern":"\\Qresources/index.html\\E"
+  }, {
+    "pattern":"\\Qschema-all.sql\\E"
+  }, {
+    "pattern":"\\Qschema.sql\\E"
+  }, {
     "pattern":"\\Qspring.properties\\E"
   }, {
-      "pattern": "\\Qstatic/index.html\\E"
-    },
-    {
+    "pattern":"\\Qstatic/index.html\\E"
+  }, {
+    "pattern":"java.base:\\Qjdk/internal/icu/impl/data/icudt74b/uprops.icu\\E"
+  }, {
+    "pattern":"java.base:\\Qsun/net/idn/uidna.spp\\E"
+  }, {
     "pattern":"java.xml:\\Qjdk/xml/internal/jdkcatalog/JDKCatalog.xml\\E"
   }]},
   "bundles":[{

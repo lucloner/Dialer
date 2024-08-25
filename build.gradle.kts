@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "net.vicp.biggee.aot.vpn.expressvpn"
-version = "1.0.1-rc1"
+version = "1.0.1-rc2"
 
 java {
     toolchain {
@@ -106,8 +106,8 @@ graalvmNative {
             buildArgs.add("-H:TraceClassInitialization=ALL")
             // buildArgs.add("-H:+PrintAnalysisCallTree")
             // buildArgs.add("-H:+ReportExceptionStackTraces")
-            buildArgs.add("-H:+DeadlockWatchdogExitOnTimeout")
-            buildArgs.add("-H:DeadlockWatchdogInterval=30000")
+            // buildArgs.add("-H:+DeadlockWatchdogExitOnTimeout")
+            buildArgs.add("-H:DeadlockWatchdogInterval=0")
         }
     }
 }
