@@ -79,6 +79,14 @@ public class Schedule {
                 log.info("[{}]checkStatus Connect to {}", meshIndex,location);
                 return;
             }
+
+            if(List.of(status, runShell.getStatus()).contains(Connected)){
+                recycle.clearAndRePlan();
+                location = runShell.getLocation();
+                log.info("[{}]checkStatus Connected to {}, clear And RePlan", meshIndex,location);
+                return;
+            }
+
             log.info("[{}]checkStatus is {} to {}", meshIndex,status,location);
         });
     }
@@ -110,6 +118,7 @@ public class Schedule {
                 runShell.setLocation(newLocation);
                 historyDao.save(new History(newLocation,Connected,meshIndex));
                 log.info("[{}]watchCat corrected location from {} to {}", meshIndex,location,newLocation);
+                recycle.clearAndRePlan();
                 return;
             }
 
@@ -138,6 +147,7 @@ public class Schedule {
             if(statusList.contains(Connected)){
                 log.info("[{}]watchCat checked and reconnected {}", meshIndex,location);
                 historyDao.save(new History(location,Connected,meshIndex));
+                recycle.clearAndRePlan();
                 return;
             }
 
