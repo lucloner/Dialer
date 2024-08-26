@@ -16,6 +16,7 @@ import java.io.InputStreamReader;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -46,9 +47,10 @@ public class Schedule {
     @Async
     @Scheduled(initialDelay = 1, fixedRate = 1, timeUnit = TimeUnit.MINUTES)
     public void checkStatus() {
-        for (RunShell runShell : RunShell.mesh) {
+        Arrays.stream(RunShell.mesh)
+                .parallel().forEach(runShell ->{
             if (!runShell.getHost().enabled) {
-                continue;
+                return;
             }
             log.info("ready to check: {}", runShell);
 
@@ -75,18 +77,19 @@ public class Schedule {
                 location = runShell.getLocation();
                 historyDao.save(new History(location,Connecting,meshIndex));
                 log.info("[{}]checkStatus Connect to {}", meshIndex,location);
-                continue;
+                return;
             }
             log.info("[{}]checkStatus is {} to {}", meshIndex,status,location);
-        }
+        });
     }
 
     @Async
     @Scheduled(initialDelay = 10, fixedRate = 15, timeUnit = TimeUnit.MINUTES)
     public void watchCat() {
-        for (RunShell runShell : RunShell.mesh) {
+        Arrays.stream(RunShell.mesh)
+                .parallel().forEach(runShell ->{
             if (!runShell.getHost().enabled) {
-                continue;
+                return;
             }
 
             int meshIndex = runShell.index;
@@ -97,7 +100,7 @@ public class Schedule {
             log.info("[{}]watchCat checked status from {} to {} around {}", meshIndex,lastStatus,status,location);
 
             if(!status.equals(lastStatus)){
-                continue;
+                return;
             }
 
             runShell.setStatus(status);
@@ -107,7 +110,7 @@ public class Schedule {
                 runShell.setLocation(newLocation);
                 historyDao.save(new History(newLocation,Connected,meshIndex));
                 log.info("[{}]watchCat corrected location from {} to {}", meshIndex,location,newLocation);
-                continue;
+                return;
             }
 
             Future<Process> future = connect.connect(meshIndex, location);
@@ -148,6 +151,6 @@ public class Schedule {
             location = runShell.getLocation();
             historyDao.save(new History(location,Connecting,meshIndex));
             log.info("[{}]watchCat Connect to {}", meshIndex,location);
-        }
+        });
     }
 }
