@@ -42,6 +42,7 @@ public class Connect {
         return runShell;
     }
 
+    @SuppressWarnings("unused")
     public synchronized RunShell setRunShell(RunShell runShell) {
         this.runShell = runShell;
         return runShell;
@@ -110,8 +111,8 @@ public class Connect {
         return null;
     }
 
-    @RequestMapping("/autoconnect")
-    public Future<Process> autoconnect(@RequestParam(defaultValue = "0") int meshIndex) {
+    @RequestMapping("/autoConnect")
+    public Future<Process> autoConnect(@RequestParam(defaultValue = "0") int meshIndex) {
         Plan pick = pick();
         if (pick == null) {
             if(plan()){
@@ -127,7 +128,7 @@ public class Connect {
     @RequestMapping("/init")
     public ExpressvpnStatus init(@RequestParam(defaultValue = "0") int meshIndex) {
         plan();
-        autoconnect(meshIndex);
+        autoConnect(meshIndex);
         return status.status(meshIndex);
     }
 

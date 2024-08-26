@@ -51,6 +51,10 @@ public class Recycle {
             if (Connected.equals(expressvpnStatus)) {
                 long deleted = historyDao.delete((r, q, b) -> b.and(b.equal(r.get("location"), location),
                         b.notEqual(r.get("status"), Connected)));
+
+                deleted += historyDao.delete((r, q, b) -> b.and(b.equal(r.get("location"), location),
+                        b.equal(r.get("status"), Connected),b.lt(r.get("id"),history.id)));
+
                 if(deleted>0){
                     log.info("Recycle [{}]: {} is Good, deleted: {}",meshIndex, location, deleted);
                 }
@@ -59,7 +63,7 @@ public class Recycle {
                 long deleted = historyDao.delete((r, q, b) -> b.and(b.equal(r.get("location"), location),
                         b.notEqual(r.get("status"), Connected),
                         b.equal(r.get("meshIndex"), meshIndex),
-                        b.notEqual(r.get("id"),last.id)));
+                        b.lt(r.get("id"),last.id)));
                 if(deleted>0){
                     log.info("Recycle [{}]: {} is Bad, deleted: {}",meshIndex, location, deleted);
                 }
@@ -71,11 +75,6 @@ public class Recycle {
 
     @RequestMapping("/rePlan")
     public void rePlan() {
-        historyDao.findAll((r, q, b) -> b.equal(r.get("status"), Connected))
-                .stream()
-                .map(History::getLocation)
-                .forEach(l->planDao.save(new Plan(l)));
-
         List<Plan> all = planDao.findAll();
         for (Plan p : all) {
             long deleted = planDao.delete((r, q, b) -> b.and(b.gt(r.get("id"), p.id), b.equal(r.get("alias"), p.alias)));
@@ -83,6 +82,12 @@ public class Recycle {
                 log.info("Recycle Plan: {} is Duplicated, deleted: {}", p.alias, deleted);
             }
         }
+
+        historyDao.findAll((r, q, b) -> b.equal(r.get("status"), Connected))
+                .stream()
+                .parallel()
+                .map(History::getLocation)
+                .forEach(l->planDao.save(new Plan(l)));
     }
 
     @RequestMapping("/clearAndRePlan")

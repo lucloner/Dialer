@@ -221,7 +221,9 @@ public class RunShell extends ProxySelector {
         location = location == null ? "" : location;
         var builder = initCommand(getCommand("connect", location));
         lastCheck = LocalDateTime.now();
-        return builder.start();
+        Process start = builder.start();
+        status=Connected;
+        return start;
     }
 
     public List<String> flush() {
@@ -229,6 +231,7 @@ public class RunShell extends ProxySelector {
         return getList();
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public String disconnect() {
         if (getInterval() <= 0
                 || getTolerance() <= 0
@@ -237,7 +240,10 @@ public class RunShell extends ProxySelector {
             log.info("[{}]disconnect disabled {}/{} {}", getIndex(), getInterval(),getTolerance(),lastCheck);
             return Connecting.key;
         }
-        return run(getCommand("disconnect")).toString();
+
+        String disconnect = run(getCommand("disconnect")).toString();
+        status=Not_Connected;
+        return disconnect;
     }
 
     public ExpressvpnStatus status() {
@@ -275,10 +281,8 @@ public class RunShell extends ProxySelector {
             return Connected;
         }
 
+        //noinspection UnnecessaryLocalVariable
         ExpressvpnStatus expressvpnStatus = checkStatus(returns, Halt, Connected, Connecting, Reconnecting, Unable_Connect, base, Unknown_Error, Busy);
-        if (!Connected.equals(expressvpnStatus)) {
-            lastCheck = lastCheck.minusHours(1);
-        }
         return expressvpnStatus;
     }
 
