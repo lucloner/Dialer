@@ -93,14 +93,14 @@ public class Status {
     }
 
     @RequestMapping("/setHost")
-    public Host setHost(int meshIndex,Host host) {
+    public Host setHost(@RequestParam(defaultValue = "0") int meshIndex, Host host) {
         host.enabled=true;
         listHost()[meshIndex]=host;
         return  listHost()[meshIndex];
     }
 
     @RequestMapping("/switchHost")
-    public boolean switchHost(int meshIndex) {
+    public boolean switchHost(@RequestParam(defaultValue = "0") int meshIndex) {
         Host host =  listHost()[meshIndex];
         host.enabled=!host.enabled;
         return host.enabled;

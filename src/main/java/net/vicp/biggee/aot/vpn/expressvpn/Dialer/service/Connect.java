@@ -98,7 +98,7 @@ public class Connect {
     }
 
     @RequestMapping("/connect")
-    public Future<Process> connect(@RequestParam(defaultValue = "0") int meshIndex, String alias) {
+    public Future<Process> connect(@RequestParam(defaultValue = "0") int meshIndex, @RequestParam(defaultValue = "") String alias) {
         RunShell rs= RunShell.mesh[meshIndex];
         ExpressvpnStatus expressvpnStatus = status.status(meshIndex);
         if (Arrays.asList(Not_Connected, Unable_Connect, Unknown_Error).contains(expressvpnStatus)) {
@@ -133,7 +133,7 @@ public class Connect {
     }
 
     @RequestMapping("/switch")
-    public int switchMesh(int meshIndex) {
+    public int switchMesh(@RequestParam(defaultValue = "0") int meshIndex) {
         if(meshIndex<0||meshIndex>=RunShell.mesh.length){
             return runShell.index;
         }
