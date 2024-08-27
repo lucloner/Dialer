@@ -27,7 +27,7 @@ import static net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus.*
 @RequestMapping("/connect")
 public class Connect {
 
-    public static ExecutorService executor = Executors.newCachedThreadPool();
+    public static ExecutorService executor = Executors.newWorkStealingPool();
     final
     Status status;
     final
