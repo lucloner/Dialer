@@ -15,7 +15,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -175,7 +174,7 @@ public class Schedule {
                     }
 
                     try {
-                        Thread.sleep(Duration.of(1, ChronoUnit.MINUTES));
+                        Thread.sleep(60000);
                     } catch (InterruptedException e) {
                         log.error("[{}]watchCat sleep error {}", meshIndex, location, e);
                     }
