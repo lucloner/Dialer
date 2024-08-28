@@ -87,16 +87,18 @@ graalvmNative {
             } else {
                 buildArgs.add("-march=x86-64-v1")
             }
-//             buildArgs.add("--no-fallback")
+            buildArgs.add("--no-fallback")
 //             buildArgs.add("-H:-DebugInfo")
             buildArgs.add("-Djava.util.logging.ConsoleHandler.level=FINE")
             buildArgs.add("--trace-class-initialization=org.hibernate.bytecode.internal.bytebuddy.BytecodeProviderImpl")
-//             buildArgs.add("--initialize-at-build-time="
-//             +"ch.qos.logback.core.status.InfoStatus")
-            buildArgs.add(
-                "--initialize-at-run-time="
-                        + "org.hibernate.bytecode.internal.bytebuddy.BytecodeProviderImpl"
-            )
+//             buildArgs.add(
+//                "--initialize-at-build-time="
+//                        + "ch.qos.logback.core.status.InfoStatus"
+//             )
+//            buildArgs.add(
+//                "--initialize-at-run-time="
+//                        + "org.hibernate.bytecode.internal.bytebuddy.BytecodeProviderImpl"
+//            )
             buildArgs.add("--report-unsupported-elements-at-runtime")
             buildArgs.add("-H:ReflectionConfigurationFiles=${project.rootDir}/META-INF/native-image/reflect-config.json")
             buildArgs.add("-H:ResourceConfigurationFiles=${project.rootDir}/META-INF/native-image/resource-config.json")
@@ -104,8 +106,6 @@ graalvmNative {
             buildArgs.add("-H:DynamicProxyConfigurationFiles=${project.rootDir}/META-INF/native-image/proxy-config.json")
             buildArgs.add("--verbose")
             buildArgs.add("-H:TraceClassInitialization=ALL")
-            // buildArgs.add("-H:+PrintAnalysisCallTree")
-            // buildArgs.add("-H:+ReportExceptionStackTraces")
             // buildArgs.add("-H:+DeadlockWatchdogExitOnTimeout")
             buildArgs.add("-H:DeadlockWatchdogInterval=0")
         }
