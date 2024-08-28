@@ -320,7 +320,7 @@ public class RunShell extends ProxySelector {
             return Collections.singletonList(DISABLED.key);
         }
         if (pidList.values().stream().filter(i -> index == i).count() > pidLimit) {
-            log.warn("run command but resource limited: {}", commands);
+            log.warn("[{}]run command but resource limited: {}", index, commands);
             Schedule.watchPIDs();
             return Collections.singletonList(Busy.key);
         }

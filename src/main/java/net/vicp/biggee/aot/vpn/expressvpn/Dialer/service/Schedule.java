@@ -57,7 +57,8 @@ public class Schedule {
                         RunShell.pidList.remove(p);
                         log.info("pid {} checked and is Terminated", p);
                     } else {
-                        log.warn("pid {} is still Alive!", p);
+                        int index = RunShell.pidList.get(p);
+                        log.warn("pid {}/{} is still Alive!", p, index);
                     }
                 });
     }
