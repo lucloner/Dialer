@@ -6,6 +6,7 @@ import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Host;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Node;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.NodesDao;
+import net.vicp.biggee.aot.vpn.expressvpn.Dialer.service.Schedule;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.event.EventListener;
@@ -44,6 +45,8 @@ public class RunShell extends ProxySelector {
     private LocalDateTime lastCheck = LocalDateTime.now().minusYears(1);
     private String[] dns;
     private boolean supportIPv6 = false;
+    public static final Map<Long, Integer> pidList = new HashMap<>();
+    public static final int pidLimit = 5;
 
     public RunShell() {
 
@@ -314,13 +317,20 @@ public class RunShell extends ProxySelector {
 
     public List<String> run(List<String> commands) {
         if (!getHost().enabled) {
-            return Collections.singletonList("DISABLED");
+            return Collections.singletonList(DISABLED.key);
         }
+        if (pidList.values().stream().filter(i -> index == i).count() > pidLimit) {
+            log.warn("run command but resource limited: {}", commands);
+            Schedule.watchPIDs();
+            return Collections.singletonList(Busy.key);
+        }
+
         var builder = initCommand(commands);
         Process start = null;
         try {
             log.debug("run command: {}", commands);
             start = builder.start();
+            pidList.put(start.pid(), index);
             start.waitFor(status.timeout, TimeUnit.SECONDS);
             return new BufferedReader(
                     new InputStreamReader(

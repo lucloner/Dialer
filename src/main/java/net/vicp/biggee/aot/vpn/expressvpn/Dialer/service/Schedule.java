@@ -49,57 +49,16 @@ public class Schedule {
         this.recycle = recycle;
     }
 
-    @Async
-    @Scheduled(initialDelay = 1, fixedRate = 1, timeUnit = TimeUnit.MINUTES)
-    public void checkStatus() {
-        Arrays.stream(RunShell.mesh)
-                .parallel().forEach(runShell -> {
-                    if (!runShell.getHost().enabled) {
-                        return;
+    public static void watchPIDs() {
+        RunShell.pidList
+                .keySet()
+                .forEach(p -> {
+                    if (ProcessHandle.of(p).map(ProcessHandle::isAlive).orElse(false)) {
+                        RunShell.pidList.remove(p);
+                        log.info("pid {} checked and is Terminated", p);
+                    } else {
+                        log.warn("pid {} is still Alive!", p);
                     }
-                    log.info("ready to check: {}", runShell);
-
-                    int meshIndex = runShell.index;
-                    ExpressvpnStatus status = connect.status.status(meshIndex);
-                    runShell.setStatus(status);
-                    String location = runShell.getLocation();
-                    historyDao.save(new History(location, status, meshIndex));
-
-                    if (List.of(Connecting, Reconnecting, Busy).contains(status)) {
-                        LocalDateTime since = runShell.getLastCheck();
-                        int timeout = runShell.getInterval();
-                        if (timeout > 0 && Duration.between(since, LocalDateTime.now()).toMinutes() > 10 + timeout) {
-                            runShell.disconnect();
-                            runShell.setStatus(Not_Connected);
-                            status = Not_Connected;
-                            historyDao.save(new History(location, Not_Connected, meshIndex));
-                            log.info("[{}]checkStatus timeout to {} since {}", meshIndex, location, since);
-                        }
-                    }
-
-                    if (!runShell.isConnected() && List.of(Not_Connected, Unable_Connect, Unknown_Error, Upgradeable, Upgradeable_Arch).contains(status)) {
-                        connect.autoConnect(meshIndex);
-                        location = runShell.getLocation();
-                        historyDao.save(new History(location, Connecting, meshIndex));
-                        log.info("[{}]checkStatus Connect to {}", meshIndex, location);
-                        return;
-                    }
-
-                    if (List.of(status, runShell.getStatus()).contains(Connected)) {
-                        if (location == null || location.isEmpty()) {
-                            String newLocation = runShell.getLocation(nodesDao);
-                            runShell.setLocation(newLocation);
-                        }
-                        location = runShell.getLocation();
-                        log.info("[{}]checkStatus Connected to {}, clear And RePlan", meshIndex, location);
-                        recycle.clearAndRePlan();
-                        runShell.setConnected(true);
-                        runShell.setLastCheck(LocalDateTime.now());
-                        return;
-                    }
-
-                    runShell.setConnected(false);
-                    log.info("[{}]checkStatus is {} to {}", meshIndex, status, location);
                 });
     }
 
@@ -107,7 +66,6 @@ public class Schedule {
     @Scheduled(initialDelay = 10, fixedRate = 15, timeUnit = TimeUnit.MINUTES)
     public void watchCat() {
         Arrays.stream(RunShell.mesh)
-                .parallel()
                 .forEach(runShell -> {
                     if (!runShell.getHost().enabled) {
                         return;
@@ -190,5 +148,65 @@ public class Schedule {
                     historyDao.save(new History(location, Connecting, meshIndex));
                     log.info("[{}]watchCat Connect to {}", meshIndex, location);
                 });
+    }
+
+    @Async
+    @Scheduled(initialDelay = 1, fixedRate = 1, timeUnit = TimeUnit.MINUTES)
+    public void checkStatus() {
+        Arrays.stream(RunShell.mesh)
+                .forEach(runShell -> {
+                    if (!runShell.getHost().enabled) {
+                        return;
+                    }
+                    log.info("ready to check: {}", runShell);
+
+                    int meshIndex = runShell.index;
+                    ExpressvpnStatus status = connect.status.status(meshIndex);
+                    runShell.setStatus(status);
+                    String location = runShell.getLocation();
+                    historyDao.save(new History(location, status, meshIndex));
+
+                    if (List.of(Connecting, Reconnecting, Busy).contains(status)) {
+                        LocalDateTime since = runShell.getLastCheck();
+                        int timeout = runShell.getInterval();
+                        if (timeout > 0 && Duration.between(since, LocalDateTime.now()).toMinutes() > 10 + timeout) {
+                            runShell.disconnect();
+                            runShell.setStatus(Not_Connected);
+                            status = Not_Connected;
+                            historyDao.save(new History(location, Not_Connected, meshIndex));
+                            log.info("[{}]checkStatus timeout to {} since {}", meshIndex, location, since);
+                        }
+                    }
+
+                    if (!runShell.isConnected() && List.of(Not_Connected, Unable_Connect, Unknown_Error, Upgradeable, Upgradeable_Arch).contains(status)) {
+                        connect.autoConnect(meshIndex);
+                        location = runShell.getLocation();
+                        historyDao.save(new History(location, Connecting, meshIndex));
+                        log.info("[{}]checkStatus Connect to {}", meshIndex, location);
+                        return;
+                    }
+
+                    if (List.of(status, runShell.getStatus()).contains(Connected)) {
+                        if (location == null || location.isEmpty()) {
+                            String newLocation = runShell.getLocation(nodesDao);
+                            runShell.setLocation(newLocation);
+                        }
+                        location = runShell.getLocation();
+                        log.info("[{}]checkStatus Connected to {}, clear And RePlan", meshIndex, location);
+                        recycle.clearAndRePlan();
+                        runShell.setConnected(true);
+                        runShell.setLastCheck(LocalDateTime.now());
+                        return;
+                    }
+
+                    runShell.setConnected(false);
+                    log.info("[{}]checkStatus is {} to {}", meshIndex, status, location);
+                });
+    }
+
+    @Async
+    @Scheduled(initialDelay = 5, fixedRate = 2, timeUnit = TimeUnit.MINUTES)
+    public void doWatchPIDs() {
+        watchPIDs();
     }
 }
