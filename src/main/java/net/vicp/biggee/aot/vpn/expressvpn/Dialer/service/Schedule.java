@@ -6,6 +6,7 @@ import net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.HistoryDao;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.NodesDao;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.PlanDao;
+import net.vicp.biggee.aot.vpn.expressvpn.Dialer.util.BashProcess;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.util.RunShell;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -178,5 +179,38 @@ public class Schedule {
                     runShell.setConnected(false);
                     log.info("[{}]checkStatus is {} to {}", meshIndex, status, location);
                 });
+    }
+
+    @Async
+    @Scheduled(initialDelay = 15, fixedRate = 30, timeUnit = TimeUnit.MINUTES)
+    public void checkProcess() {
+        for (RunShell runShell : RunShell.mesh) {
+            int index = runShell.getIndex();
+            BashProcess main = runShell.getMain();
+            BashProcess monitor = runShell.getMonitor();
+
+            for (int i = 0; i < 10; i++) {
+                if (main.ready() && monitor.ready()) {
+                    break;
+                }
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    log.warn("[{}]checkProcess wait Interrupted!", index);
+                }
+            }
+
+            if (!main.isAlive()) {
+                main.destroy();
+                runShell.setMain(new BashProcess());
+                log.warn("[{}]main Process is dead, regenerate!", index);
+            }
+
+            if (!monitor.isAlive()) {
+                monitor.destroy();
+                runShell.setMonitor(new BashProcess());
+                log.warn("[{}]monitor Process is dead, regenerate!", index);
+            }
+        }
     }
 }

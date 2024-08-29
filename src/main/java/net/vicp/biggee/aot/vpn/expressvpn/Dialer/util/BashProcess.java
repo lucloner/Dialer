@@ -11,7 +11,8 @@ import java.util.stream.Stream;
 
 @Slf4j
 public class BashProcess extends Process {
-    private final static String bash = "/usr/bin/sh";
+    @SuppressWarnings({"FieldMayBeFinal", "FieldCanBeLocal"})
+    private static String bash = "/usr/bin/sh"; //初始化调用which语句
     private final ExecutorService exec;
     private final Process process;
     private final OutputStream outputStream;
@@ -34,7 +35,6 @@ public class BashProcess extends Process {
         cmdWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
         stdout = new BufferedReader(new InputStreamReader(inputStream));
         stderr = new BufferedReader(new InputStreamReader(errorStream));
-        //noinspection resource
         exec = Executors.newFixedThreadPool(2);
         //noinspection ResultOfMethodCallIgnored
         exec.execute(() -> stdout.lines().forEach(std::offer));
@@ -73,7 +73,7 @@ public class BashProcess extends Process {
         for (int i = 0; i < stdCnt; i++) {
             String peek = String.valueOf(queue.peek());
             //noinspection LoggingSimilarMessage
-            log.debug("stdout: {}", peek);
+            log.debug("stdout peek: {}", peek);
             list.add(peek);
         }
         return list;
@@ -217,5 +217,38 @@ public class BashProcess extends Process {
         list.addAll(peek(std));
         list.addAll(peek(err));
         return list;
+    }
+
+    public boolean isAlive() {
+        ready = false;
+        String check = checkString;
+        String take = "";
+
+        var echo = new ArrayList<>(readAll());
+        try {
+            check = run(initCommand("echo", check));
+            take = std.poll(5, TimeUnit.SECONDS);
+            Thread.sleep(1000);
+            echo.add(take);
+        } catch (InterruptedException | IOException e) {
+            log.warn("read error", e);
+        }
+
+        if (String.valueOf(take).contains(check)) {
+            readAll();
+            ready = true;
+            return true;
+        }
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            log.warn("Alive check wait error", e);
+        }
+        echo.addAll(peekAll());
+        echo.removeIf(Objects::isNull);
+        String finalCheck = check;
+        ready = echo.stream().anyMatch(l -> l.contains(finalCheck));
+        return ready;
     }
 }
