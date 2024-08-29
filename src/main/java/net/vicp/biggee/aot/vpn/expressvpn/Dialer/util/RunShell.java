@@ -1,29 +1,31 @@
 package net.vicp.biggee.aot.vpn.expressvpn.Dialer.util;
 
 import lombok.Data;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Host;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Node;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.NodesDao;
-import net.vicp.biggee.aot.vpn.expressvpn.Dialer.service.Schedule;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.*;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus.*;
 
@@ -45,11 +47,14 @@ public class RunShell extends ProxySelector {
     private LocalDateTime lastCheck = LocalDateTime.now().minusYears(1);
     private String[] dns;
     private boolean supportIPv6 = false;
-    public static final Map<Long, Integer> pidList = new HashMap<>();
-    public static final int pidLimit = 5;
 
+    private final static ExecutorService exec = Executors.newCachedThreadPool();
+    private final static AtomicInteger asyncReadyCount = new AtomicInteger();
+    private BashProcess main = new BashProcess();
+    private BashProcess monitor = new BashProcess();
+
+    @SneakyThrows
     public RunShell() {
-
     }
 
     public boolean isSupportIPv6() {
@@ -220,17 +225,40 @@ public class RunShell extends ProxySelector {
         return node.orElse(new Node("", location, false)).alias;
     }
 
-    public Process connect(String location) throws IOException {
-        location = location == null ? "" : location;
-        var builder = initCommand(getCommand("connect", location));
+    public BashProcess connect(String location) throws IOException {
+        if (!main.ready()) {
+            List<String> readAll = main.readAll();
+            if (readAll.isEmpty()) {
+                status = Connecting_to;
+            } else {
+                status = status(readAll.toString());
+            }
+            return null;
+        }
+        status = Connecting;
+        location = location == null ? "" : location.trim();
+        if (!location.isBlank()) {
+            this.location = location;
+        }
+        List<String> connect = main.runSync(getCommand("connect", location));
         lastCheck = LocalDateTime.now();
-        Process start = builder.start();
-        status=Connected;
-        return start;
+        status = checkStatus(connect.toString(), Halt, Connected, Connecting, Reconnecting, Unable_Connect, Unknown_Error, Busy);
+        exec.execute(() -> asyncReady(main));
+        return main;
+    }
+
+    public void asyncReady(BashProcess bashProcess) {
+        String hexString = Long.toHexString(new Object().hashCode());
+        log.info("asyncReady[{}] start! running: {}", hexString, asyncReadyCount.incrementAndGet());
+        while (!bashProcess.ready()) {
+            List<String> readAll = bashProcess.readAll();
+            status = status(readAll.toString());
+        }
+        log.info("asyncReady[{}] done! running: {}", hexString, asyncReadyCount.decrementAndGet());
     }
 
     public List<String> flush() {
-        run(getCommand("refresh"));
+        monitor.runSync(getCommand("refresh"));
         return getList();
     }
 
@@ -240,18 +268,35 @@ public class RunShell extends ProxySelector {
                 || getTolerance() <= 0
                 || getTolerance() >= getUrls().length
                 || Duration.between(lastCheck, LocalDateTime.now()).toMinutes() < getInterval()) {
-            log.info("[{}]disconnect disabled {}/{} {}", getIndex(), getInterval(),getTolerance(),lastCheck);
+            log.info("[{}]disconnect disabled {}/{} {}", getIndex(), getInterval(), getTolerance(), lastCheck);
             return Connecting.key;
         }
 
-        String disconnect = run(getCommand("disconnect")).toString();
-        status=Not_Connected;
+        String disconnect = monitor.runSync(getCommand("disconnect")).toString();
+        status = Not_Connected;
+        exec.execute(() -> asyncReady(monitor));
         return disconnect;
     }
 
     public ExpressvpnStatus status() {
-        var returns = run(getCommand("status"));
-        return status(returns.toString());
+        if (monitor.ready()) {
+            var returns = monitor.runSync(getCommand("status"));
+            status = status(returns.toString());
+            exec.execute(() -> asyncReady(monitor));
+            return status;
+        } else if (Working.equals(status)) {
+            List<String> returns = monitor.readAll();
+            returns.addAll(main.peekAll());
+            if (returns.isEmpty()) {
+                monitor.destroy();
+                monitor = new BashProcess();
+                status = Unknown_Error;
+                return Unknown_Error;
+            }
+            status = status(returns.toString());
+            return status;
+        }
+        return Working;
     }
 
     public ExpressvpnStatus checkStatus(String returns, ExpressvpnStatus... statuses) {
@@ -290,7 +335,7 @@ public class RunShell extends ProxySelector {
     }
 
     public List<String> getList() {
-        List<String> result = run(getCommand("list", "all"));
+        List<String> result = main.runSync(getCommand("list", "all"));
         if (Halt.equals(checkStatus(result.toString(), Halt))) {
             log.error("expressvpnd is halt! {}", result);
             return List.of("xv", "smart");
@@ -312,55 +357,8 @@ public class RunShell extends ProxySelector {
             newList.add(n);
         }
 
+        exec.execute(() -> asyncReady(main));
         return newList;
-    }
-
-    public List<String> run(List<String> commands) {
-        if (!getHost().enabled) {
-            return Collections.singletonList(DISABLED.key);
-        }
-        if (pidList.values().stream().filter(i -> index == i).count() > pidLimit) {
-            log.warn("[{}]run command but resource limited: {}", index, commands);
-            Schedule.watchPIDs();
-            return Collections.singletonList(Busy.key);
-        }
-
-        var builder = initCommand(commands);
-        Process start = null;
-        try {
-            log.debug("run command: {}", commands);
-            start = builder.start();
-            pidList.put(start.pid(), index);
-            start.waitFor(status.timeout, TimeUnit.SECONDS);
-            return new BufferedReader(
-                    new InputStreamReader(
-                            start.getInputStream()))
-                    .lines().toList();
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
-        } finally {
-            if (start != null && !commands.contains("kill")) {
-                String pid = String.valueOf(start.pid());
-                start.destroy();
-                //noinspection resource
-                Executors.newSingleThreadScheduledExecutor()
-                                .scheduleWithFixedDelay(start::destroyForcibly,15,15,TimeUnit.SECONDS);
-                Process finalStart = start;
-                //noinspection resource
-                Executors.newSingleThreadScheduledExecutor()
-                        .scheduleWithFixedDelay(() -> {
-                            if(finalStart.isAlive()){
-                                log.warn("Commands {} troubled Destroy: {}, force killing",commands,pid);
-                                run(List.of("kill","-9",pid));
-                            }
-                        },30,30,TimeUnit.SECONDS);
-            }
-        }
-    }
-
-    public ProcessBuilder initCommand(List<String> commands) {
-        commands.removeIf(Objects::isNull);
-        return new ProcessBuilder(commands);
     }
 
     @Override

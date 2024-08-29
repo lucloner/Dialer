@@ -11,18 +11,13 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.stream.Stream;
 
 import static net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus.*;
@@ -49,20 +44,6 @@ public class Schedule {
         this.recycle = recycle;
     }
 
-    public static void watchPIDs() {
-        RunShell.pidList
-                .keySet()
-                .forEach(p -> {
-                    if (ProcessHandle.of(p).map(ProcessHandle::isAlive).orElse(false)) {
-                        RunShell.pidList.remove(p);
-                        log.info("pid {} checked and is Terminated", p);
-                    } else {
-                        int index = RunShell.pidList.get(p);
-                        log.warn("pid {}/{} is still Alive!", p, index);
-                    }
-                });
-    }
-
     @Async
     @Scheduled(initialDelay = 10, fixedRate = 15, timeUnit = TimeUnit.MINUTES)
     public void watchCat() {
@@ -83,8 +64,6 @@ public class Schedule {
                         return;
                     }
 
-                    runShell.setStatus(status);
-
                     if (runShell.isConnected() && Connected.equals(status)) {
                         String newLocation = runShell.getLocation(nodesDao);
                         runShell.setLocation(newLocation);
@@ -96,19 +75,15 @@ public class Schedule {
                         return;
                     }
 
-                    Future<Process> future = connect.connect(meshIndex, location);
                     List<String> stdout = new ArrayList<>();
                     try {
-                        Process process = future.get(5, TimeUnit.MINUTES);
-                        if (process != null) {
-                            stdout = new BufferedReader(
-                                    new InputStreamReader(
-                                            process.getInputStream()))
-                                    .lines().toList();
+                        var conn = connect.connect(meshIndex, location);
+                        if (conn != null) {
+                            stdout = runShell.getMain().readAll();
                         } else {
-                            stdout = Collections.singletonList(Busy.key);
+                            stdout = Collections.singletonList(runShell.getStatus().key);
                         }
-                    } catch (InterruptedException | ExecutionException | TimeoutException e) {
+                    } catch (Exception e) {
                         log.error("[{}]watchCat future wait error {}", meshIndex, location, e);
                     }
 
@@ -138,7 +113,7 @@ public class Schedule {
                         log.error("[{}]watchCat sleep error {}", meshIndex, location, e);
                     }
 
-                    if (Stream.of(Not_Connected, Connecting, Reconnecting, Unable_Connect, Unknown_Error).anyMatch(statusList::contains)) {
+                    if (Stream.of(Not_Connected, Connecting, Reconnecting, Unable_Connect, Unknown_Error, Connecting_to).anyMatch(statusList::contains)) {
                         log.info("[{}]watchCat failed to reconnected {}", meshIndex, location);
                         runShell.disconnect();
                     }
@@ -162,12 +137,11 @@ public class Schedule {
                     log.info("ready to check: {}", runShell);
 
                     int meshIndex = runShell.index;
-                    ExpressvpnStatus status = connect.status.status(meshIndex);
-                    runShell.setStatus(status);
+                    ExpressvpnStatus status = runShell.getStatus();
                     String location = runShell.getLocation();
-                    historyDao.save(new History(location, status, meshIndex));
 
-                    if (List.of(Connecting, Reconnecting, Busy).contains(status)) {
+                    if (List.of(Connecting, Reconnecting, Busy, Connecting_to).contains(status)) {
+                        status = connect.status.status(meshIndex);
                         LocalDateTime since = runShell.getLastCheck();
                         int timeout = runShell.getInterval();
                         if (timeout > 0 && Duration.between(since, LocalDateTime.now()).toMinutes() > 10 + timeout) {
@@ -179,7 +153,7 @@ public class Schedule {
                         }
                     }
 
-                    if (!runShell.isConnected() && List.of(Not_Connected, Unable_Connect, Unknown_Error, Upgradeable, Upgradeable_Arch).contains(status)) {
+                    if (!runShell.isConnected() && List.of(Not_Connected, Unable_Connect, Unknown_Error, Upgradeable, Upgradeable_Arch, Working, Connecting_to).contains(status)) {
                         connect.autoConnect(meshIndex);
                         location = runShell.getLocation();
                         historyDao.save(new History(location, Connecting, meshIndex));
@@ -188,6 +162,7 @@ public class Schedule {
                     }
 
                     if (List.of(status, runShell.getStatus()).contains(Connected)) {
+                        status = connect.status.status(meshIndex);
                         if (location == null || location.isEmpty()) {
                             String newLocation = runShell.getLocation(nodesDao);
                             runShell.setLocation(newLocation);
@@ -203,11 +178,5 @@ public class Schedule {
                     runShell.setConnected(false);
                     log.info("[{}]checkStatus is {} to {}", meshIndex, status, location);
                 });
-    }
-
-    @Async
-    @Scheduled(initialDelay = 5, fixedRate = 2, timeUnit = TimeUnit.MINUTES)
-    public void doWatchPIDs() {
-        watchPIDs();
     }
 }

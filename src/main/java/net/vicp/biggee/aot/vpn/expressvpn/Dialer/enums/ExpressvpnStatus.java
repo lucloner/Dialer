@@ -7,6 +7,8 @@ public enum ExpressvpnStatus {
     Connecting("Connecting",2,300),
     Reconnecting("Reconnecting...",3,600),
     Unable_Connect("Unable to connect",4),
+    Connecting_to("Connecting to", 97),
+    Working(null, 98),
     Unknown_Error(null,99),
     DISABLED("DISABLED",100),
     Upgradeable("update ExpressVPN",6),

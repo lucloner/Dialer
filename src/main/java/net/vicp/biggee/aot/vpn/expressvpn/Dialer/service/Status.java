@@ -67,7 +67,7 @@ public class Status {
                 location = "Smart Location " + location.split("Smart Location", 2)[1].trim();
             }
             try {
-                nodesDao.save(new Node(alias, location, recommended));
+                nodesDao.save(new Node(alias.trim(), location.trim(), recommended));
             } catch (Exception e) {
                 log.error("nodesDao save error",e);
             }

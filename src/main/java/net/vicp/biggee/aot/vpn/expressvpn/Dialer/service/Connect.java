@@ -8,26 +8,23 @@ import net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.HistoryDao;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.NodesDao;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.PlanDao;
+import net.vicp.biggee.aot.vpn.expressvpn.Dialer.util.BashProcess;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.util.RunShell;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
-import static net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus.*;
+import static net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus.Connecting;
 
 @Slf4j
 @RestController
 @RequestMapping("/connect")
 public class Connect {
-
-    public static ExecutorService executor = Executors.newWorkStealingPool();
     final
     Status status;
     final
@@ -90,31 +87,39 @@ public class Connect {
 
     @RequestMapping("/pick")
     public Plan pick() {
+        planDao.deleteAll(planDao.findAll((r, q, b) -> b.or(b.isNull(r.get("alias")), b.equal(r.get("alias"), ""))));
+        long count = planDao.count();
+        if (count == 0) {
+            return null;
+        }
         return planDao.findFirstBy();
     }
 
-    public Future<Process> connect(String alias) {
+    public BashProcess connect(String alias) {
         return connect(runShell.index,alias);
     }
 
     @RequestMapping("/connect")
-    public Future<Process> connect(@RequestParam(defaultValue = "0") int meshIndex, @RequestParam(defaultValue = "") String alias) {
+    public BashProcess connect(@RequestParam(defaultValue = "0") int meshIndex, @RequestParam(defaultValue = "") String alias) {
         RunShell rs= RunShell.mesh[meshIndex];
         ExpressvpnStatus expressvpnStatus = status.status(meshIndex);
-        if (Arrays.asList(Not_Connected, Unable_Connect, Unknown_Error).contains(expressvpnStatus)) {
-            Future<Process> submit = executor.submit(() -> rs.connect(alias));
+        BashProcess connect = null;
+        try {
+            connect = rs.connect(alias);
+        } catch (IOException e) {
+            log.warn("[{}]run connect error to {}", meshIndex, alias);
+        }
+        if (connect != null) {
             planDao.deleteAll(planDao.findAll((r, q, b) -> b.equal(r.get("alias"), alias)));
             historyDao.save(new History(alias, Connecting, meshIndex));
-            return submit;
         }
-
-        return null;
+        return connect;
     }
 
     @RequestMapping("/autoConnect")
-    public Future<Process> autoConnect(@RequestParam(defaultValue = "0") int meshIndex) {
+    public BashProcess autoConnect(@RequestParam(defaultValue = "0") int meshIndex) {
         Plan pick = pick();
-        if (pick == null) {
+        while (pick == null) {
             if(plan()){
                 pick = pick();
             } else {
