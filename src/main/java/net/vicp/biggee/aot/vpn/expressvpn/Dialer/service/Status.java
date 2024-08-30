@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import static net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus.Connected;
-import static net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus.Unknown_Error;
+import static net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus.Reconnecting;
 
 @Slf4j
 @RestController
@@ -82,7 +82,7 @@ public class Status {
         RunShell runShell = RunShell.mesh[meshIndex];
         ExpressvpnStatus expressvpnStatus = runShell.status();
         if (Connected.equals(expressvpnStatus)) {
-            return runShell.checkWebs() ? Connected : Unknown_Error;
+            return runShell.checkWebs() ? Connected : Reconnecting;
         }
         return expressvpnStatus;
     }

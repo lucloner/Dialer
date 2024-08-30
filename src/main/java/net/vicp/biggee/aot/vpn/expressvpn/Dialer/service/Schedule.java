@@ -164,6 +164,10 @@ public class Schedule {
 
                     if (List.of(status, runShell.getStatus()).contains(Connected)) {
                         status = connect.status.status(meshIndex);
+                        if (!Connected.equals(status)) {
+                            runShell.setConnected(false);
+                            return;
+                        }
                         if (location == null || location.isEmpty()) {
                             String newLocation = runShell.getLocation(nodesDao);
                             runShell.setLocation(newLocation);
@@ -200,16 +204,20 @@ public class Schedule {
                 }
             }
 
-            if (!main.isAlive()) {
-                main.destroy();
-                runShell.setMain(new BashProcess());
-                log.warn("[{}]main Process is dead, regenerate!", index);
+            synchronized (main) {
+                if (!main.isAlive()) {
+                    main.destroy();
+                    runShell.setMain(new BashProcess());
+                    log.warn("[{}]main Process is dead, regenerate!", index);
+                }
             }
 
-            if (!monitor.isAlive()) {
-                monitor.destroy();
-                runShell.setMonitor(new BashProcess());
-                log.warn("[{}]monitor Process is dead, regenerate!", index);
+            synchronized (monitor) {
+                if (!monitor.isAlive()) {
+                    monitor.destroy();
+                    runShell.setMonitor(new BashProcess());
+                    log.warn("[{}]monitor Process is dead, regenerate!", index);
+                }
             }
         }
     }

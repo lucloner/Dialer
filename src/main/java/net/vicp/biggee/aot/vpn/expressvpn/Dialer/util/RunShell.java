@@ -50,11 +50,13 @@ public class RunShell extends ProxySelector {
 
     private final static ExecutorService exec = Executors.newCachedThreadPool();
     private final static AtomicInteger asyncReadyCount = new AtomicInteger();
-    private BashProcess main = new BashProcess();
-    private BashProcess monitor = new BashProcess();
+    private BashProcess main;
+    private BashProcess monitor;
 
     @SneakyThrows
     public RunShell() {
+        main = new BashProcess();
+        monitor = new BashProcess();
     }
 
     public boolean isSupportIPv6() {

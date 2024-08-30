@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
@@ -28,6 +29,10 @@ public class BashProcess extends Process {
 
     @SneakyThrows
     public BashProcess() {
+        while (!Path.of(bash).toFile().isFile()) {
+            Process started = new ProcessBuilder("which", "sh").start();
+            bash = new BufferedReader(new InputStreamReader(started.getInputStream())).readLine();
+        }
         process = new ProcessBuilder(bash).start();
         outputStream = process.getOutputStream();
         inputStream = process.getInputStream();
