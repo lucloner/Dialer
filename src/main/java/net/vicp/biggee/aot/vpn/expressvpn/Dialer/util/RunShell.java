@@ -19,10 +19,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -56,7 +53,9 @@ public class RunShell extends ProxySelector {
     @SneakyThrows
     public RunShell() {
         main = new BashProcess();
+        BashProcess.bashManager.put(main, hashCode());
         monitor = new BashProcess();
+        BashProcess.bashManager.put(monitor, hashCode());
     }
 
     public boolean isSupportIPv6() {
@@ -413,5 +412,34 @@ public class RunShell extends ProxySelector {
         result = 31 * result + Integer.hashCode(getInterval());
         result = 31 * result + lastCheck.hashCode();
         return (int) result;
+    }
+
+    public static void gc() {
+        Set<BashProcess> processes = new HashSet<>();
+        Set<Integer> meshes = new HashSet<>();
+
+        for (RunShell runShell : mesh) {
+            processes.add(runShell.getMain());
+            processes.add(runShell.getMonitor());
+            meshes.add(runShell.hashCode());
+        }
+
+        //noinspection MismatchedQueryAndUpdateOfCollection
+        Set<BashProcess> deprecated = new HashSet<>();
+        for (BashProcess bashProcess : BashProcess.bashManager.keySet()) {
+            if (processes.contains(bashProcess)) {
+                continue;
+            }
+            Integer hash = BashProcess.bashManager.get(bashProcess);
+            if (meshes.contains(hash)) {
+                continue;
+            }
+            deprecated.add(bashProcess);
+        }
+
+        for (BashProcess bashProcess : deprecated) {
+            bashProcess.destroy();
+            BashProcess.bashManager.remove(bashProcess);
+        }
     }
 }

@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 
 @Slf4j
 public class BashProcess extends Process {
+    public final static Map<BashProcess, Integer> bashManager = new HashMap<>();
     @SuppressWarnings({"FieldMayBeFinal", "FieldCanBeLocal"})
     private static String bash = "/usr/bin/sh"; //初始化调用which语句
     private final ExecutorService exec;
@@ -29,6 +30,7 @@ public class BashProcess extends Process {
 
     @SneakyThrows
     public BashProcess() {
+        bashManager.put(this, hashCode());
         while (!Path.of(bash).toFile().isFile()) {
             Process started = new ProcessBuilder("which", "sh").start();
             bash = new BufferedReader(new InputStreamReader(started.getInputStream())).readLine();
@@ -226,6 +228,9 @@ public class BashProcess extends Process {
 
     public boolean isAlive() {
         ready = false;
+        if (!process.isAlive()) {
+            return false;
+        }
         String check = checkString;
         String take = "";
 

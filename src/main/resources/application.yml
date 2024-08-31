@@ -57,9 +57,11 @@ spring:
           provider: javassist
 info:
   hosts:
-    - command: expressvpn
+    - command: ssh 192.168.4.90 expressvpn
       name: base
-      local-host: true
+      local-host: false
+      proxy-host: 192.168.4.90
+      proxy-port: 60987
       enabled: true
     - command: ssh 192.168.4.90 expressvpn
       name: air

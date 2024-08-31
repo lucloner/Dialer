@@ -27,4 +27,17 @@ class BashProcessTest {
         String bash = new BufferedReader(new InputStreamReader(started.getInputStream())).readLine();
         System.out.println(bash);
     }
+
+    @Test
+    void gctest() throws InterruptedException, IOException {
+        BashProcess bashProcess = new BashProcess();
+        List<String> ls = bashProcess.runSync("ls");
+        System.out.println(ls);
+        bashProcess.destroy();
+        System.out.println("====================");
+        bashProcess.destroy();
+        ls = bashProcess.runSync("uname", "-a");
+        System.out.println(ls);
+    }
+
 }
