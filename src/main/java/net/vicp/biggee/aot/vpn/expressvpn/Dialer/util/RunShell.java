@@ -441,5 +441,21 @@ public class RunShell extends ProxySelector {
             bashProcess.destroy();
             BashProcess.bashManager.remove(bashProcess);
         }
+
+        for (RunShell runShell : mesh) {
+            BashProcess main = runShell.getMain();
+            BashProcess monitor = runShell.getMonitor();
+            if (deprecated.contains(main) || main.hasExited()) {
+                main = new BashProcess();
+                BashProcess.bashManager.put(main, runShell.hashCode());
+                runShell.setMain(main);
+            }
+
+            if (deprecated.contains(monitor) || monitor.hasExited()) {
+                monitor = new BashProcess();
+                BashProcess.bashManager.put(monitor, runShell.hashCode());
+                runShell.setMonitor(monitor);
+            }
+        }
     }
 }

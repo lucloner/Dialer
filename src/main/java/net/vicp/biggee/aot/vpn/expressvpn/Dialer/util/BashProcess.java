@@ -226,9 +226,14 @@ public class BashProcess extends Process {
         return list;
     }
 
+    public boolean hasExited() {
+        return !process.isAlive();
+    }
+
+    @Override
     public boolean isAlive() {
         ready = false;
-        if (!process.isAlive()) {
+        if (hasExited()) {
             return false;
         }
         String check = checkString;
