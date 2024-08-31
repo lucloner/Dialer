@@ -188,6 +188,7 @@ public class Schedule {
     @Async
     @Scheduled(initialDelay = 15, fixedRate = 30, timeUnit = TimeUnit.MINUTES)
     public void checkProcess() {
+        RunShell.gc();
         for (RunShell runShell : RunShell.mesh) {
             int index = runShell.getIndex();
             BashProcess main = runShell.getMain();
