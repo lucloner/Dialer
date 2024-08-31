@@ -116,6 +116,9 @@ public class RunShell extends ProxySelector {
     public String[] getUrls() {
         RunShell zero = getZero();
         zero = zero == null ? this : zero;
+        if (zero.urls == null) {
+            zero.urls = new String[0];
+        }
         return zero.urls;
     }
 
