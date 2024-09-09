@@ -106,8 +106,13 @@ graalvmNative {
             buildArgs.add("-H:DynamicProxyConfigurationFiles=${project.rootDir}/META-INF/native-image/proxy-config.json")
             buildArgs.add("--verbose")
             buildArgs.add("-H:TraceClassInitialization=ALL")
-            // buildArgs.add("-H:+DeadlockWatchdogExitOnTimeout")
+//            buildArgs.add("-H:+DeadlockWatchdogExitOnTimeout")
             buildArgs.add("-H:DeadlockWatchdogInterval=0")
+//            buildArgs.add("--color=always")
+            buildArgs.add("--enable-all-security-services")
+            buildArgs.add("--enable-http")
+            buildArgs.add("--enable-https")
+            //buildArgs.add("--pgo-instrument")
         }
     }
 }
