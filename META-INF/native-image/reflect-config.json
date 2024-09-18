@@ -231,7 +231,7 @@
   "name":"com.fasterxml.jackson.core.ObjectCodec",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
-  "methods":[{"name":"getJsonFactory","parameterTypes":[] }, {"name":"readValues","parameterTypes":["com.fasterxml.jackson.core.JsonParser","com.fasterxml.jackson.core.type.TypeReference"] }, {"name":"readValues","parameterTypes":["com.fasterxml.jackson.core.JsonParser","java.lang.Class"] }]
+  "methods":[{"name":"getJsonFactory","parameterTypes":[] }, {"name":"readValues","parameterTypes":["com.fasterxml.jackson.core.JsonParser","com.fasterxml.jackson.core.type.ResolvedType"] }, {"name":"readValues","parameterTypes":["com.fasterxml.jackson.core.JsonParser","com.fasterxml.jackson.core.type.TypeReference"] }]
 },
 {
   "name":"com.fasterxml.jackson.core.TreeCodec",
@@ -394,6 +394,9 @@
   "fields":[{"name":"state"}]
 },
 {
+  "name":"com.zaxxer.hikari.pool.ProxyConnection"
+},
+{
   "name":"feign.Client"
 },
 {
@@ -478,14 +481,7 @@
   "name":"io.netty.channel.epoll.NativeDatagramPacketArray$NativeDatagramPacket"
 },
 {
-  "name":"io.netty.channel.unix.DatagramSocketAddress"
-},
-{
-  "name":"io.netty.channel.unix.DomainDatagramSocketAddress"
-},
-{
-  "name":"io.netty.channel.unix.FileDescriptor",
-  "fields":[{"name":"state"}]
+  "name":"io.netty.channel.kqueue.KQueue"
 },
 {
   "name":"io.netty.channel.unix.PeerCredentials"
@@ -770,9 +766,6 @@
   "methods":[{"name":"equals","parameterTypes":["java.lang.Object"] }, {"name":"hashCode","parameterTypes":[] }]
 },
 {
-  "name":"java.lang.OutOfMemoryError"
-},
-{
   "name":"java.lang.ProcessHandle",
   "methods":[{"name":"current","parameterTypes":[] }, {"name":"pid","parameterTypes":[] }]
 },
@@ -786,9 +779,6 @@
 {
   "name":"java.lang.Runtime$Version",
   "methods":[{"name":"feature","parameterTypes":[] }]
-},
-{
-  "name":"java.lang.RuntimeException"
 },
 {
   "name":"java.lang.RuntimePermission"
@@ -945,10 +935,11 @@
   "methods":[{"name":"<init>","parameterTypes":["long","long"] }]
 },
 {
-  "name":"java.nio.channels.ClosedChannelException"
+  "name":"java.nio.channels.FileChannel"
 },
 {
-  "name":"java.nio.channels.FileChannel"
+  "name":"java.nio.channels.spi.SelectorProvider",
+  "methods":[{"name":"openServerSocketChannel","parameterTypes":["java.net.ProtocolFamily"] }]
 },
 {
   "name":"java.security.AccessController",
@@ -1016,21 +1007,39 @@
   "queryAllDeclaredMethods":true
 },
 {
+  "name":"java.util.Spliterators$ArraySpliterator"
+},
+{
   "name":"java.util.concurrent.Executor",
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true
+},
+{
+  "name":"java.util.concurrent.Executors$RunnableAdapter"
 },
 {
   "name":"java.util.concurrent.ForkJoinTask",
   "fields":[{"name":"aux"}, {"name":"status"}]
 },
 {
+  "name":"java.util.concurrent.FutureTask"
+},
+{
   "name":"java.util.concurrent.ScheduledExecutorService"
+},
+{
+  "name":"java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask"
 },
 {
   "name":"java.util.concurrent.ThreadFactory",
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true
+},
+{
+  "name":"java.util.concurrent.ThreadPoolExecutor"
+},
+{
+  "name":"java.util.concurrent.ThreadPoolExecutor$Worker"
 },
 {
   "name":"java.util.concurrent.TimeUnit"
@@ -1054,6 +1063,9 @@
 },
 {
   "name":"java.util.logging.LogManager"
+},
+{
+  "name":"java.util.stream.ReferencePipeline$Head"
 },
 {
   "name":"javax.annotation$PostConstruct"
@@ -1140,6 +1152,9 @@
 {
   "name":"jdk.internal.misc.Unsafe",
   "methods":[{"name":"getUnsafe","parameterTypes":[] }]
+},
+{
+  "name":"jdk.internal.reflect.DirectMethodHandleAccessor"
 },
 {
   "name":"kotlin$Metadata"
@@ -1400,7 +1415,7 @@
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":["net.vicp.biggee.aot.vpn.expressvpn.Dialer.service.Connect","net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.HistoryDao","net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.PlanDao","net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.NodesDao","net.vicp.biggee.aot.vpn.expressvpn.Dialer.service.Recycle"] }]
+  "methods":[{"name":"<init>","parameterTypes":["net.vicp.biggee.aot.vpn.expressvpn.Dialer.service.Connect","net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.HistoryDao","net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.PlanDao","net.vicp.biggee.aot.vpn.expressvpn.Dialer.repo.NodesDao","net.vicp.biggee.aot.vpn.expressvpn.Dialer.service.Recycle"] }, {"name":"checkStatus","parameterTypes":[] }]
 },
 {
   "name":"net.vicp.biggee.aot.vpn.expressvpn.Dialer.service.Status",
@@ -1662,8 +1677,14 @@
   "name":"org.h2.jdbc.JdbcClob"
 },
 {
+  "name":"org.h2.jdbc.JdbcConnection"
+},
+{
   "name":"org.h2.jdbc.JdbcLob",
   "methods":[{"name":"free","parameterTypes":[] }]
+},
+{
+  "name":"org.h2.message.DbException"
 },
 {
   "name":"org.h2.mvstore.MVStore$TxCounter",
@@ -1734,6 +1755,10 @@
   "queryAllPublicMethods":true
 },
 {
+  "name":"org.hibernate.engine.jdbc.batch.internal.BatchBuilderImpl",
+  "queryAllPublicMethods":true
+},
+{
   "name":"org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl",
   "queryAllPublicMethods":true,
   "methods":[{"name":"setJndiService","parameterTypes":["org.hibernate.engine.jndi.spi.JndiService"] }]
@@ -1751,8 +1776,23 @@
   "queryAllPublicMethods":true
 },
 {
+  "name":"org.hibernate.engine.jdbc.internal.JdbcCoordinatorImpl"
+},
+{
   "name":"org.hibernate.engine.jdbc.internal.JdbcServicesImpl",
   "queryAllPublicMethods":true
+},
+{
+  "name":"org.hibernate.engine.jdbc.internal.StatementPreparerImpl"
+},
+{
+  "name":"org.hibernate.engine.jdbc.internal.StatementPreparerImpl$1"
+},
+{
+  "name":"org.hibernate.engine.jdbc.internal.StatementPreparerImpl$StatementPreparationTemplate"
+},
+{
+  "name":"org.hibernate.engine.jdbc.spi.SqlExceptionHelper"
 },
 {
   "name":"org.hibernate.engine.jndi.internal.JndiServiceImpl",
@@ -1761,6 +1801,9 @@
 {
   "name":"org.hibernate.engine.query.internal.NativeQueryInterpreterStandardImpl",
   "queryAllPublicMethods":true
+},
+{
+  "name":"org.hibernate.engine.spi.LoadQueryInfluencers"
 },
 {
   "name":"org.hibernate.engine.spi.PrimeAmongSecondarySupertypes",
@@ -1772,13 +1815,31 @@
   "name":"org.hibernate.engine.spi.SessionImplementor"
 },
 {
+  "name":"org.hibernate.engine.transaction.internal.TransactionImpl"
+},
+{
   "name":"org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform",
   "queryAllPublicMethods":true,
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"org.hibernate.event.internal.DefaultLoadEventListener"
+},
+{
+  "name":"org.hibernate.event.internal.DefaultMergeEventListener"
+},
+{
+  "name":"org.hibernate.event.service.internal.EventListenerGroupImpl"
+},
+{
   "name":"org.hibernate.event.spi.EventType",
   "allDeclaredFields":true
+},
+{
+  "name":"org.hibernate.exception.internal.SQLExceptionTypeDelegate"
+},
+{
+  "name":"org.hibernate.exception.internal.StandardSQLExceptionConverter"
 },
 {
   "name":"org.hibernate.id.Assigned",
@@ -1795,6 +1856,9 @@
 {
   "name":"org.hibernate.id.enhanced.StandardNamingStrategy",
   "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.hibernate.internal.AbstractSharedSessionContract"
 },
 {
   "name":"org.hibernate.internal.CoreMessageLogger_$logger",
@@ -1817,6 +1881,24 @@
   "name":"org.hibernate.internal.EntityManagerMessageLogger_$logger_en_US"
 },
 {
+  "name":"org.hibernate.internal.ExceptionConverterImpl"
+},
+{
+  "name":"org.hibernate.internal.NonContextualJdbcConnectionAccess"
+},
+{
+  "name":"org.hibernate.internal.SessionImpl"
+},
+{
+  "name":"org.hibernate.loader.access.IdentifierLoadAccessImpl"
+},
+{
+  "name":"org.hibernate.loader.ast.internal.SingleIdEntityLoaderStandardImpl"
+},
+{
+  "name":"org.hibernate.loader.ast.internal.SingleIdLoadPlan"
+},
+{
   "name":"org.hibernate.metamodel.mapping.MappingModelCreationLogger_$logger",
   "methods":[{"name":"<init>","parameterTypes":["org.jboss.logging.Logger"] }]
 },
@@ -1828,6 +1910,9 @@
 },
 {
   "name":"org.hibernate.metamodel.model.domain.JpaMetamodel"
+},
+{
+  "name":"org.hibernate.persister.entity.AbstractEntityPersister"
 },
 {
   "name":"org.hibernate.persister.entity.SingleTableEntityPersister",
@@ -1880,6 +1965,16 @@
   "name":"org.hibernate.query.TypedParameterValue"
 },
 {
+  "name":"org.hibernate.query.hql.HqlLogging_$logger",
+  "methods":[{"name":"<init>","parameterTypes":["org.jboss.logging.Logger"] }]
+},
+{
+  "name":"org.hibernate.query.hql.HqlLogging_$logger_en"
+},
+{
+  "name":"org.hibernate.query.hql.HqlLogging_$logger_en_US"
+},
+{
   "name":"org.hibernate.resource.beans.container.spi.BeanContainer"
 },
 {
@@ -1887,9 +1982,18 @@
   "queryAllPublicMethods":true
 },
 {
+  "name":"org.hibernate.resource.jdbc.internal.AbstractLogicalConnectionImplementor"
+},
+{
+  "name":"org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl"
+},
+{
   "name":"org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorBuilderImpl",
   "queryAllPublicMethods":true,
   "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl$TransactionDriverControlImpl"
 },
 {
   "name":"org.hibernate.service.internal.SessionFactoryServiceRegistryFactoryImpl",
@@ -1904,6 +2008,57 @@
 },
 {
   "name":"org.hibernate.sql.ast.tree.SqlAstTreeLogger_$logger_en_US"
+},
+{
+  "name":"org.hibernate.sql.exec.SqlExecLogger_$logger",
+  "methods":[{"name":"<init>","parameterTypes":["org.jboss.logging.Logger"] }]
+},
+{
+  "name":"org.hibernate.sql.exec.SqlExecLogger_$logger_en"
+},
+{
+  "name":"org.hibernate.sql.exec.SqlExecLogger_$logger_en_US"
+},
+{
+  "name":"org.hibernate.sql.exec.internal.JdbcSelectExecutorStandardImpl"
+},
+{
+  "name":"org.hibernate.sql.exec.spi.JdbcSelectExecutor"
+},
+{
+  "name":"org.hibernate.sql.results.LoadingLogger_$logger",
+  "methods":[{"name":"<init>","parameterTypes":["org.jboss.logging.Logger"] }]
+},
+{
+  "name":"org.hibernate.sql.results.LoadingLogger_$logger_en"
+},
+{
+  "name":"org.hibernate.sql.results.LoadingLogger_$logger_en_US"
+},
+{
+  "name":"org.hibernate.sql.results.ResultsLogger_$logger",
+  "methods":[{"name":"<init>","parameterTypes":["org.jboss.logging.Logger"] }]
+},
+{
+  "name":"org.hibernate.sql.results.ResultsLogger_$logger_en"
+},
+{
+  "name":"org.hibernate.sql.results.ResultsLogger_$logger_en_US"
+},
+{
+  "name":"org.hibernate.sql.results.internal.RowProcessingStateStandardImpl"
+},
+{
+  "name":"org.hibernate.sql.results.jdbc.internal.AbstractJdbcValues"
+},
+{
+  "name":"org.hibernate.sql.results.jdbc.internal.DeferredResultSetAccess"
+},
+{
+  "name":"org.hibernate.sql.results.jdbc.internal.JdbcValuesResultSetImpl"
+},
+{
+  "name":"org.hibernate.sql.results.spi.ListResultsConsumer"
 },
 {
   "name":"org.hibernate.stat.internal.StatisticsImpl",
@@ -2013,6 +2168,9 @@
   "queryAllPublicMethods":true
 },
 {
+  "name":"org.springframework.aop.framework.JdkDynamicAopProxy"
+},
+{
   "name":"org.springframework.aop.framework.ProxyConfig",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
@@ -2023,6 +2181,9 @@
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "methods":[{"name":"getOrder","parameterTypes":[] }, {"name":"setBeanClassLoader","parameterTypes":["java.lang.ClassLoader"] }, {"name":"setOrder","parameterTypes":["int"] }, {"name":"setProxyClassLoader","parameterTypes":["java.lang.ClassLoader"] }]
+},
+{
+  "name":"org.springframework.aop.framework.ReflectiveMethodInvocation"
 },
 {
   "name":"org.springframework.aop.framework.autoproxy.AbstractAdvisorAutoProxyCreator",
@@ -2040,6 +2201,9 @@
   "name":"org.springframework.aop.framework.autoproxy.AbstractBeanFactoryAwareAdvisingPostProcessor",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true
+},
+{
+  "name":"org.springframework.aop.interceptor.ExposeInvocationInterceptor"
 },
 {
   "name":"org.springframework.aop.scope.ScopedObject"
@@ -4126,7 +4290,7 @@
   "name":"org.springframework.cloud.commons.config.DefaultsBindHandlerAdvisor$MappingsProvider",
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
-  "methods":[{"name":"<init>","parameterTypes":["org.springframework.cloud.client.loadbalancer.LoadBalancerDefaultMappingsProviderAutoConfiguration$$Lambda/0x00007a3e7f381e20"] }, {"name":"from","parameterTypes":["org.springframework.cloud.client.loadbalancer.LoadBalancerDefaultMappingsProviderAutoConfiguration$$Lambda/0x00007a3e7f381e20"] }, {"name":"of","parameterTypes":["org.springframework.cloud.client.loadbalancer.LoadBalancerDefaultMappingsProviderAutoConfiguration$$Lambda/0x00007a3e7f381e20"] }, {"name":"valueOf","parameterTypes":["org.springframework.cloud.client.loadbalancer.LoadBalancerDefaultMappingsProviderAutoConfiguration$$Lambda/0x00007a3e7f381e20"] }]
+  "methods":[{"name":"<init>","parameterTypes":["org.springframework.cloud.client.loadbalancer.LoadBalancerDefaultMappingsProviderAutoConfiguration$$Lambda/0x00007a3e7f381e20","org.springframework.cloud.client.loadbalancer.LoadBalancerDefaultMappingsProviderAutoConfiguration$$Lambda/0x00000002013a7c18"] }, {"name":"from","parameterTypes":["org.springframework.cloud.client.loadbalancer.LoadBalancerDefaultMappingsProviderAutoConfiguration$$Lambda/0x00000002013a7c18"] }, {"name":"of","parameterTypes":["org.springframework.cloud.client.loadbalancer.LoadBalancerDefaultMappingsProviderAutoConfiguration$$Lambda/0x00000002013a7c18"] }, {"name":"valueOf","parameterTypes":["org.springframework.cloud.client.loadbalancer.LoadBalancerDefaultMappingsProviderAutoConfiguration$$Lambda/0x00000002013a7c18"] }]
 },
 {
   "name":"org.springframework.cloud.commons.util.InetUtils",
@@ -4875,6 +5039,9 @@
   "methods":[{"name":"close","parameterTypes":[] }, {"name":"setBeanFactory","parameterTypes":["org.springframework.beans.factory.BeanFactory"] }, {"name":"shutdown","parameterTypes":[] }]
 },
 {
+  "name":"org.springframework.dao.support.PersistenceExceptionTranslationInterceptor"
+},
+{
   "name":"org.springframework.dao.support.PersistenceExceptionTranslator",
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true
@@ -4953,7 +5120,11 @@
 },
 {
   "name":"org.springframework.data.jpa.repository.support.CrudMethodMetadata",
-  "queryAllDeclaredMethods":true
+  "queryAllDeclaredMethods":true,
+  "methods":[{"name":"getComment","parameterTypes":[] }, {"name":"getEntityGraph","parameterTypes":[] }, {"name":"getLockModeType","parameterTypes":[] }, {"name":"getQueryHints","parameterTypes":[] }, {"name":"getQueryHintsForCount","parameterTypes":[] }]
+},
+{
+  "name":"org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor"
 },
 {
   "name":"org.springframework.data.jpa.repository.support.DefaultJpaContext",
@@ -5018,7 +5189,10 @@
   "name":"org.springframework.data.mapping.context.MappingContext",
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
-  "methods":[{"name":"<init>","parameterTypes":["org.springframework.data.jpa.mapping.JpaMetamodelMappingContext"] }, {"name":"from","parameterTypes":["org.springframework.data.jpa.mapping.JpaMetamodelMappingContext"] }, {"name":"getPersistentEntity","parameterTypes":["org.springframework.data.mapping.PersistentProperty"] }, {"name":"getPersistentEntity","parameterTypes":["org.springframework.data.util.TypeInformation"] }, {"name":"getRequiredPersistentEntity","parameterTypes":["java.lang.Class"] }, {"name":"getRequiredPersistentEntity","parameterTypes":["org.springframework.data.mapping.PersistentProperty"] }, {"name":"getRequiredPersistentEntity","parameterTypes":["org.springframework.data.util.TypeInformation"] }, {"name":"of","parameterTypes":["org.springframework.data.jpa.mapping.JpaMetamodelMappingContext"] }, {"name":"valueOf","parameterTypes":["org.springframework.data.jpa.mapping.JpaMetamodelMappingContext"] }]
+  "methods":[{"name":"<init>","parameterTypes":["org.springframework.data.jpa.mapping.JpaMetamodelMappingContext"] }, {"name":"from","parameterTypes":["org.springframework.data.jpa.mapping.JpaMetamodelMappingContext"] }, {"name":"getPersistentEntity","parameterTypes":["org.springframework.data.mapping.PersistentProperty","java.lang.Class"] }, {"name":"getPersistentEntity","parameterTypes":["org.springframework.data.util.TypeInformation"] }, {"name":"getRequiredPersistentEntity","parameterTypes":["java.lang.Class"] }, {"name":"getRequiredPersistentEntity","parameterTypes":["org.springframework.data.mapping.PersistentProperty"] }, {"name":"getRequiredPersistentEntity","parameterTypes":["org.springframework.data.util.TypeInformation"] }, {"name":"of","parameterTypes":["org.springframework.data.jpa.mapping.JpaMetamodelMappingContext"] }, {"name":"valueOf","parameterTypes":["org.springframework.data.jpa.mapping.JpaMetamodelMappingContext"] }]
+},
+{
+  "name":"org.springframework.data.projection.DefaultMethodInvokingMethodInterceptor"
 },
 {
   "name":"org.springframework.data.querydsl.QuerydslPredicateExecutor"
@@ -5109,6 +5283,12 @@
   "methods":[{"name":"getQuery","parameterTypes":["java.lang.String"] }, {"name":"hasQuery","parameterTypes":["java.lang.String"] }, {"name":"toNamedQueries","parameterTypes":[] }]
 },
 {
+  "name":"org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor"
+},
+{
+  "name":"org.springframework.data.repository.core.support.RepositoryComposition"
+},
+{
   "name":"org.springframework.data.repository.core.support.RepositoryComposition$RepositoryFragments",
   "queryAllDeclaredMethods":true,
   "methods":[{"name":"iterator","parameterTypes":[] }]
@@ -5125,11 +5305,20 @@
   "queryAllPublicMethods":true
 },
 {
+  "name":"org.springframework.data.repository.core.support.RepositoryFactorySupport$ImplementationMethodExecutionInterceptor"
+},
+{
   "name":"org.springframework.data.repository.core.support.RepositoryFragmentsFactoryBean",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queryAllDeclaredConstructors":true,
   "methods":[{"name":"<init>","parameterTypes":["java.util.List"] }, {"name":"afterPropertiesSet","parameterTypes":[] }, {"name":"getObject","parameterTypes":[] }, {"name":"getObjectType","parameterTypes":[] }, {"name":"setBeanFactory","parameterTypes":["org.springframework.beans.factory.BeanFactory"] }]
+},
+{
+  "name":"org.springframework.data.repository.core.support.RepositoryMethodInvoker"
+},
+{
+  "name":"org.springframework.data.repository.core.support.RepositoryMethodInvoker$RepositoryFragmentMethodInvoker"
 },
 {
   "name":"org.springframework.data.repository.core.support.TransactionalRepositoryFactoryBeanSupport",
@@ -5365,7 +5554,10 @@
   "name":"org.springframework.orm.jpa.EntityManagerFactoryInfo",
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true,
-  "methods":[{"name":"getBeanClassLoader","parameterTypes":[] }, {"name":"getDataSource","parameterTypes":[] }, {"name":"getEntityManagerInterface","parameterTypes":[] }, {"name":"getJpaDialect","parameterTypes":[] }]
+  "methods":[{"name":"createNativeEntityManager","parameterTypes":["java.util.Map"] }, {"name":"getBeanClassLoader","parameterTypes":[] }, {"name":"getDataSource","parameterTypes":[] }, {"name":"getEntityManagerInterface","parameterTypes":[] }, {"name":"getJpaDialect","parameterTypes":[] }]
+},
+{
+  "name":"org.springframework.orm.jpa.EntityManagerFactoryUtils"
 },
 {
   "name":"org.springframework.orm.jpa.EntityManagerProxy",
@@ -5395,6 +5587,9 @@
   "methods":[{"name":"createSharedEntityManager","parameterTypes":["jakarta.persistence.EntityManagerFactory"] }]
 },
 {
+  "name":"org.springframework.orm.jpa.SharedEntityManagerCreator$SharedEntityManagerInvocationHandler"
+},
+{
   "name":"org.springframework.orm.jpa.persistenceunit.PersistenceManagedTypes",
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true
@@ -5414,6 +5609,9 @@
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "methods":[{"name":"postProcessEntityManager","parameterTypes":["jakarta.persistence.EntityManager"] }, {"name":"postProcessEntityManagerFactory","parameterTypes":["jakarta.persistence.EntityManagerFactory"] }, {"name":"setDatabase","parameterTypes":["org.springframework.orm.jpa.vendor.Database"] }, {"name":"setDatabasePlatform","parameterTypes":["java.lang.String"] }, {"name":"setGenerateDdl","parameterTypes":["boolean"] }, {"name":"setShowSql","parameterTypes":["boolean"] }]
+},
+{
+  "name":"org.springframework.orm.jpa.vendor.HibernateJpaDialect"
 },
 {
   "name":"org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter",
@@ -5502,6 +5700,12 @@
 {
   "name":"org.springframework.scheduling.config.ScheduledTaskHolder",
   "queryAllPublicMethods":true
+},
+{
+  "name":"org.springframework.scheduling.support.DelegatingErrorHandlingRunnable"
+},
+{
+  "name":"org.springframework.scheduling.support.ScheduledMethodRunnable"
 },
 {
   "name":"org.springframework.security.authentication.AuthenticationManager"
@@ -5645,6 +5849,9 @@
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "methods":[{"name":"close","parameterTypes":[] }, {"name":"invoke","parameterTypes":["org.aopalliance.intercept.MethodInvocation"] }, {"name":"shutdown","parameterTypes":[] }]
+},
+{
+  "name":"org.springframework.transaction.interceptor.TransactionInterceptor$1"
 },
 {
   "name":"org.springframework.transaction.interceptor.TransactionalProxy",
@@ -6113,6 +6320,10 @@
   "name":"sun.misc.Unsafe",
   "fields":[{"name":"theUnsafe"}],
   "methods":[{"name":"copyMemory","parameterTypes":["java.lang.Object","long","java.lang.Object","long","long"] }, {"name":"getAndAddLong","parameterTypes":["java.lang.Object","long","long"] }, {"name":"getAndSetObject","parameterTypes":["java.lang.Object","long","java.lang.Object"] }, {"name":"invokeCleaner","parameterTypes":["java.nio.ByteBuffer"] }, {"name":"storeFence","parameterTypes":[] }]
+},
+{
+  "name":"sun.nio.ch.SelectorImpl",
+  "fields":[{"name":"publicSelectedKeys"}, {"name":"selectedKeys"}]
 },
 {
   "name":"sun.security.provider.ConfigFile",

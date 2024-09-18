@@ -253,12 +253,12 @@ public class RunShell extends ProxySelector {
 
     public void asyncReady(BashProcess bashProcess) {
         String hexString = Long.toHexString(new Object().hashCode());
-        log.info("asyncReady[{}] start! running: {}", hexString, asyncReadyCount.incrementAndGet());
+        log.debug("asyncReady[{}] start! running: {}", hexString, asyncReadyCount.incrementAndGet());
         while (!bashProcess.ready()) {
             List<String> readAll = bashProcess.readAll();
             status = status(readAll.toString());
         }
-        log.info("asyncReady[{}] done! running: {}", hexString, asyncReadyCount.decrementAndGet());
+        log.debug("asyncReady[{}] done! running: {}", hexString, asyncReadyCount.decrementAndGet());
     }
 
     public List<String> flush() {
