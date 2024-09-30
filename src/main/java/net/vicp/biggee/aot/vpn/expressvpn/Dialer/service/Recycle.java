@@ -1,6 +1,7 @@
 package net.vicp.biggee.aot.vpn.expressvpn.Dialer.service;
 
 import lombok.extern.slf4j.Slf4j;
+import net.vicp.biggee.aot.vpn.expressvpn.Dialer.DialerApplication;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.History;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Plan;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus;
@@ -93,7 +94,7 @@ public class Recycle {
     @RequestMapping("/clearAndRePlan")
     public void clearAndRePlan() {
         //noinspection resource
-        Executors.newSingleThreadExecutor().execute(() -> {
+        DialerApplication.executors.execute(() -> {
             clear();
             rePlan();
         });

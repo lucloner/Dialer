@@ -3,6 +3,7 @@ package net.vicp.biggee.aot.vpn.expressvpn.Dialer.util;
 import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import net.vicp.biggee.aot.vpn.expressvpn.Dialer.DialerApplication;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Host;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.data.Node;
 import net.vicp.biggee.aot.vpn.expressvpn.Dialer.enums.ExpressvpnStatus;
@@ -45,7 +46,7 @@ public class RunShell extends ProxySelector {
     private String[] dns;
     private boolean supportIPv6 = false;
 
-    private final static ExecutorService exec = Executors.newCachedThreadPool();
+    private final static ExecutorService exec = DialerApplication.executors;
     private final static AtomicInteger asyncReadyCount = new AtomicInteger();
     private BashProcess main;
     private BashProcess monitor;

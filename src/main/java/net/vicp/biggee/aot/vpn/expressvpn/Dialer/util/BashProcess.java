@@ -42,7 +42,7 @@ public class BashProcess extends Process {
         cmdWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
         stdout = new BufferedReader(new InputStreamReader(inputStream));
         stderr = new BufferedReader(new InputStreamReader(errorStream));
-        exec = Executors.newFixedThreadPool(2);
+        exec = Executors.newCachedThreadPool();
         //noinspection ResultOfMethodCallIgnored
         exec.execute(() -> stdout.lines().forEach(std::offer));
         //noinspection ResultOfMethodCallIgnored
